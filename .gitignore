@@ -1,0 +1,24 @@
+.DS_Store
+*.class
+
+# Package Files #
+*.jar
+*.war
+*.ear
+
+#Intelij IDEA project descriptor#
+*.iml
+*.idea
+# Eclipse project descriptor#
+*.project
+*.classpath
+# Netbeans project descriptor#
+nb-configuration.xml
+/out
+
+#maven build directory#
+target
+/filters/nbproject/private/
+Apollo-commons/guid
+nohup.out
+

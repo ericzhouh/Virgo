@@ -1,0 +1,179 @@
+package com.winterfarmer.virgo.database;
+
+import com.alibaba.fastjson.JSON;
+import com.google.common.collect.ImmutableList;
+import com.winterfarmer.virgo.common.util.ArrayUtil;
+import com.winterfarmer.virgo.common.util.ConfigUtil;
+import com.winterfarmer.virgo.database.helper.column.Column;
+import com.winterfarmer.virgo.log.VirgoLogger;
+import org.apache.commons.collections4.CollectionUtils;
+import org.apache.commons.lang3.ArrayUtils;
+import org.apache.commons.lang3.StringUtils;
+import org.springframework.dao.EmptyResultDataAccessException;
+import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.RowMapper;
+import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
+
+import javax.annotation.Resource;
+import java.util.List;
+
+/**
+ * Created by yangtianhang on 15-3-3.
+ */
+public class BaseDao {
+    @Resource
+    JdbcTemplateFactory jdbcTemplateFactory;
+
+    protected static String dropDDL(String tableName) {
+        return String.format("drop table if exists `%s`; ", tableName);
+    }
+
+    public void setJdbcTemplateFactory(JdbcTemplateFactory jdbcTemplateFactory) {
+        this.jdbcTemplateFactory = jdbcTemplateFactory;
+    }
+
+    public JdbcTemplate getReadJdbcTemplate() {
+        return jdbcTemplateFactory.getReadJdbcTemplate();
+    }
+
+    public JdbcTemplate getWriteJdbcTemplate() {
+        return jdbcTemplateFactory.getWriteJdbcTemplate();
+    }
+
+    public NamedParameterJdbcTemplate getReadNamedParameterJdbcTemplate() {
+        return new NamedParameterJdbcTemplate(jdbcTemplateFactory.getReadJdbcTemplate());
+    }
+
+    public NamedParameterJdbcTemplate getWriteNamedParameterJdbcTemplate() {
+        return new NamedParameterJdbcTemplate(jdbcTemplateFactory.getWriteJdbcTemplate());
+    }
+
+    /**
+     * 目前只有单元测试情况下才生效,防止对线上误操作.
+     *
+     * @param createDDL
+     * @param dropDDL
+     * @param dropBeforeCreate
+     */
+    public void initTable(String createDDL, String dropDDL, boolean dropBeforeCreate) {
+        System.out.println(createDDL);
+        if (ConfigUtil.isUnitTesting()) {
+            if (dropBeforeCreate) {
+                getWriteJdbcTemplate().execute(dropDDL);
+            }
+        }
+
+        try {
+            getWriteJdbcTemplate().execute(createDDL);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    protected <T> T queryForObject(JdbcTemplate jdbcTemplate, String sql, RowMapper<T> rowMapper, Object... args) {
+        if (VirgoLogger.isDebugEnabled()) {
+            VirgoLogger.debug("class:{}, queryForObject sql:{}, params:{}, rowmapper:{}", this.getClass().getSimpleName(), sql, JSON.toJSONString(args), rowMapper.getClass().getSimpleName());
+        }
+
+        try {
+            return jdbcTemplate.queryForObject(sql, rowMapper, args);
+        } catch (EmptyResultDataAccessException emptyResultDataAccessException) {
+            if (VirgoLogger.isDebugEnabled()) {
+                VirgoLogger.debug("class:{}, queryForObject sql:{} ,params:{}, rowmapper:{} , no_result", this.getClass().getSimpleName(), sql, JSON.toJSONString(args), rowMapper.getClass().getSimpleName());
+            }
+            return null;
+        }
+    }
+
+    protected <T> ImmutableList<T> queryForList(JdbcTemplate jdbcTemplate, String sql, RowMapper<T> rowMapper, Object... args) {
+        if (VirgoLogger.isDebugEnabled()) {
+            VirgoLogger.debug("class:{}, queryForList sql:{}, params:{}, rowmapper:{}", this.getClass().getSimpleName(), sql, JSON.toJSONString(args), rowMapper.getClass().getSimpleName());
+        }
+
+        try {
+            List<T> result = jdbcTemplate.query(sql, rowMapper, args);
+            if (CollectionUtils.isNotEmpty(result)) {
+                return ImmutableList.copyOf(result);
+            }
+        } catch (Exception e) {
+            if (VirgoLogger.isDebugEnabled()) {
+                VirgoLogger.debug("class:{}, queryForList sql:{}, params:{}, rowmapper:{}, exception:{}, no_result", this.getClass().getSimpleName(), sql, JSON.toJSONString(args), rowMapper.getClass().getSimpleName(), e.getMessage());
+            }
+        }
+
+        return ImmutableList.of();
+    }
+
+    protected int update(String sql, Object... args) {
+        if (VirgoLogger.isDebugEnabled()) {
+            VirgoLogger.debug("class:{}, update sql:{}, params:{}", this.getClass().getSimpleName(), sql, JSON.toJSONString(args));
+        }
+
+        try {
+            return getWriteJdbcTemplate().update(sql, args);
+        } catch (Exception e) {
+            if (VirgoLogger.isDebugEnabled()) {
+                VirgoLogger.debug("class:{}, update sql:{}, params:{}, exception:{}, update failed", this.getClass().getSimpleName(), sql, JSON.toJSONString(args), e.getMessage());
+            }
+
+            return -1;
+        }
+    }
+
+    protected static String insertIntoSQL(String tableName, Column column, Column... others) {
+        String columnNames;
+        if (ArrayUtils.isEmpty(others)) {
+            columnNames = column.toString();
+        } else {
+            columnNames = column.toString() + "," + StringUtils.join(others, ",");
+        }
+
+        String values = StringUtils.repeat("?", ",", 1 + others.length);
+
+        return "INSERT INTO " + tableName + " (" + columnNames + ") " + "VALUES" + "( " + values + " )";
+    }
+
+    protected static String updateSql(String tableName, Column column, Column... others) {
+        String columnNames = column.eqWhich();
+        for (Column c : others) {
+            columnNames += "," + c.eqWhich();
+        }
+
+        return "UPDATE " + tableName + " set " + columnNames;
+    }
+
+    protected static String selectSql(String tableName) {
+        return "SELECT * FROM " + tableName;
+    }
+
+    protected static String selectSql(String tableName, Column column, Column... others) {
+        String columnNames = column.toString();
+        for (Column c : others) {
+            columnNames += "," + c.toString();
+        }
+
+        return "SELECT " + columnNames + " FROM " + tableName;
+    }
+
+    protected static class WhereClauseBuilder {
+        String whereClause;
+
+        public WhereClauseBuilder(String firstSubClause) {
+            this.whereClause = firstSubClause;
+        }
+
+        public WhereClauseBuilder or(String subClause) {
+            this.whereClause += " or " + subClause;
+            return this;
+        }
+
+        public WhereClauseBuilder and(String subClause) {
+            this.whereClause += " and " + subClause;
+            return this;
+        }
+
+        public String build() {
+            return " where " + this.whereClause;
+        }
+    }
+}

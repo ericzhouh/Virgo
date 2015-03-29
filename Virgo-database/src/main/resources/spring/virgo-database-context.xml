@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:tx="http://www.springframework.org/schema/tx"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+       http://www.springframework.org/schema/beans/spring-beans-3.2.xsd
+          http://www.springframework.org/schema/context
+          http://www.springframework.org/schema/context/spring-context-3.2.xsd
+          http://www.springframework.org/schema/tx
+          http://www.springframework.org/schema/tx/spring-tx.xsd">
+
+    <context:annotation-config/>
+    <context:component-scan base-package="com.winterfarmer.virgo.database.*"/>
+    <!--加载数据库配置文件-->
+    <context:property-placeholder location="classpath:database_config.properties" ignore-unresolvable="true"/>
+
+    <bean id="log-filter" class="com.alibaba.druid.filter.logging.Log4jFilter">
+        <property name="dataSourceLogEnabled" value="true"/>
+        <property name="connectionLogEnabled" value="true"/>
+        <property name="connectionLogErrorEnabled" value="true"/>
+        <property name="statementLogEnabled" value="false"/>
+        <property name="statementLogErrorEnabled" value="true"/>
+        <property name="resultSetLogEnabled" value="true"/>
+        <property name="resultSetLogErrorEnabled" value="true"/>
+    </bean>
+
+    <bean id="stat-filter" class="com.alibaba.druid.filter.stat.StatFilter">
+        <property name="slowSqlMillis" value="3000"/>
+        <property name="logSlowSql" value="true"/>
+    </bean>
+
+    <bean id="wall-filter" class="com.alibaba.druid.wall.WallFilter">
+        <property name="dbType" value="mysql"/>
+    </bean>
+
+    <!--主库数据源-->
+    <bean id="writeDataSource" class="com.alibaba.druid.pool.DruidDataSource"
+          init-method="init" destroy-method="close">
+        <property name="filters" value="config"/>
+        <property name="connectionProperties" value="config.file=${db_config_master_path}"/>
+        <property name="proxyFilters">
+            <list>
+                <ref bean="log-filter"/>
+                <ref bean="stat-filter"/>
+            </list>
+        </property>
+    </bean>
+
+    <!--从库数据源-->
+    <bean id="readDataSource" class="com.alibaba.druid.pool.DruidDataSource"
+          init-method="init" destroy-method="close">
+        <property name="filters" value="config"/>
+        <property name="connectionProperties" value="config.file=${db_config_salve_path}"/>
+        <property name="proxyFilters">
+            <list>
+                <ref bean="log-filter"/>
+                <ref bean="stat-filter"/>
+            </list>
+        </property>
+    </bean>
+
+    <bean id="writeJdbcTemplate" class="com.winterfarmer.virgo.database.VirgoJdbcTemplate">
+        <property name="dataSource" ref="writeDataSource"/>
+    </bean>
+    <bean id="readJdbcTemplate" class="com.winterfarmer.virgo.database.VirgoJdbcTemplate">
+        <property name="dataSource" ref="readDataSource"/>
+    </bean>
+
+    <bean id="jdbcTemplateFactory" class="com.winterfarmer.virgo.database.JdbcTemplateFactory">
+        <constructor-arg name="writeJdbcTemplate">
+            <ref bean="writeJdbcTemplate"/>
+        </constructor-arg>
+        <constructor-arg name="readJdbcTemplates">
+            <list value-type="com.winterfarmer.virgo.database.VirgoJdbcTemplate">
+                <ref bean="readJdbcTemplate"/>
+            </list>
+        </constructor-arg>
+    </bean>
+
+    <bean id="baseDAO" class="com.winterfarmer.virgo.database.BaseDao">
+        <property name="jdbcTemplateFactory" ref="jdbcTemplateFactory"/>
+    </bean>
+
+    <!--开启事务支持-->
+    <tx:annotation-driven transaction-manager="transactionManager"/>
+    <bean id="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+        <property name="dataSource" ref="writeDataSource"/>
+    </bean>
+    <tx:advice id="txAdvice" transaction-manager="transactionManager">
+        <tx:attributes>
+            <tx:method name="find*" read-only="true"/>
+            <tx:method name="get*" read-only="true"/>
+            <tx:method name="query*" read-only="true"/>
+            <tx:method name="*" read-only="false"/>
+        </tx:attributes>
+    </tx:advice>
+</beans>
