@@ -69,15 +69,12 @@ public class ResourceBeanSpringComponentProvider implements ComponentProvider {
 
 //        filter是new的spring无法注入，需要在filter的构造函数里对需要的bean赋值，也行有更好的实现方式
 //        ApplicationContextHolder.setApplicatioinContext(ctx);
-
-
     }
 
     // detect JAX-RS classes that are also Spring @Components.
     // register these with HK2 ServiceLocator to manage their lifecycle using Spring.
     @Override
     public boolean bind(Class<?> component, Set<Class<?>> providerContracts) {
-
         if (ctx == null) {
             return false;
         }
@@ -99,6 +96,7 @@ public class ResourceBeanSpringComponentProvider implements ComponentProvider {
             LOGGER.config(LocalizationMessages.BEAN_REGISTERED(beanName));
             return true;
         }
+
         return false;
     }
 
@@ -120,9 +118,9 @@ public class ResourceBeanSpringComponentProvider implements ComponentProvider {
         if (contextConfigLocation == null) {
             contextConfigLocation = DEFAULT_CONTEXT_CONFIG_LOCATION;
         }
+
         return ctx = new ClassPathXmlApplicationContext(contextConfigLocation, "jersey-spring-applicationContext.xml");
     }
-
 
     private static class SpringManagedBeanFactory implements Factory {
         private final ApplicationContext ctx;
