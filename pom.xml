@@ -407,7 +407,6 @@
     </repositories>
 
     <modules>
-        <module>simple-service-webapp</module>
         <module>Virgo-restapi-core</module>
         <module>Virgo-logger</module>
         <module>Virgo-account</module>
@@ -415,5 +414,7 @@
         <module>Virgo-redis</module>
         <module>Virgo-database</module>
         <module>Virgo-base</module>
+        <module>simple-service-webapp</module>
+        <module>Virgo-restapi</module>
     </modules>
 </project>
