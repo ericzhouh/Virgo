@@ -414,7 +414,6 @@
         <module>Virgo-redis</module>
         <module>Virgo-database</module>
         <module>Virgo-base</module>
-        <module>simple-service-webapp</module>
         <module>Virgo-restapi</module>
     </modules>
 </project>
