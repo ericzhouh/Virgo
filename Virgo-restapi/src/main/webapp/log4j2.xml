@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration status="info" name="VirgoLog">
+    <Properties>
+        <Property name="filename">${constant.local.logs.dir.path}/</Property>
+    </Properties>
+
+    <Appenders>
+        <Console name="Stdout">
+            <PatternLayout>
+                <pattern>%highlight{%d [%p] %m %throwable [%c] [%t] %X{trace_id} %u}{STYLE=Default}%n</pattern>
+            </PatternLayout>
+        </Console>
+        <RollingFile name="logDebug" fileName="${filename}_debug.log"
+                     filePattern="${filename}_debug_%d{yyyyMMdd-HH}.log.gz"
+                     immediateFlush="true">
+            <ThresholdFilter level="debug"></ThresholdFilter>
+            <PatternLayout>
+                <pattern>%d [%p] %m %throwable [%c] [%t] %X{trace_id}%n</pattern>
+            </PatternLayout>
+            <TimeBasedTriggeringPolicy/>
+        </RollingFile>
+    </Appenders>
+
+    <Loggers>
+        <Logger name="debug" level="debug" additivity="false">
+            <AppenderRef ref="logDebug"/>
+            <AppenderRef ref="Stdout"/>
+        </Logger>
+        <Logger name="info" level="info" additivity="false">
+            <!--<AppenderRef ref="logInfo"/>-->
+            <AppenderRef ref="Stdout"/>
+        </Logger>
+        <Logger name="warn" level="warn" additivity="false">
+            <!--<AppenderRef ref="logWarn"/>-->
+            <AppenderRef ref="Stdout"/>
+        </Logger>
+        <Logger name="error" level="error" additivity="false">
+            <!--<AppenderRef ref="logError"/>-->
+            <AppenderRef ref="Stdout"/>
+        </Logger>
+        <Logger name="fatal" level="fatal" additivity="false">
+            <!--<AppenderRef ref="logFatal"/>-->
+            <AppenderRef ref="Stdout"/>
+        </Logger>
+        <Logger name="request" level="request" additivity="false">
+            <!--<AppenderRef ref="logRequest"/>-->
+            <AppenderRef ref="Stdout"/>
+        </Logger>
+        <Root level="info">
+            <AppenderRef ref="Stdout"/>
+        </Root>
+    </Loggers>
+
+</Configuration>

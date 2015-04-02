@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration status="info" name="VirgoLog">
+    <Appenders>
+        <Console name="Console" target="SYSTEM_OUT">
+            <PatternLayout pattern="%d{yyy-MM-dd HH:mm:ss.SSS} [%t] %-5level - %msg%n" />
+        </Console>
+        <File name="MyFile" fileName="all.log" immediateFlush="false" append="false">
+            <PatternLayout pattern="%d{yyy-MM-dd HH:mm:ss.SSS} [%t] %-5level - %msg%n"/>
+        </File>
+    </Appenders>
+    <Loggers>
+        <Root level="debug">
+            <AppenderRef ref="Console" />
+            <AppenderRef ref="MyFile"/>
+        </Root>
+    </Loggers>
+    <!--<Properties>-->
+        <!--<Property name="filename">${constant.local.logs.dir.path}/</Property>-->
+    <!--</Properties>-->
+
+    <!--<Appenders>-->
+        <!--<Console name="Stdout">-->
+            <!--<PatternLayout>-->
+                <!--<pattern>%highlight{%d [%p] %m %throwable [%c] [%t] %X{trace_id} %u}{STYLE=Default}%n</pattern>-->
+            <!--</PatternLayout>-->
+        <!--</Console>-->
+        <!--<RollingFile name="logDebug" fileName="${filename}_debug.log"-->
+                     <!--filePattern="${filename}_debug_%d{yyyyMMdd-HH}.log.gz"-->
+                     <!--immediateFlush="true">-->
+            <!--<ThresholdFilter level="debug"></ThresholdFilter>-->
+            <!--<PatternLayout>-->
+                <!--<pattern>%d [%p] %m %throwable [%c] [%t] %X{trace_id}%n</pattern>-->
+            <!--</PatternLayout>-->
+            <!--<TimeBasedTriggeringPolicy/>-->
+        <!--</RollingFile>-->
+    <!--</Appenders>-->
+
+    <!--<Loggers>-->
+        <!--<Logger name="debug" level="debug" additivity="false">-->
+            <!--<AppenderRef ref="logDebug"/>-->
+            <!--<AppenderRef ref="Stdout"/>-->
+        <!--</Logger>-->
+        <!--<Logger name="info" level="info" additivity="false">-->
+            <!--&lt;!&ndash;<AppenderRef ref="logInfo"/>&ndash;&gt;-->
+            <!--<AppenderRef ref="Stdout"/>-->
+        <!--</Logger>-->
+        <!--<Logger name="warn" level="warn" additivity="false">-->
+            <!--&lt;!&ndash;<AppenderRef ref="logWarn"/>&ndash;&gt;-->
+            <!--<AppenderRef ref="Stdout"/>-->
+        <!--</Logger>-->
+        <!--<Logger name="error" level="error" additivity="false">-->
+            <!--&lt;!&ndash;<AppenderRef ref="logError"/>&ndash;&gt;-->
+            <!--<AppenderRef ref="Stdout"/>-->
+        <!--</Logger>-->
+        <!--<Logger name="fatal" level="fatal" additivity="false">-->
+            <!--&lt;!&ndash;<AppenderRef ref="logFatal"/>&ndash;&gt;-->
+            <!--<AppenderRef ref="Stdout"/>-->
+        <!--</Logger>-->
+        <!--<Logger name="request" level="request" additivity="false">-->
+            <!--&lt;!&ndash;<AppenderRef ref="logRequest"/>&ndash;&gt;-->
+            <!--<AppenderRef ref="Stdout"/>-->
+        <!--</Logger>-->
+        <!--<Root level="info">-->
+            <!--<AppenderRef ref="Stdout"/>-->
+        <!--</Root>-->
+    <!--</Loggers>-->
+
+</Configuration>

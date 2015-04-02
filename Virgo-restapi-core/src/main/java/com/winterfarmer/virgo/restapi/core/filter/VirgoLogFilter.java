@@ -20,7 +20,7 @@ import java.util.*;
  */
 @PreMatching
 @Priority(FilterPriorities.LOGGER)
-public class LogFilter implements ContainerRequestFilter, ContainerResponseFilter, WriterInterceptor {
+public class VirgoLogFilter implements ContainerRequestFilter, ContainerResponseFilter, WriterInterceptor {
     private static final Comparator<Map.Entry<String, List<String>>> COMPARATOR =
             new Comparator<Map.Entry<String, List<String>>>() {
                 @Override

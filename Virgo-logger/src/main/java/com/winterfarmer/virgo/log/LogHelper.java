@@ -11,13 +11,7 @@ import java.util.concurrent.atomic.AtomicLong;
  * Created by yangtianhang on 15-1-7.
  */
 public class LogHelper {
-    enum LogType {
-        request,
-        response,
-        business
-    }
-
-    private static final String LOGGER_NAME = "TraceableLogger";
+    private static final String LOGGER_NAME = VirgoLogger.class.getSimpleName();
 
     private static final String EVENT_ID = "event_id";
     private static final String IS_REST = "is_rest";
@@ -33,11 +27,7 @@ public class LogHelper {
     private static String ipStr = null;
     private static String instanceName = null;
 
-    public static String formatLogString(String format) {
-        return formatLogString(format, LogType.business);
-    }
-
-    public static String formatLogString(String format, LogType type) {
+    public static String formatLogString(String formatter) {
         boolean isRestLog = isRestLog();
         if (!isRestLog) {
             startTraceMDC();
@@ -55,7 +45,12 @@ public class LogHelper {
             endTraceMDC();
         }
 
-        return String.format("[%s %s %s %s:%d %s] - [%s]", org.apache.log4j.MDC.get(TRACE_ID), type, org.apache.log4j.MDC.get(EVENT_ID), className, lineNumber, methodName, format);
+        // TODO: use StringBuilder???
+        // [log message] - [log meta data]
+        // [formatter] - [ClassName->Method():line number, event id, trace id]
+        String s = String.format("[%s] [%s %s:%d, %s, %s]",
+                formatter, className, methodName, lineNumber, org.apache.log4j.MDC.get(EVENT_ID), org.apache.log4j.MDC.get(TRACE_ID));
+        return s;
     }
 
     public static void startRestLog() {
@@ -175,18 +170,24 @@ public class LogHelper {
         return ipStr;
     }
 
+    private final static int LOGGER_STACK_DEPTH = 3;
+    private final static int LOGGER_POINT_STACK_DEPTH = LOGGER_STACK_DEPTH + 1;
+
     private static StackTraceElement getLogPoint() {
         StackTraceElement stack[] = Thread.currentThread().getStackTrace();
         StackTraceElement s = null;
-
-        for (int i = 0; i < stack.length; i++) {
-            s = stack[i];
-            if (s.getClassName().indexOf(LOGGER_NAME) != -1) {
-                s = stack[i + 1];
-                break;
+        if (stack.length >= LOGGER_POINT_STACK_DEPTH && stack[LOGGER_STACK_DEPTH].getClassName().indexOf(LOGGER_NAME) != -1) {
+            return stack[LOGGER_POINT_STACK_DEPTH];
+        } else {
+            for (int i = 0; i < stack.length; i++) {
+                s = stack[i];
+                if (s.getClassName().indexOf(LOGGER_NAME) != -1) {
+                    s = stack[i + 1];
+                    break;
+                }
             }
-        }
 
-        return s;
+            return s;
+        }
     }
 }

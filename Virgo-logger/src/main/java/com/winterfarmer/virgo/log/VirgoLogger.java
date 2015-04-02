@@ -1,28 +1,35 @@
 package com.winterfarmer.virgo.log;
 
-import org.apache.log4j.LogManager;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.core.LoggerContext;
+import org.apache.logging.log4j.core.config.Configurator;
 
 /**
  * Created by yangtianhang on 15-1-6.
  */
 public class VirgoLogger {
-    private static final Logger debugLog = LoggerFactory.getLogger("debug");
-    private static final Logger infoLog = LoggerFactory.getLogger("info");
-    private static final Logger warnLog = LoggerFactory.getLogger("warn");
-    private static final Logger errorLog = LoggerFactory.getLogger("error");
-    private static final Logger fatalLog = LoggerFactory.getLogger("fatal");
-    private static final Logger requestLog = LoggerFactory.getLogger("request");
+    private static final Logger debugLog = LogManager.getLogger("debug");
+    private static final Logger infoLog = LogManager.getLogger("info");
+    private static final Logger warnLog = LogManager.getLogger("warn");
+    private static final Logger errorLog = LogManager.getLogger("error");
+    private static final Logger fatalLog = LogManager.getLogger("fatal");
+    private static final Logger requestLog = LogManager.getLogger("request");
 
-    static {
-        Runtime.getRuntime().addShutdownHook(new Thread() {
-            @Override
-            public void run() {
-                LogManager.shutdown();
-            }
-        });
-    }
+//    static {
+//        Runtime.getRuntime().addShutdownHook(new Thread() {
+//            @Override
+//            public void run() {
+//                //shutdown log4j2
+//                if (LogManager.getContext() instanceof LoggerContext) {
+//                    infoLog.info("Shutting down log4j2");
+//                    Configurator.shutdown((LoggerContext) LogManager.getContext());
+//                } else {
+//                    warnLog.warn("Unable to shutdown log4j2");
+//                }
+//            }
+//        });
+//    }
 
     public static boolean isTraceEnabled() {
         return debugLog.isTraceEnabled();
@@ -76,12 +83,12 @@ public class VirgoLogger {
     }
 
     public static void logRequest(String format, Object... arguments) {
-        format = LogHelper.formatLogString(format, LogHelper.LogType.request);
+        format = LogHelper.formatLogString(format);
         requestLog.info(format, arguments);
     }
 
     public static void logResponse(String format, Object... arguments) {
-        format = LogHelper.formatLogString(format, LogHelper.LogType.response);
+        format = LogHelper.formatLogString(format);
         requestLog.info(format, arguments);
     }
 }
