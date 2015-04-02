@@ -1,10 +1,9 @@
-package com.winterfarmer.virgo.restapi.core.custom;
+package com.winterfarmer.virgo.restapi.core.param;
 
 import com.google.i18n.phonenumbers.NumberParseException;
 import com.google.i18n.phonenumbers.PhoneNumberUtil;
 import com.google.i18n.phonenumbers.Phonenumber;
 import com.winterfarmer.virgo.log.VirgoLogger;
-import com.winterfarmer.virgo.restapi.core.param.AbstractParamSpec;
 
 /**
  * Created by yangtianhang on 15-1-9.

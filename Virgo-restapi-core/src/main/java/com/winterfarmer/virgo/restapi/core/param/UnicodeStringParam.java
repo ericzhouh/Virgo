@@ -1,22 +1,20 @@
-package com.winterfarmer.virgo.restapi.core.custom;
-
-import com.winterfarmer.virgo.restapi.core.param.TextParam;
+package com.winterfarmer.virgo.restapi.core.param;
 
 /**
  * api字符长度检查 汉字算2个,英文字符和数字算1个
  * Created by yangtianhang on 15-1-9.
  */
 public class UnicodeStringParam extends TextParam {
-    private final int minLength;
-    private final int maxLength;
-
-    public static UnicodeStringParam lengthLimit(int minLength, int maxLength) {
-        return new UnicodeStringParam(minLength, maxLength);
+    UnicodeStringParam(String specValue) {
+        super(specValue);
     }
 
     public UnicodeStringParam(int minLength, int maxLength) {
-        this.minLength = minLength;
-        this.maxLength = maxLength;
+        super(minLength, maxLength);
+    }
+
+    public static UnicodeStringParam lengthLimit(int minLength, int maxLength) {
+        return new UnicodeStringParam(minLength, maxLength);
     }
 
     @Override
@@ -67,10 +65,6 @@ public class UnicodeStringParam extends TextParam {
 
     @Override
     public String getValue() {
-        return null;
-    }
-
-    public UnicodeStringParam instanceOf(String specValue) {
         return null;
     }
 }

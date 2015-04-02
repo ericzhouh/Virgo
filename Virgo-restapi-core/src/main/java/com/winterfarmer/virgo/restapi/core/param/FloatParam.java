@@ -6,7 +6,7 @@ import java.text.DecimalFormat;
  * Created by yangtianhang on 15-1-9.
  */
 public class FloatParam extends NumericParam<Float> {
-    private FloatParam(String specValue) {
+    public FloatParam(String specValue) {
         super(specValue);
     }
 
@@ -16,10 +16,6 @@ public class FloatParam extends NumericParam<Float> {
 
     public static String specName() {
         return "Float";
-    }
-
-    public static FloatParam instanceOf(String specValue) {
-        return new FloatParam(specValue);
     }
 
     @Override

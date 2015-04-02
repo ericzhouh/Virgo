@@ -4,7 +4,7 @@ package com.winterfarmer.virgo.restapi.core.param;
  * Created by yangtianhang on 15-1-9.
  */
 public class IntegerParam extends NumericParam<Integer> {
-    private IntegerParam(String specValue) {
+    public IntegerParam(String specValue) {
         super(specValue);
     }
 
@@ -59,10 +59,6 @@ public class IntegerParam extends NumericParam<Integer> {
     @Override
     protected int compare(Integer a, Integer b) {
         return a - b;
-    }
-
-    public static IntegerParam instanceOf(String specValue) {
-        return new IntegerParam(specValue);
     }
 
     public static String specName() {

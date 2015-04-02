@@ -3,13 +3,11 @@ package com.winterfarmer.virgo.restapi.v1.account;
 import com.winterfarmer.virgo.account.model.AccessToken;
 import com.winterfarmer.virgo.account.service.AccountService;
 import com.winterfarmer.virgo.log.VirgoLogger;
+import com.winterfarmer.virgo.restapi.core.annotation.ParamSpec;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
-import javax.ws.rs.GET;
-import javax.ws.rs.POST;
-import javax.ws.rs.Path;
-import javax.ws.rs.Produces;
+import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 
 /**
@@ -32,7 +30,7 @@ public class AccountResource {
         return "yes";
     }
 
-//    @Path("access_token.json")
+    //    @Path("access_token.json")
 //    @POST
 //    @Produces(MediaType.APPLICATION_JSON)
 //    public AccessToken signUp(String mobileNumber, String password, String nickName,
@@ -40,13 +38,17 @@ public class AccountResource {
 //        return null;
 //    }
 //
-//    @Path("access_token.json")
-//    @GET
-//    @Produces(MediaType.APPLICATION_JSON)
-//    public AccessToken getAccessToken(String tokenString) {
-//        AccessToken accessToken = new AccessToken();
-//        accessToken.setAppKey(100);
-//        accessToken.setToken("00000");
-//        return null;
-//    }
+    @Path("access_token.json")
+    @GET
+    @Produces(MediaType.APPLICATION_JSON)
+    public AccessToken getAccessToken(
+            @QueryParam("access_token")
+            @ParamSpec(isRequired = true, spec = "String:[36:36]", desc = "")
+            String accessTokenString
+    ) {
+        AccessToken accessToken = new AccessToken();
+        accessToken.setAppKey(100);
+        accessToken.setToken("00000");
+        return accessToken;
+    }
 }

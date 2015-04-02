@@ -4,7 +4,7 @@ package com.winterfarmer.virgo.restapi.core.param;
  * Created by yangtianhang on 15-1-9.
  */
 public class LongParam extends NumericParam<Long> {
-    private LongParam(String specValue) {
+    public LongParam(String specValue) {
         super(specValue);
     }
 
@@ -68,9 +68,5 @@ public class LongParam extends NumericParam<Long> {
     @Override
     protected int compare(Long a, Long b) {
         return a.equals(b) ? 0 : (a < b ? -1 : 1);
-    }
-
-    public static LongParam instanceOf(String specValue) {
-        return new LongParam(specValue);
     }
 }

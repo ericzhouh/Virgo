@@ -1,7 +1,6 @@
-package com.winterfarmer.virgo.restapi.core.custom;
+package com.winterfarmer.virgo.restapi.core.param;
 
-import com.winterfarmer.virgo.restapi.core.exception.ParamSpecException;
-import com.winterfarmer.virgo.restapi.core.param.TextParam;
+import org.apache.commons.lang3.StringUtils;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -10,11 +9,27 @@ import java.util.regex.Pattern;
  * Created by yangtianhang on 15-1-9.
  */
 public class StringParam extends TextParam {
-    private final int minLength;
-    private final int maxLength;
     private final Pattern pattern;
+
     private final String spec;
     private final String specValue;
+
+    public StringParam(String specValue) {
+        super(getLengthSpecValue(specValue));
+        String[] split = StringUtils.split(specValue, ",", 2);
+        if (split.length == 2) {
+            pattern = Pattern.compile(split[1]);
+        } else {
+            pattern = null;
+        }
+
+        this.specValue = createSpecValue(minLength, maxLength, pattern != null ? "pattern=" + pattern : null);
+        this.spec = createSpec(getName(), getValue());
+    }
+
+    private static String getLengthSpecValue(String specValue) {
+        return StringUtils.split(specValue, ",", 2)[0];
+    }
 
     public static String lengthLimit(int minLength, int maxLength) {
         return new StringParam(minLength, maxLength, null).getSpec();
@@ -25,12 +40,8 @@ public class StringParam extends TextParam {
     }
 
     private StringParam(int minLength, int maxLength, String regex) {
-        if (minLength < 0 || maxLength < minLength) {
-            throw new ParamSpecException("Invalid StringParam length limit, minLength: " + minLength + " maxLength: " + maxLength);
-        }
+        super(minLength, maxLength);
 
-        this.minLength = minLength;
-        this.maxLength = maxLength;
         if (regex != null) {
             pattern = Pattern.compile(regex);
         } else {

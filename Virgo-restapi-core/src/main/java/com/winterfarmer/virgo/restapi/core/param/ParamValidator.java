@@ -32,7 +32,7 @@ public class ParamValidator {
 
     public ParamValidator(String paramName, boolean isRequired, Class<?> paramClass,
                           Type paramType, String defaultValue, String spec, boolean isQueryParameter)
-            throws NoSuchMethodException, IllegalAccessException, InvocationTargetException {
+            throws NoSuchMethodException, IllegalAccessException, InvocationTargetException, InstantiationException {
         this.paramName = paramName;
         this.isRequired = isRequired;
         this.paramClass = paramClass;

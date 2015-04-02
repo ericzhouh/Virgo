@@ -1,11 +1,34 @@
 package com.winterfarmer.virgo.restapi.core.param;
 
+import com.winterfarmer.virgo.restapi.core.exception.ParamSpecException;
 import org.apache.commons.lang3.StringUtils;
 
 /**
  * Created by yangtianhang on 15-1-9.
  */
 public abstract class TextParam extends AbstractParamSpec<String> {
+    protected final int minLength;
+    protected final int maxLength;
+
+    public TextParam(String lengthSpecValue) {
+        String[] split = StringUtils.split(lengthSpecValue);
+        this.minLength = Integer.parseInt(StringUtils.trim(split[0]));
+        this.maxLength = Integer.parseInt(StringUtils.trim(split[1]));
+        checkSpecLength(minLength, maxLength);
+    }
+
+    public TextParam(int minLength, int maxLength) {
+        this.minLength = minLength;
+        this.maxLength = maxLength;
+        checkSpecLength(minLength, maxLength);
+    }
+
+    private static void checkSpecLength(int minLength, int maxLength) {
+        if (minLength < 0 || minLength > maxLength) {
+            throw new ParamSpecException("Invalid StringParam length limit,  minLength:" + minLength + ", maxLength:" + maxLength);
+        }
+    }
+
     @Override
     public boolean isCompatible(Class<?> clazz) {
         return clazz == String.class;
@@ -16,23 +39,10 @@ public abstract class TextParam extends AbstractParamSpec<String> {
         return strParam;
     }
 
-    //    @Override
-//    protected boolean isValidSpecValue(String specValue) {
-//        specValue = StringUtils.trim(specValue);
-//        String[] strings = specValue.split("~");
-//        try {
-//            Integer.parseInt(StringUtils.trim(strings[0]));
-//            Integer.parseInt(StringUtils.trim(strings[1]));
-//            return true;
-//        } catch (Exception e) {
-//            return false;
-//        }
-//    }
-
     protected static int[] parseLengthRange(String specValue) {
         String lengthRangeSpec = StringUtils.trim(specValue.split(",")[0]);
         String[] lengthRangeStrs = StringUtils.split(lengthRangeSpec, "~");
-        return new int[] {Integer.parseInt(lengthRangeStrs[0]), Integer.parseInt(lengthRangeStrs[1])};
+        return new int[]{Integer.parseInt(lengthRangeStrs[0]), Integer.parseInt(lengthRangeStrs[1])};
     }
 
     protected static String parseExt(String specValue) {

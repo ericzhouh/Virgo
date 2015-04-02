@@ -13,7 +13,7 @@ import java.lang.annotation.Target;
 public @interface ParamSpec {
     public boolean isRequired();
 
-    public String desc();
+    public String desc() default "";
 
     public String spec() default "";
 }

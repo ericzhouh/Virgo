@@ -63,8 +63,4 @@ public class DoubleParam extends NumericParam<Double> {
     protected int compare(Double a, Double b) {
         return a.equals(b) ? 0 : (a < b ? -1 : 1);
     }
-
-    public static DoubleParam instanceOf(String specValue) {
-        return new DoubleParam(specValue);
-    }
 }

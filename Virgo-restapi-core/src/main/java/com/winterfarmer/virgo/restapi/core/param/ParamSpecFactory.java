@@ -1,11 +1,13 @@
 package com.winterfarmer.virgo.restapi.core.param;
 
 import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.ImmutableSet;
 import com.google.common.reflect.ClassPath;
 import com.winterfarmer.virgo.log.VirgoLogger;
 import org.apache.commons.lang3.StringUtils;
 
 import java.io.IOException;
+import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
@@ -24,16 +26,16 @@ public class ParamSpecFactory {
     private final static Package PARAM_PACKAGE = ParamSpecFactory.class.getPackage();
     private final static ParamSpecFactory paramSpecFactory = new ParamSpecFactory();
 
-    private final ImmutableMap<String, Method> instanceOfMethodMap;
+    private final ImmutableMap<String, Constructor> paramSpecMap;
 
     private ParamSpecFactory() {
-        final ClassLoader loader = Thread.currentThread().getContextClassLoader();
-        ImmutableMap.Builder<String, Method> instanceOfMapBuilder = ImmutableMap.builder();
+        ImmutableMap.Builder<String, Constructor> paramSpecMapBuilder = ImmutableMap.builder();
 
         try {
-            for (final ClassPath.ClassInfo info : ClassPath.from(loader).getTopLevelClasses(PARAM_PACKAGE.getName())) {
-                Class<?> clazz = Class.forName(info.getName());
-                putIfParamSpec(clazz, instanceOfMapBuilder);
+            for (final ClassPath.ClassInfo classInfo : getParamSpecClassInfos()) {
+                System.out.println(classInfo.getName());
+                Class<?> clazz = Class.forName(classInfo.getName());
+                putIfParamSpec(clazz, paramSpecMapBuilder);
             }
         } catch (IOException e) {
             VirgoLogger.fatal(e, e.getMessage());
@@ -47,16 +49,22 @@ public class ParamSpecFactory {
             VirgoLogger.fatal(e, e.getMessage());
         }
 
-        instanceOfMethodMap = instanceOfMapBuilder.build();
+        paramSpecMap = paramSpecMapBuilder.build();
     }
 
-    private void putIfParamSpec(Class<?> clazz, ImmutableMap.Builder<String, Method> instanceOfMapBuilder) throws NoSuchMethodException, InvocationTargetException, IllegalAccessException {
+    private ImmutableSet<ClassPath.ClassInfo> getParamSpecClassInfos() throws IOException {
+        final ClassLoader loader = Thread.currentThread().getContextClassLoader();
+        // Param Spec Classes is in package 'PARAM_PACKAGE', so we scan it
+        return ClassPath.from(loader).getTopLevelClasses(PARAM_PACKAGE.getName());
+    }
+
+    private void putIfParamSpec(Class<?> clazz, ImmutableMap.Builder<String, Constructor> paramSpecMapBuilder) throws NoSuchMethodException, InvocationTargetException, IllegalAccessException {
         if (isParamSpecClass(clazz)) {
             Method specNameMethod = checkAndGetSpecNameMethod(clazz);
             String specName = (String) specNameMethod.invoke(null);
 
-            Method instanceOfMethod = checkAndGetInstanceOfMethod(clazz);
-            instanceOfMapBuilder.put(StringUtils.lowerCase(specName), instanceOfMethod);
+            Constructor constructor = checkAndGetConstructor(clazz);
+            paramSpecMapBuilder.put(StringUtils.lowerCase(specName), constructor);
         }
     }
 
@@ -78,8 +86,8 @@ public class ParamSpecFactory {
         return AbstractParamSpec.class.isAssignableFrom(clazz) || isSubclassOfAbstractParamSpec(clazz.getSuperclass());
     }
 
-    private Method checkAndGetInstanceOfMethod(Class<?> clazz) throws NoSuchMethodException {
-        return checkAndGetMethod(clazz, AbstractParamSpec.class, "instanceOf", String.class);
+    private Constructor<?> checkAndGetConstructor(Class<?> clazz) throws NoSuchMethodException {
+        return clazz.getConstructor(String.class);
     }
 
     private Method checkAndGetSpecNameMethod(Class<?> clazz) throws NoSuchMethodException {
@@ -96,14 +104,14 @@ public class ParamSpecFactory {
         return specNameMethod;
     }
 
-    public static AbstractParamSpec<?> getParamSpec(String strSpec) throws NoSuchMethodException, InvocationTargetException, IllegalAccessException {
+    public static AbstractParamSpec<?> getParamSpec(String strSpec) throws NoSuchMethodException, IllegalAccessException, InvocationTargetException, InstantiationException {
         String[] specNameAndValue = AbstractParamSpec.splitSpecNameAndValue(strSpec);
 
-        Method instanceOfMethod = paramSpecFactory.instanceOfMethodMap.get(specNameAndValue[0]);
-        if (instanceOfMethod == null) {
+        Constructor paramSpecConstructor = paramSpecFactory.paramSpecMap.get(specNameAndValue[0]);
+        if (paramSpecConstructor == null) {
             throw new NoSuchMethodException("No param spec for [" + strSpec + "].");
         }
 
-        return (AbstractParamSpec<?>) instanceOfMethod.invoke(null, specNameAndValue[1]);
+        return (AbstractParamSpec<?>) paramSpecConstructor.newInstance(specNameAndValue[1]);
     }
 }
