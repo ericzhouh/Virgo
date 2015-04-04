@@ -33,20 +33,12 @@ public class ParamSpecFactory {
 
         try {
             for (final ClassPath.ClassInfo classInfo : getParamSpecClassInfos()) {
-                System.out.println(classInfo.getName());
+                VirgoLogger.info("load param spec: {}", classInfo.getSimpleName());
                 Class<?> clazz = Class.forName(classInfo.getName());
                 putIfParamSpec(clazz, paramSpecMapBuilder);
             }
-        } catch (IOException e) {
-            VirgoLogger.fatal(e, e.getMessage());
-        } catch (NoSuchMethodException e) {
-            VirgoLogger.fatal(e, e.getMessage());
-        } catch (InvocationTargetException e) {
-            VirgoLogger.fatal(e, e.getMessage());
-        } catch (IllegalAccessException e) {
-            VirgoLogger.fatal(e, e.getMessage());
-        } catch (ClassNotFoundException e) {
-            VirgoLogger.fatal(e, e.getMessage());
+        } catch (Exception e) {
+            VirgoLogger.fatal("Init param spec factory failed.", e);
         }
 
         paramSpecMap = paramSpecMapBuilder.build();
@@ -112,6 +104,11 @@ public class ParamSpecFactory {
             throw new NoSuchMethodException("No param spec for [" + strSpec + "].");
         }
 
-        return (AbstractParamSpec<?>) paramSpecConstructor.newInstance(specNameAndValue[1]);
+        try {
+            return (AbstractParamSpec<?>) paramSpecConstructor.newInstance(specNameAndValue[1]);
+        } catch (Exception e) {
+            VirgoLogger.warn(e, "getParamSpec for %s failed.", strSpec);
+            throw new RuntimeException("getParamSpec for " + strSpec + " failed.");
+        }
     }
 }

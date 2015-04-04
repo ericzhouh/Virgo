@@ -6,7 +6,7 @@ import java.text.DecimalFormat;
  * Created by yangtianhang on 15-1-9.
  */
 public class DoubleParam extends NumericParam<Double> {
-    private DoubleParam(String specValue) {
+    public DoubleParam(String specValue) {
         super(specValue);
     }
 

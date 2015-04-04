@@ -7,7 +7,7 @@ import com.winterfarmer.virgo.restapi.core.exception.VirgoRestException;
  * Created by yangtianhang on 15-1-24.
  */
 public @interface RestApiInfo {
-    String desc();
+    String desc() default "";
 
     Protocol protocol() default Protocol.HTTPS;
 

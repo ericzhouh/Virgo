@@ -7,11 +7,13 @@ import org.apache.commons.lang3.StringUtils;
  * Created by yangtianhang on 15-1-9.
  */
 public abstract class TextParam extends AbstractParamSpec<String> {
+    public static final String SEPARATOR = "~";
+
     protected final int minLength;
     protected final int maxLength;
 
     public TextParam(String lengthSpecValue) {
-        String[] split = StringUtils.split(lengthSpecValue);
+        String[] split = StringUtils.split(lengthSpecValue, SEPARATOR);
         this.minLength = Integer.parseInt(StringUtils.trim(split[0]));
         this.maxLength = Integer.parseInt(StringUtils.trim(split[1]));
         checkSpecLength(minLength, maxLength);
@@ -41,7 +43,7 @@ public abstract class TextParam extends AbstractParamSpec<String> {
 
     protected static int[] parseLengthRange(String specValue) {
         String lengthRangeSpec = StringUtils.trim(specValue.split(",")[0]);
-        String[] lengthRangeStrs = StringUtils.split(lengthRangeSpec, "~");
+        String[] lengthRangeStrs = StringUtils.split(lengthRangeSpec, SEPARATOR);
         return new int[]{Integer.parseInt(lengthRangeStrs[0]), Integer.parseInt(lengthRangeStrs[1])};
     }
 
@@ -50,14 +52,14 @@ public abstract class TextParam extends AbstractParamSpec<String> {
     }
 
     protected static String createSpecValue(int minLength, int maxLength) {
-        return minLength + "~" + maxLength;
+        return minLength + SEPARATOR + maxLength;
     }
 
     protected static String createSpecValue(int minLength, int maxLength, String ext) {
         if (StringUtils.isEmpty(ext)) {
-            return minLength + "~" + maxLength;
+            return minLength + SEPARATOR + maxLength;
         } else {
-            return minLength + "~" + maxLength + ", " + ext;
+            return minLength + SEPARATOR + maxLength + ", " + ext;
         }
     }
 }

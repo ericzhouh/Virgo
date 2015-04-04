@@ -5,7 +5,7 @@ package com.winterfarmer.virgo.restapi.core.param;
  * Created by yangtianhang on 15-1-9.
  */
 public class UnicodeStringParam extends TextParam {
-    UnicodeStringParam(String specValue) {
+    public UnicodeStringParam(String specValue) {
         super(specValue);
     }
 
@@ -67,4 +67,9 @@ public class UnicodeStringParam extends TextParam {
     public String getValue() {
         return null;
     }
+
+    public static String specName() {
+        return "UnicodeString";
+    }
+
 }

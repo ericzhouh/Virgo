@@ -73,7 +73,14 @@ public class ParamValidator {
 
     private void validate(List<String> values, String path) {
         for (String value : values) {
-            if (!paramSpec.isValid(value)) {
+            boolean isValid;
+            try {
+                isValid = paramSpec.isValid(value);
+            } catch (Exception e) {
+                throw new VirgoRestException(RestExceptionFactor.INVALID_PARAM, invalidParamMsg, path);
+            }
+            
+            if (!isValid) {
                 throw new VirgoRestException(RestExceptionFactor.INVALID_PARAM, invalidParamMsg, path);
             }
         }

@@ -1,5 +1,6 @@
 package org.glassfish.jersey.server.spring;
 
+import com.winterfarmer.virgo.restapi.core.filter.ApplicationContextHolder;
 import org.glassfish.hk2.api.DynamicConfiguration;
 import org.glassfish.hk2.api.Factory;
 import org.glassfish.hk2.api.ServiceLocator;
@@ -62,13 +63,13 @@ public class ResourceBeanSpringComponentProvider implements ComponentProvider {
 
         // register Spring @Autowired annotation handler with HK2 ServiceLocator
         ServiceLocatorUtilities.addOneConstant(locator, new AutowiredInjectResolver(ctx));
-//        ServiceLocatorUtilities.addOneConstant(locator, new ResourceInjectResolver(ctx));
+        ServiceLocatorUtilities.addOneConstant(locator, new ResourceInjectResolver(ctx));
         ServiceLocatorUtilities.addOneConstant(locator, ctx, "SpringContext", ApplicationContext.class);
         LOGGER.config(LocalizationMessages.SPRING_COMPONENT_PROVIDER_INITIALIZED());
 
 
 //        filter是new的spring无法注入，需要在filter的构造函数里对需要的bean赋值，也行有更好的实现方式
-//        ApplicationContextHolder.setApplicatioinContext(ctx);
+        ApplicationContextHolder.setApplicatioinContext(ctx);
     }
 
     // detect JAX-RS classes that are also Spring @Components.

@@ -22,16 +22,12 @@ public class AuthDynamicFilter implements DynamicFeature {
             AuthPolicy authPolicy = restApiInfo.authPolicy();
             switch (authPolicy) {
                 case OAUTH:
-                    registerOAuthPolicy(context);
+                    context.register(new OAuthDynamicFilter());
                     return;
                 case PUBLIC:
                 default:
                     return;
             }
         }
-    }
-
-    private void registerOAuthPolicy(FeatureContext context) {
-        context.register(new OAuthDynamicFilter());
     }
 }

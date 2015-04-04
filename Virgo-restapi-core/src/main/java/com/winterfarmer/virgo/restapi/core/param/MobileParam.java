@@ -19,6 +19,10 @@ public class MobileParam extends AbstractParamSpec<String> {
         return mobileParam.getSpec();
     }
 
+    public MobileParam(String dumy) {
+        this();
+    }
+
     private MobileParam() {
         this.specValue = "";
         this.spec = createSpec(getName());
@@ -73,5 +77,9 @@ public class MobileParam extends AbstractParamSpec<String> {
     @Override
     public String getValue() {
         return specValue;
+    }
+
+    public static String specName() {
+        return "Mobile";
     }
 }

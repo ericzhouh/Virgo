@@ -95,4 +95,8 @@ public class StringParam extends TextParam {
     public String getValue() {
         return specValue;
     }
+
+    public static String specName() {
+        return "String";
+    }
 }
