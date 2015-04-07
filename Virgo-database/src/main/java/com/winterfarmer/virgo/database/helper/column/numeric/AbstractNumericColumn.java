@@ -76,9 +76,4 @@ public abstract class AbstractNumericColumn extends Column {
     public boolean isZeroFill() {
         return isZeroFill;
     }
-
-    @Override
-    public String toString() {
-        return getName();
-    }
 }

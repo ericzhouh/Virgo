@@ -73,6 +73,11 @@ public abstract class Column {
         return name;
     }
 
+    @Override
+    public String toString() {
+        return name;
+    }
+
     public boolean isAllowNull() {
         return allowNull;
     }
