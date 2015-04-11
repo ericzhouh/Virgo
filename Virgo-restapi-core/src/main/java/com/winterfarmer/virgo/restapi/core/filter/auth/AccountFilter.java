@@ -33,7 +33,7 @@ public abstract class AccountFilter {
             throw new VirgoRestException(RestExceptionFactor.MISSING_ACCESS_TOKEN);
         }
 
-        AccessToken accessToken = accountService.getAccessTokenByTokenString(accessTokenString);
+        AccessToken accessToken = accountService.getAccessToken(accessTokenString);
 
         if (accessToken == null || !StringUtils.equals(accessToken.getToken(), accessTokenString)) {
             throw new VirgoRestException(RestExceptionFactor.INVALID_ACCESS_TOKEN);

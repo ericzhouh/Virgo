@@ -1,9 +1,11 @@
 package com.winterfarmer.virgo.account.service;
 
 import com.winterfarmer.virgo.account.dao.AccessTokenDao;
+import com.winterfarmer.virgo.account.dao.AccountRedisDao;
 import com.winterfarmer.virgo.account.dao.OpenPlatformAccountDao;
 import com.winterfarmer.virgo.account.dao.UserDao;
 import com.winterfarmer.virgo.account.model.*;
+import com.winterfarmer.virgo.base.Exception.MobileNumberException;
 import com.winterfarmer.virgo.base.service.IdService;
 import com.winterfarmer.virgo.common.definition.CommonState;
 import com.winterfarmer.virgo.common.util.AccountUtil;
@@ -38,10 +40,14 @@ public class AccountServiceImpl implements AccountService {
     @Resource(name = "openPlatformAccountMysqlDao")
     OpenPlatformAccountDao openPlatformAccountDao;
 
+    @Resource(name = "accountRedisDao")
+    AccountRedisDao accountRedisDao;
+
     private SecureRandom secureRandom;
 
     private static final String SECURE_RANDOM_ALGORITHM = "SHA1PRNG";
     private static final int SECURE_RANDOM_BYTES_LENGTH = 32;
+    private static final int CACHE_SIGNUP_MOBILE_REQUEST_EXPIRE_S = 60; // seconds
 
     @PostConstruct
     void init() throws NoSuchAlgorithmException {
@@ -55,8 +61,12 @@ public class AccountServiceImpl implements AccountService {
 
     @Override
     @Transactional(rollbackFor = Exception.class, propagation = Propagation.REQUIRED)
-    public AccessToken signUpByMobile(String mobileNumber, String password, String nickName, String openToken, int appKey) {
+    public AccessToken signUpByMobile(String mobileNumber, String password, String nickName, String openToken, int appKey) throws MobileNumberException {
         String formattedMobileNumber = AccountUtil.formatMobile(mobileNumber);
+        if (formattedMobileNumber == null) {
+            throw new MobileNumberException("Invalid mobile number: " + mobileNumber);
+        }
+
         long userId = signUp(nickName, password);
         AccessToken accessToken = generateToken(userId, appKey);
         insertAccessToken(accessToken);
@@ -66,7 +76,7 @@ public class AccountServiceImpl implements AccountService {
     }
 
     @Override
-    public AccessToken getAccessTokenByTokenString(String tokenString) {
+    public AccessToken getAccessToken(String tokenString) {
         if (!isValidTokenPattern(tokenString)) {
             return null;
         }
@@ -77,12 +87,37 @@ public class AccountServiceImpl implements AccountService {
             return null;
         }
 
-        AccessToken accessToken = accessTokenDao.retrieveAccessToken(userId, appKey);
-        if (StringUtils.equals(accessToken.getToken(), tokenString)) {
+        AccessToken accessToken = getAccessToken(userId, appKey);
+        if (accessToken != null && StringUtils.equals(accessToken.getToken(), tokenString)) {
             return accessToken;
         } else {
             return null;
         }
+    }
+
+    @Override
+    public AccessToken getAccessToken(long userId, int appKey) {
+        AccessToken accessToken = accountRedisDao.getAccessToken(userId, appKey);
+        if (accessToken == null) {
+            accessToken = accessTokenDao.retrieveAccessToken(userId, appKey);
+            if (accessToken != null && !accessToken.isExpire()) {
+                accountRedisDao.insertAccessToken(accessToken);
+            } else {
+                accessToken = null;
+            }
+        }
+
+        return accessToken;
+    }
+
+    @Override
+    public void cacheSentSignUpMobileVerificationCode(String mobileNumber) {
+        accountRedisDao.cacheSignUpMobileRequest(mobileNumber, CACHE_SIGNUP_MOBILE_REQUEST_EXPIRE_S);
+    }
+
+    @Override
+    public boolean isRequestSignUpMobileVerificationCodeTooFrequently(String mobileNumber) {
+        return accountRedisDao.getSignUpMobileRequest(mobileNumber) != null;
     }
 
     private boolean isValidTokenPattern(String tokenString) {

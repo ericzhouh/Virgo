@@ -24,11 +24,11 @@ public class AccountUtil {
             phoneNumber = phoneNumberUtil.parse(mobile, "CN");
             mobileValid = phoneNumberUtil.isValidNumber(phoneNumber);
         } catch (NumberParseException e) {
-            throw new RuntimeException("invalid mobile number: " + mobile);
+            return null;
         }
 
         if (!mobileValid || phoneNumber == null) {
-            throw new RuntimeException("invalid mobile number: " + mobile);
+            return null;
         }
 
         String formatPhoneNumber = phoneNumberUtil.format(phoneNumber, PhoneNumberUtil.PhoneNumberFormat.E164);
@@ -48,19 +48,27 @@ public class AccountUtil {
         return new String(encodedKey);
     }
 
-    public static boolean checkMobileCode(String mobilePhone, long code) {
+    public static boolean checkMobileCode(String mobilePhone, int code) {
         String secret = generateMobileSecret(mobilePhone);
         Base32 codec = new Base32();
         byte[] decodedKey = codec.decode(secret);
         int window = 20; //3分钟
         long currentInterval = getCurrentInterval();
         for (int i = -window; i <= window; ++i) {
-            long hash = TOTPUtil.generateTOTP(decodedKey, currentInterval + i, PASS_CODE_LENGTH, CRYPTO);
+            int hash = TOTPUtil.generateTOTP(decodedKey, currentInterval + i, PASS_CODE_LENGTH, CRYPTO);
             if (hash == code) {
                 return true;
             }
         }
         return false;
+    }
+
+    public static int generateMobileCode(String mobilePhone) {
+        String secret = generateMobileSecret(mobilePhone);
+        Base32 codec = new Base32();
+        byte[] decodedKey = codec.decode(secret);
+        long currentInterval = getCurrentInterval();
+        return TOTPUtil.generateTOTP(decodedKey, currentInterval, PASS_CODE_LENGTH, CRYPTO);
     }
 
     private static long getCurrentInterval() {
@@ -69,6 +77,8 @@ public class AccountUtil {
     }
 
     public static void main(String[] args) {
+
+        System.out.println(generateMobileSecret("13269937228"));
         System.out.println(formatMobile("+8613269037228"));
     }
 }

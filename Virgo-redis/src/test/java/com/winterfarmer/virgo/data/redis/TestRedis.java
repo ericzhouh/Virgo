@@ -14,6 +14,7 @@ import redis.clients.jedis.JedisCommands;
 import redis.clients.jedis.MultiKeyCommands;
 import redis.clients.jedis.Tuple;
 
+import java.io.Serializable;
 import java.lang.reflect.Method;
 import java.util.List;
 import java.util.Map;
@@ -45,6 +46,29 @@ public class TestRedis {
 
     private static String randomKey() {
         return "key." + RandomStringUtils.randomAlphabetic(5);
+    }
+
+
+    static class ThisJson implements Serializable {
+        private static final long serialVersionUID = -4246880037612823262L;
+        private String name;
+        private int num;
+
+        public String getName() {
+            return name;
+        }
+
+        public void setName(String name) {
+            this.name = name;
+        }
+
+        public int getNum() {
+            return num;
+        }
+
+        public void setNum(int num) {
+            this.num = num;
+        }
     }
 
     // test redis.clients.jedis.JedisCommands: get(class java.lang.String)

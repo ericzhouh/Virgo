@@ -30,5 +30,9 @@
             <groupId>${project.groupId}</groupId>
             <artifactId>Virgo-base</artifactId>
         </dependency>
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>Virgo-redis</artifactId>
+        </dependency>
     </dependencies>
 </project>

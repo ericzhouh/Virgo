@@ -2,9 +2,16 @@ package com.winterfarmer.virgo.restapi.v1.account;
 
 import com.winterfarmer.virgo.account.model.AccessToken;
 import com.winterfarmer.virgo.account.service.AccountService;
+import com.winterfarmer.virgo.base.Exception.MobileNumberException;
+import com.winterfarmer.virgo.base.model.CommonResult;
+import com.winterfarmer.virgo.base.service.SmsService;
+import com.winterfarmer.virgo.common.util.AccountUtil;
 import com.winterfarmer.virgo.log.VirgoLogger;
 import com.winterfarmer.virgo.restapi.core.annotation.ParamSpec;
 import com.winterfarmer.virgo.restapi.core.annotation.RestApiInfo;
+import com.winterfarmer.virgo.restapi.core.exception.RestExceptionFactor;
+import com.winterfarmer.virgo.restapi.core.exception.VirgoRestException;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
@@ -20,6 +27,11 @@ public class AccountResource {
     @Resource(name = "accountService")
     AccountService accountService;
 
+    @Resource(name = "smsService")
+    SmsService smsService;
+
+    private static final String MOBILE_VERIFICATION_CODE_KEY = "mobile_verification_code";
+
     @Path("test.json")
     @GET
     @Produces(MediaType.TEXT_PLAIN)
@@ -31,11 +43,41 @@ public class AccountResource {
         return "yes";
     }
 
-    @Path("access_token.json")
-    @POST
-    @RestApiInfo(authPolicy = RestApiInfo.AuthPolicy.PUBLIC)
+    @Path("mobile_verification_code.json")
+    @GET
+    @RestApiInfo(
+            desc = "根据手机号发送验证码",
+            authPolicy = RestApiInfo.AuthPolicy.PUBLIC,
+            errors = {RestExceptionFactor.INVALID_MOBILE_NUMBER,
+                    RestExceptionFactor.REQUEST_SIGN_UP_MOBILE_VERIFICATION_CODE_TOO_FREQUENTLY}
+    )
     @Produces(MediaType.APPLICATION_JSON)
-    public AccessToken signUp(
+    public CommonResult getMobileVerificationCode(
+            @QueryParam("mobile_number")
+            @ParamSpec(isRequired = true, spec = "mobile", desc = "")
+            String mobileNumber) {
+        mobileNumber = checkAndStandardizeMobileNumber(mobileNumber);
+
+        if (accountService.isRequestSignUpMobileVerificationCodeTooFrequently(mobileNumber)) {
+            throw new VirgoRestException(RestExceptionFactor.REQUEST_SIGN_UP_MOBILE_VERIFICATION_CODE_TOO_FREQUENTLY);
+        }
+
+        smsService.sendSignUpMobileVerificationCode(mobileNumber, AccountUtil.generateMobileCode(mobileNumber));
+        accountService.cacheSentSignUpMobileVerificationCode(mobileNumber);
+
+        return CommonResult.isSuccessfulCommonResult(true);
+    }
+
+    @Path("mobile_access_token.json")
+    @POST
+    @RestApiInfo(
+            desc = "注册并获取access token",
+            authPolicy = RestApiInfo.AuthPolicy.PUBLIC,
+            errors = {RestExceptionFactor.INVALID_MOBILE_NUMBER,
+                    RestExceptionFactor.INVALID_MOBILE_VERIFICATION_CODE}
+    )
+    @Produces(MediaType.APPLICATION_JSON)
+    public AccessToken signUpByMobile(
             @FormParam("mobile_number")
             @ParamSpec(isRequired = true, spec = "mobile", desc = "")
             String mobileNumber,
@@ -46,29 +88,56 @@ public class AccountResource {
             @ParamSpec(isRequired = true, spec = "UnicodeString:2~10", desc = "")
             String nickName,
             @FormParam("open_token")
-            @ParamSpec(isRequired = false, spec = "UnicodeString:2~10", desc = "")
+            @ParamSpec(isRequired = true, spec = "UnicodeString:2~10", desc = "")
             String openToken,
             @FormParam("app_key")
-            @ParamSpec(isRequired = false, spec = "int:[1000,2000]", desc = "")
-            int appKey) {
-        return accountService.signUpByMobile(mobileNumber, password, nickName,
-                openToken, appKey);
+            @ParamSpec(isRequired = true, spec = "int:[1000,2000]", desc = "")
+            int appKey,
+            @FormParam("verification_code")
+            @ParamSpec(isRequired = true, spec = "int:[0,999999]", desc = "")
+            int verificationCode) {
+        mobileNumber = checkAndStandardizeMobileNumber(mobileNumber);
+        if (!AccountUtil.checkMobileCode(mobileNumber, verificationCode)) {
+            throw new VirgoRestException(RestExceptionFactor.INVALID_MOBILE_VERIFICATION_CODE);
+        }
+
+        try {
+            return accountService.signUpByMobile(mobileNumber, password, nickName,
+                    openToken, appKey);
+        } catch (MobileNumberException e) {
+            throw new VirgoRestException(RestExceptionFactor.INVALID_MOBILE_NUMBER);
+        }
     }
 
-//    @Path("access_token.json")
-//    @GET
-//    @Produces(MediaType.APPLICATION_JSON)
-//    @RestApiInfo()
-//    public AccessToken getAccessToken(
-//            @QueryParam("access_token")
-//            @ParamSpec(isRequired = true, spec = "String:36~36", desc = "")
-//            String accessTokenString
-//    ) {
-//        AccessToken accessToken = new AccessToken();
-//        accessToken.setAppKey(100);
-//        accessToken.setToken("00000");
-//        return accessToken;
-//    }
+    @Path("access_token.json")
+    @GET
+    @Produces(MediaType.APPLICATION_JSON)
+    @RestApiInfo(
+            desc = "获取access token",
+            authPolicy = RestApiInfo.AuthPolicy.PUBLIC,
+            errors = {RestExceptionFactor.INVALID_MOBILE_NUMBER,
+                    RestExceptionFactor.LACK_VALID_USER_ACCOUNT
+            }
+    )
+    public AccessToken getAccessToken(
+            @QueryParam("nick_name")
+            @ParamSpec(isRequired = false, spec = "UnicodeString:2~10", desc = "")
+            String nickName,
+            @QueryParam("mobile_number")
+            @ParamSpec(isRequired = false, spec = "mobile", desc = "")
+            String mobileNumber,
+            @FormParam("password")
+            @ParamSpec(isRequired = true, spec = "string:6~24", desc = "")
+            String password
+    ) {
+        if (StringUtils.isNotBlank(nickName)) {
+            return null;
+        } else if (StringUtils.isNotBlank(mobileNumber)) {
+            return null;
+        } else {
+            throw new VirgoRestException(RestExceptionFactor.LACK_VALID_USER_ACCOUNT);
+        }
+    }
 
     @Path("testing.json")
     @GET
@@ -80,5 +149,14 @@ public class AccountResource {
         accessToken.setAppKey(100);
         accessToken.setToken("00000");
         return accessToken;
+    }
+
+    private String checkAndStandardizeMobileNumber(String mobileNumber) {
+        mobileNumber = AccountUtil.formatMobile(mobileNumber);
+        if (mobileNumber == null) {
+            throw new VirgoRestException(RestExceptionFactor.INVALID_MOBILE_NUMBER);
+        } else {
+            return mobileNumber;
+        }
     }
 }

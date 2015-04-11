@@ -17,7 +17,7 @@ public @interface RestApiInfo {
 
     String[] extraParamDesc() default {};
 
-    String[] errors() default {};
+    RestExceptionFactor[] errors() default {};
 
     public static enum Protocol {
         HTTP, HTTPS

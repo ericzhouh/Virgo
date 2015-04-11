@@ -13,6 +13,10 @@ public enum RestExceptionFactor {
     MISSING_ACCESS_TOKEN(403, 4030000, "missing access token"),
     INVALID_ACCESS_TOKEN(403, 4030001, "invalid access token"),
     EXPIRED_ACCESS_TOKEN(403, 4030002, "expired access token"),
+    INVALID_MOBILE_NUMBER(404, 4040003, "invalid mobile number"),
+    REQUEST_SIGN_UP_MOBILE_VERIFICATION_CODE_TOO_FREQUENTLY(404, 4040004, "repeat sign up mobile verification code too frequently"),
+    INVALID_MOBILE_VERIFICATION_CODE(404, 4040005, "invalid mobile verification code"),
+    LACK_VALID_USER_ACCOUNT(404, 4040006, "lack valid user account"),
 
 
     INTERNAL_SERVER_ERROR(500, 500_000_001, "Internal Server Error"),;
