@@ -10,7 +10,7 @@ import redis.clients.jedis.MultiKeyCommands;
 /**
  * Created by yangtianhang on 15-4-7.
  */
-public abstract class Vedis implements
+public interface Vedis extends
         JedisWriteCommands, JedisReadCommands, JedisCommands,
         MultiKeyWriteCommands, MultiKeyReadCommands, MultiKeyCommands {
 }

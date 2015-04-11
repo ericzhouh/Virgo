@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:p="http://www.springframework.org/schema/p" xmlns:context="http://www.springframework.org/schema/context"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd">
+
+    <!-- 开启ignore-unresolvable＝true是为了防止其他spring配置文件开启了property-placeholder后导致其他的property configurer失效 -->
+    <context:property-placeholder location="classpath:redis.properties" ignore-unresolvable="true"/>
+
+    <bean class="com.winterfarmer.virgo.data.redis.VedisFactory"/>
+
+    <!--<context:property-placeholder location="classpath:redis.properties" ignore-unresolvable="true"/>-->
+    <bean id="jedisPoolConfig" class="redis.clients.jedis.JedisPoolConfig"
+          p:maxTotal="${redis.pool.maxTotal}"
+          p:maxIdle="${redis.pool.maxIdle}"
+          p:maxWaitMillis="${redis.pool.maxWaitMillis}"
+          p:testOnBorrow="${redis.pool.testOnBorrow}"/>
+
+    <bean id="testJedisPoolFactory" class="com.winterfarmer.virgo.data.redis.JedisPoolFactory">
+        <constructor-arg index="0" ref="jedisPoolConfig"/>
+        <constructor-arg index="1" value="${redis.biz.test}"/>
+        <constructor-arg index="2" value="1000"/>
+        <constructor-arg index="3" value=""/>
+    </bean>
+
+    <bean id="testVedisProxy" class="com.winterfarmer.virgo.data.redis.VedisProxy">
+        <constructor-arg ref="testJedisPoolFactory"/>
+    </bean>
+
+    <bean id="testVedis" factory-bean="testVedisProxy" factory-method="newVedis"/>
+</beans>
