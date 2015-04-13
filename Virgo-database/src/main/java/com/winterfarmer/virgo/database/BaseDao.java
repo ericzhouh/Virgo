@@ -142,6 +142,10 @@ public class BaseDao {
         return "UPDATE " + tableName + " set " + columnNames;
     }
 
+    protected static String deleletSql(String tableName) {
+        return "DELETE from " + tableName + " ";
+    }
+
     protected static String selectSql(String tableName) {
         return "SELECT * FROM " + tableName;
     }
@@ -175,5 +179,14 @@ public class BaseDao {
         public String build() {
             return " where " + this.whereClause;
         }
+
+        @Override
+        public String toString() {
+            return build();
+        }
+    }
+
+    protected static WhereClauseBuilder where(String firstSubClause) {
+        return new WhereClauseBuilder(firstSubClause);
     }
 }

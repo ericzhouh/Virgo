@@ -13,4 +13,10 @@ public interface AccountRedisDao {
     void cacheSignUpMobileRequest(String mobileNumber, int expireS);
 
     Object getSignUpMobileRequest(String mobileNumber);
+
+    void deleteAccessToken(long userId, int appKey);
+
+    Long getUserIdByMobile(String mobileNumber);
+
+    void setMobileUserId(String mobileNumber, long userId);
 }

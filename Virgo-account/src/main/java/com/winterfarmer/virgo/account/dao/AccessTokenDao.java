@@ -11,4 +11,8 @@ public interface AccessTokenDao {
     public boolean createAccessToken(long userId, int appKey, String accessToken, long expireAt);
 
     public boolean updateAccessToken(long userId, int appKey, String accessToken, long expireAt);
+
+    public boolean deleteAccessToken(long userId);
+
+    public boolean deleteAccessToken(long userId, int appKey);
 }

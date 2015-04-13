@@ -84,4 +84,19 @@ public class AccessTokenMysqlDaoImpl extends BaseDao implements AccessTokenDao {
     public boolean updateAccessToken(long userId, int appKey, String accessToken, long expireAt) {
         return update(update_access_token_sql, accessToken, new Timestamp(expireAt), userId, appKey) > 0;
     }
+
+    private static final String delete_access_token_sql = deleletSql(ACCESS_TOKEN_TABLE_NAME) + where(userId.eqWhich());
+
+    @Override
+    public boolean deleteAccessToken(long userId) {
+        return update(delete_access_token_sql, userId) > 0;
+    }
+
+    private static final String delete_app_access_token_sql = deleletSql(ACCESS_TOKEN_TABLE_NAME) +
+            where(userId.eqWhich()).and(appKey.eqWhich());
+
+    @Override
+    public boolean deleteAccessToken(long userId, int appKey) {
+        return update(delete_access_token_sql, userId, appKey) > 0;
+    }
 }

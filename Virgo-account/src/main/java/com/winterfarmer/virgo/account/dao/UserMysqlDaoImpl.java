@@ -69,8 +69,12 @@ public class UserMysqlDaoImpl extends BaseDao implements UserDao {
             "select * from " + USER_TABLE_NAME + " where " + userId.eqWhich() + ";";
 
     @Override
-    public User retrieveUser(long userId) {
-        return queryForObject(getReadJdbcTemplate(), retrieve_user_sql, userRowMapper, userId);
+    public User retrieveUser(long userId, boolean fromWrite) {
+        if (fromWrite) {
+            return queryForObject(getWriteJdbcTemplate(), retrieve_user_sql, userRowMapper, userId);
+        } else {
+            return queryForObject(getReadJdbcTemplate(), retrieve_user_sql, userRowMapper, userId);
+        }
     }
 
     private static final String insert_user_sql =

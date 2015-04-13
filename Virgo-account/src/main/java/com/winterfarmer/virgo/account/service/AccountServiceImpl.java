@@ -6,6 +6,8 @@ import com.winterfarmer.virgo.account.dao.OpenPlatformAccountDao;
 import com.winterfarmer.virgo.account.dao.UserDao;
 import com.winterfarmer.virgo.account.model.*;
 import com.winterfarmer.virgo.base.Exception.MobileNumberException;
+import com.winterfarmer.virgo.base.Exception.UnexpectedVirgoException;
+import com.winterfarmer.virgo.base.Exception.VirgoException;
 import com.winterfarmer.virgo.base.service.IdService;
 import com.winterfarmer.virgo.common.definition.CommonState;
 import com.winterfarmer.virgo.common.util.AccountUtil;
@@ -60,6 +62,16 @@ public class AccountServiceImpl implements AccountService {
     }
 
     @Override
+    public User getUser(long userId) {
+        return userDao.retrieveUser(userId, false);
+    }
+
+    @Override
+    public String getHashedPassword(String password, String salt) {
+        return shaPassword(password, salt);
+    }
+
+    @Override
     @Transactional(rollbackFor = Exception.class, propagation = Propagation.REQUIRED)
     public AccessToken signUpByMobile(String mobileNumber, String password, String nickName, String openToken, int appKey) throws MobileNumberException {
         String formattedMobileNumber = AccountUtil.formatMobile(mobileNumber);
@@ -68,8 +80,7 @@ public class AccountServiceImpl implements AccountService {
         }
 
         long userId = signUp(nickName, password);
-        AccessToken accessToken = generateToken(userId, appKey);
-        insertAccessToken(accessToken);
+        AccessToken accessToken = createAccessToken(userId, appKey);
         insertOpenPlatformAccount(userId, formattedMobileNumber, PlatformType.MOBILE, openToken);
 
         return accessToken;
@@ -111,6 +122,11 @@ public class AccountServiceImpl implements AccountService {
     }
 
     @Override
+    public OpenPlatformAccount getOpenPlatformAccount(String openId, PlatformType platformType) {
+        return openPlatformAccountDao.retrieveOpenPlatformAccount(openId, platformType);
+    }
+
+    @Override
     public void cacheSentSignUpMobileVerificationCode(String mobileNumber) {
         accountRedisDao.cacheSignUpMobileRequest(mobileNumber, CACHE_SIGNUP_MOBILE_REQUEST_EXPIRE_S);
     }
@@ -118,6 +134,61 @@ public class AccountServiceImpl implements AccountService {
     @Override
     public boolean isRequestSignUpMobileVerificationCodeTooFrequently(String mobileNumber) {
         return accountRedisDao.getSignUpMobileRequest(mobileNumber) != null;
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class, propagation = Propagation.REQUIRED)
+    public void resetPassword(User user, String password) throws UnexpectedVirgoException {
+        // 重设密码
+        String hashedPassword = getHashedPassword(password, user.getSalt());
+        user.setHashedPassword(hashedPassword);
+        if (!userDao.updateUser(user)) {
+            throw new UnexpectedVirgoException("update user(" + user.getUserId() + ")  failed: ");
+        }
+        // 删除所有相关token
+        accessTokenDao.deleteAccessToken(user.getUserId());
+        for (AppKey appKey : AppKey.values()) {
+            accountRedisDao.deleteAccessToken(user.getUserId(), appKey.getIndex());
+        }
+    }
+
+    @Override
+    public boolean deleteAccessToken(long userId, int appKey) {
+        accessTokenDao.deleteAccessToken(userId, appKey);
+        accountRedisDao.deleteAccessToken(userId, appKey);
+        return true;
+    }
+
+    @Override
+    public AccessToken createAccessToken(long userId, int appKey) {
+        AccessToken accessToken = generateToken(userId, appKey);
+        insertAccessToken(accessToken);
+        return accessToken;
+    }
+
+    @Override
+    public Long getUserId(String openId, PlatformType platformType) {
+        switch (platformType) {
+            case MOBILE:
+                return getUserIdByMobile(openId);
+            default:
+                return null;
+        }
+    }
+
+    private Long getUserIdByMobile(String mobile) {
+        Long userId = accountRedisDao.getUserIdByMobile(mobile);
+        if (userId != null) {
+            return userId;
+        }
+
+        OpenPlatformAccount openPlatformAccount = openPlatformAccountDao.retrieveOpenPlatformAccount(mobile, PlatformType.MOBILE);
+        if (openPlatformAccount != null) {
+            accountRedisDao.setMobileUserId(mobile, userId);
+            return userId;
+        }
+
+        return null;
     }
 
     private boolean isValidTokenPattern(String tokenString) {
@@ -145,6 +216,8 @@ public class AccountServiceImpl implements AccountService {
             VirgoLogger.error("Insert access token to db failed! userId:{}, appKey:{}", accessToken.getUserId(), accessToken.getAppKey());
             throw new RuntimeException("insert access token to db failed!");
         }
+
+        accountRedisDao.insertAccessToken(accessToken);
     }
 
     private void insertOpenPlatformAccount(long userId, String openId, PlatformType platformType, String openToken) {
@@ -159,7 +232,7 @@ public class AccountServiceImpl implements AccountService {
     private long signUp(String nickName, String password) {
         long userId = idService.getId();
         String salt = generateSalt();
-        String hashedPassword = shaPassword(password, salt);
+        String hashedPassword = getHashedPassword(password, salt);
 
         if (userDao.createUser(userId, nickName, hashedPassword, salt, AccountVersion.SALT_SHA256, null)) {
             return userId;

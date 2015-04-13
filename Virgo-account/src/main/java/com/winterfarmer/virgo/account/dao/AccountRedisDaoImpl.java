@@ -52,6 +52,22 @@ public class AccountRedisDaoImpl extends BaseRedisDao implements AccountRedisDao
         return vedis.get(getKey(SIGN_UP_VERIFICATION_CODE_REQUEST, mobileNumber));
     }
 
+    @Override
+    public void deleteAccessToken(long userId, int appKey) {
+        vedis.del(getAccessTokenKey(userId, appKey));
+    }
+
+    @Override
+    public Long getUserIdByMobile(String mobileNumber) {
+        String userIdStr = vedis.get(getKey(MOBILE_TO_USER_ID, mobileNumber));
+        return userIdStr == null ? null : Long.parseLong(userIdStr);
+    }
+
+    @Override
+    public void setMobileUserId(String mobileNumber, long userId) {
+        vedis.set(getKey(MOBILE_TO_USER_ID, mobileNumber), Long.toString(userId));
+    }
+
     private String getAccessTokenKey(long userId, int appKey) {
         return getKey(ACCOUNT_USER_ACCESS_TOKEN, getAccountSubKey(userId, appKey));
     }

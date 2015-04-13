@@ -24,9 +24,9 @@ import java.sql.SQLException;
 public class OpenPlatformAccountMysqlDaoImpl extends BaseDao implements OpenPlatformAccountDao {
     public static final String OPEN_PLATFORM_ACCOUNT_TABLE_NAME = "open_platform_account";
 
-    private static final BigintColumn userId = Columns.newUserIdColumn(false, false);
-    private static final TinyIntColumn platform = (TinyIntColumn) new TinyIntColumn("platform").setAllowNull(false).setComment("平台id");
     private static final VarcharColumn openId = (VarcharColumn) new VarcharColumn("open_id", 128).setAllowNull(false).setComment("第三方id");
+    private static final TinyIntColumn platform = (TinyIntColumn) new TinyIntColumn("platform").setAllowNull(false).setComment("平台id");
+    private static final BigintColumn userId = Columns.newUserIdColumn(false, false);
     private static final VarcharColumn openToken = (VarcharColumn) new VarcharColumn("open_token", 128).setAllowNull(false).setComment("第三方平台token");
     private static final TinyIntColumn state = Columns.newStateColumn(false);
     private static final TimeStampColumn createAt = Columns.newCreateAtColumn();
@@ -36,7 +36,7 @@ public class OpenPlatformAccountMysqlDaoImpl extends BaseDao implements OpenPlat
             addColumn(userId).addColumn(platform).addColumn(openId).
             addColumn(openToken).addColumn(state).addColumn(createAt).
             addColumn(extInfo).
-            setPrimaryKey(userId, platform).buildCreateDDL();
+            setPrimaryKey(openId, platform).buildCreateDDL();
 
     public void initTable(boolean dropBeforeCreate) {
         super.initTable(createDDL, BaseDao.dropDDL(OPEN_PLATFORM_ACCOUNT_TABLE_NAME), dropBeforeCreate);
@@ -68,10 +68,15 @@ public class OpenPlatformAccountMysqlDaoImpl extends BaseDao implements OpenPlat
     }
 
     private static final String retrieve_open_platform_account_sql =
-            selectSql(OPEN_PLATFORM_ACCOUNT_TABLE_NAME) + new WhereClauseBuilder(userId.eqWhich()).and(openId.eqWhich());
+            selectSql(OPEN_PLATFORM_ACCOUNT_TABLE_NAME) + new WhereClauseBuilder(openId.eqWhich()).and(platform.eqWhich());
 
     @Override
-    public OpenPlatformAccount retrieveOpenPlatformAccount(long userId, String openId) {
-        return queryForObject(getReadJdbcTemplate(), retrieve_open_platform_account_sql, openPlatformAccountRowMapper, userId, openId);
+    public OpenPlatformAccount retrieveOpenPlatformAccount(String openId, PlatformType platformType) {
+        return queryForObject(getReadJdbcTemplate(), retrieve_open_platform_account_sql, openPlatformAccountRowMapper, openId, platformType.getIndex());
     }
+
+    //    @Override
+//    public OpenPlatformAccount retrieveOpenPlatformAccount(long userId, String openId) {
+//        return queryForObject(getReadJdbcTemplate(), retrieve_open_platform_account_sql, openPlatformAccountRowMapper, userId, openId);
+//    }
 }

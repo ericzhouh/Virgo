@@ -13,6 +13,7 @@ public abstract class BaseRedisDao {
 
     protected static final int ACCOUNT_USER_ACCESS_TOKEN = 101;
     protected static final int SIGN_UP_VERIFICATION_CODE_REQUEST = 102;
+    protected static final int MOBILE_TO_USER_ID = 103;
 
     protected String getKey(int namespace, String key) {
         return namespace + "_" + key;

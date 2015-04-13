@@ -9,7 +9,7 @@ import java.util.Map;
  * Created by yangtianhang on 15-3-4.
  */
 public interface UserDao {
-    User retrieveUser(long userId);
+    User retrieveUser(long userId, boolean fromWrite);
 
     boolean createUser(long userId, String nickName, String hashedPassword, String salt, AccountVersion version, Map<String, Object> extInfo);
 

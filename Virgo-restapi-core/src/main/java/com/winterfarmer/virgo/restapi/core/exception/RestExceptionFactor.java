@@ -16,8 +16,9 @@ public enum RestExceptionFactor {
     INVALID_MOBILE_NUMBER(404, 4040003, "invalid mobile number"),
     REQUEST_SIGN_UP_MOBILE_VERIFICATION_CODE_TOO_FREQUENTLY(404, 4040004, "repeat sign up mobile verification code too frequently"),
     INVALID_MOBILE_VERIFICATION_CODE(404, 4040005, "invalid mobile verification code"),
-    LACK_VALID_USER_ACCOUNT(404, 4040006, "lack valid user account"),
-
+    INVALID_ID_OR_PASSWORD(404, 4040006, "invalid id or password"),
+    RESET_PASSWORD_FAILED(404, 4040007, "reset password failed"),
+    MOBILE_NUMBER_HAS_BEEN_REGISTERED(404, 4040007, "mobile number has been registered"),
 
     INTERNAL_SERVER_ERROR(500, 500_000_001, "Internal Server Error"),;
 
