@@ -143,13 +143,16 @@ public class VehicleResource extends BaseResource {
             @ParamSpec(isRequired = true, spec = LICENSE_PLATE_SPEC, desc = "车牌号")
             String licensePlate,
             @FormParam("vehicle_id_no")
-            @ParamSpec(isRequired = false, spec = VEHICLE_ID_NO_SPEC, desc = "车架号")
+            @ParamSpec(isRequired = true, spec = VEHICLE_ID_NO_SPEC, desc = "车架号")
             String vehicleIdNo,
             @FormParam("engine_no")
-            @ParamSpec(isRequired = false, spec = ENGINE_NO_SPEC, desc = "发动机号")
+            @ParamSpec(isRequired = true, spec = ENGINE_NO_SPEC, desc = "发动机号")
             String engineNo,
+            @FormParam("state")
+            @ParamSpec(isRequired = true, spec = COMMON_STATE_SPEC, desc = "删除 or 正常")
+            CommonState state,
             @FormParam("extension")
-            @ParamSpec(isRequired = false, spec = EXTENSION_SPEC, desc = "扩展信息")
+            @ParamSpec(isRequired = true, spec = EXTENSION_SPEC, desc = "扩展信息")
             String extension,
             @HeaderParam(HEADER_USER_ID)
             long userId) {
@@ -158,18 +161,16 @@ public class VehicleResource extends BaseResource {
             throw new VirgoRestException(RestExceptionFactor.VEHICLE_NOT_EXISTED);
         }
 
-        Vehicle newVehicle = new Vehicle();
-        newVehicle.setLicensePlate(licensePlate);
-        newVehicle.setVehicleIdNo(vehicleIdNo);
-        newVehicle.setEngineNo(engineNo);
-        if (extension != null) {
-            newVehicle.setProperties(JSON.parseObject(extension));
-        }
-        newVehicle.setUserId(userId);
+        vehicle.setLicensePlate(licensePlate);
+        vehicle.setVehicleIdNo(vehicleIdNo);
+        vehicle.setEngineNo(engineNo);
+        vehicle.setState(state);
+        setProperties(vehicle, extension);
+        vehicle.setUserId(userId);
 
-        boolean result = vehicleService.updateVehicle(newVehicle);
+        boolean result = vehicleService.updateVehicle(vehicle);
         if (result) {
-            return transVehicleApiFunc.apply(newVehicle);
+            return transVehicleApiFunc.apply(vehicle);
         } else {
             throw new VirgoRestException(RestExceptionFactor.INTERNAL_SERVER_ERROR);
         }
