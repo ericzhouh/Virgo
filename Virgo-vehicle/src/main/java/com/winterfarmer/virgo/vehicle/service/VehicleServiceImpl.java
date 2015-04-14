@@ -17,8 +17,13 @@ public class VehicleServiceImpl implements VehicleService {
     VehicleDao vehicleDao;
 
     @Override
-    public boolean createVehicle(Vehicle vehicle) {
-        return vehicleDao.createVehicle(vehicle);
+    public Vehicle createVehicle(Vehicle vehicle) {
+        long vehicleId = vehicleDao.createVehicle(vehicle);
+        if (vehicleId <= 0) {
+            return null;
+        }
+
+        return vehicleDao.retrieveById(vehicleId);
     }
 
     @Override

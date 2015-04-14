@@ -9,7 +9,7 @@ import java.util.List;
  * Created by yangtianhang on 15-4-13.
  */
 public interface VehicleDao {
-    boolean createVehicle(Vehicle vehicle);
+    long createVehicle(Vehicle vehicle);
 
     boolean updateVehicle(Vehicle vehicle);
 

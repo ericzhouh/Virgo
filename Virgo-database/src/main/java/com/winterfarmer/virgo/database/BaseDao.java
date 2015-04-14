@@ -1,12 +1,14 @@
 package com.winterfarmer.virgo.database;
 
 import com.alibaba.fastjson.JSON;
+import com.google.common.base.Charsets;
 import com.google.common.collect.ImmutableList;
 import com.winterfarmer.virgo.common.util.ArrayUtil;
 import com.winterfarmer.virgo.common.util.ConfigUtil;
 import com.winterfarmer.virgo.database.helper.column.Column;
 import com.winterfarmer.virgo.log.VirgoLogger;
 import org.apache.commons.collections4.CollectionUtils;
+import org.apache.commons.collections4.MapUtils;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.dao.EmptyResultDataAccessException;
@@ -15,7 +17,11 @@ import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 
 import javax.annotation.Resource;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
+import java.sql.Types;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by yangtianhang on 15-3-3.
@@ -67,6 +73,14 @@ public class BaseDao {
             getWriteJdbcTemplate().execute(createDDL);
         } catch (Exception e) {
             e.printStackTrace();
+        }
+    }
+
+    protected static void setExtForPreparedStatement(PreparedStatement ps, int position, Map<String, Object> properties) throws SQLException {
+        if (MapUtils.isEmpty(properties)) {
+            ps.setNull(position, Types.VARBINARY);
+        } else {
+            ps.setBytes(position, JSON.toJSONString(properties).getBytes(Charsets.UTF_8));
         }
     }
 

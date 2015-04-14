@@ -9,7 +9,7 @@ import java.util.List;
  * Created by yangtianhang on 15-4-14.
  */
 public interface VehicleService {
-    boolean createVehicle(Vehicle vehicle);
+    Vehicle createVehicle(Vehicle vehicle);
 
     boolean updateVehicle(Vehicle vehicle);
 

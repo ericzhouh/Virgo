@@ -1,7 +1,6 @@
 package com.winterfarmer.virgo.restapi.v1.vehicle;
 
 import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONObject;
 import com.google.common.base.Function;
 import com.google.common.collect.Lists;
 import com.winterfarmer.virgo.aggregator.model.ApiVehicle;
@@ -93,7 +92,7 @@ public class VehicleResource extends BaseResource {
     @RestApiInfo(
             desc = "用户添加车辆信息",
             authPolicy = RestApiInfo.AuthPolicy.OAUTH,
-            errors = {}
+            errors = {RestExceptionFactor.VEHICLE_NOT_EXISTED}
     )
     @Produces(MediaType.APPLICATION_JSON)
     public ApiVehicle createUserVehicle(
@@ -120,8 +119,12 @@ public class VehicleResource extends BaseResource {
         }
         vehicle.setUserId(userId);
 
-        vehicleService.createVehicle(vehicle);
-        return null;
+        Vehicle newVehicle = vehicleService.createVehicle(vehicle);
+        if (newVehicle == null) {
+            throw new VirgoRestException(RestExceptionFactor.INTERNAL_SERVER_ERROR);
+        } else {
+            return transVehicleApiFunc.apply(newVehicle);
+        }
     }
 
     @Path("vehicle.json")
@@ -129,7 +132,7 @@ public class VehicleResource extends BaseResource {
     @RestApiInfo(
             desc = "用户修改车辆信息",
             authPolicy = RestApiInfo.AuthPolicy.OAUTH,
-            errors = {}
+            errors = {RestExceptionFactor.VEHICLE_NOT_EXISTED}
     )
     @Produces(MediaType.APPLICATION_JSON)
     public ApiVehicle updateUserVehicle(
@@ -150,6 +153,25 @@ public class VehicleResource extends BaseResource {
             String extension,
             @HeaderParam(HEADER_USER_ID)
             long userId) {
-        return null;
+        Vehicle vehicle = vehicleService.getVehicle(vehicleId);
+        if (vehicle == null || vehicle.getUserId() != userId) {
+            throw new VirgoRestException(RestExceptionFactor.VEHICLE_NOT_EXISTED);
+        }
+
+        Vehicle newVehicle = new Vehicle();
+        newVehicle.setLicensePlate(licensePlate);
+        newVehicle.setVehicleIdNo(vehicleIdNo);
+        newVehicle.setEngineNo(engineNo);
+        if (extension != null) {
+            newVehicle.setProperties(JSON.parseObject(extension));
+        }
+        newVehicle.setUserId(userId);
+
+        boolean result = vehicleService.updateVehicle(newVehicle);
+        if (result) {
+            return transVehicleApiFunc.apply(newVehicle);
+        } else {
+            throw new VirgoRestException(RestExceptionFactor.INTERNAL_SERVER_ERROR);
+        }
     }
 }

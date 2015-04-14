@@ -10,11 +10,14 @@ import com.winterfarmer.virgo.database.helper.column.numeric.BigintColumn;
 import com.winterfarmer.virgo.database.helper.column.numeric.TinyIntColumn;
 import com.winterfarmer.virgo.database.helper.column.string.VarcharColumn;
 import com.winterfarmer.virgo.vehicle.model.Vehicle;
+import org.apache.commons.collections4.MapUtils;
+import org.springframework.jdbc.core.PreparedStatementCreator;
 import org.springframework.jdbc.core.RowMapper;
+import org.springframework.jdbc.support.GeneratedKeyHolder;
+import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
 
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
 import java.util.List;
 
 /**
@@ -40,7 +43,7 @@ public class VehicleMysqlDaoImpl extends BaseDao implements VehicleDao {
             addColumn(vehicleId).addColumn(userId).addColumn(licensePlate).
             addColumn(vehicleIdNo).addColumn(engineNo).addColumn(state).
             addColumn(extInfo).
-            setPrimaryKey(vehicleId).addIndex(userId).buildCreateDDL();
+            setPrimaryKey(vehicleId).addIndex(userId).setAutoIncrement(16800).buildCreateDDL();
 
     public void initTable(boolean dropBeforeCreate) {
         super.initTable(createDDL, BaseDao.dropDDL(VEHICLE_TABLE_NAME), dropBeforeCreate);
@@ -49,11 +52,36 @@ public class VehicleMysqlDaoImpl extends BaseDao implements VehicleDao {
     private static final String insert_vehicle_sql =
             insertIntoSQL(VEHICLE_TABLE_NAME, userId, licensePlate, vehicleIdNo, engineNo, state, extInfo);
 
+    private PreparedStatement createInsertPreparedStatement(Connection connection, final Vehicle vehicle) throws SQLException {
+        PreparedStatement ps = connection.prepareStatement(insert_vehicle_sql, new String[]{vehicleId.getName()});
+        ps.setLong(1, vehicle.getUserId());
+        ps.setString(2, vehicle.getLicensePlate());
+        ps.setString(3, vehicle.getVehicleIdNo());
+        ps.setString(4, vehicle.getEngineNo());
+        ps.setInt(5, vehicle.getState().getIndex());
+        setExtForPreparedStatement(ps, 6, vehicle.getProperties());
+        return ps;
+    }
+
     @Override
-    public boolean createVehicle(Vehicle vehicle) {
+    public long createVehicle(final Vehicle vehicle) {
         ParamChecker.notNull(vehicle, "vehicle");
-        return update(insert_vehicle_sql, vehicle.getUserId(), vehicle.getLicensePlate(), vehicle.getVehicleIdNo(), vehicle.getEngineNo(),
-                vehicle.getState().getIndex(), ExtInfoColumn.toBytes(vehicle.getProperties())) > 0;
+        KeyHolder keyHolder = new GeneratedKeyHolder();
+
+        int result = getWriteJdbcTemplate().update(
+                new PreparedStatementCreator() {
+                    public PreparedStatement createPreparedStatement(Connection connection) throws SQLException {
+                        return createInsertPreparedStatement(connection, vehicle);
+                    }
+                },
+                keyHolder
+        );
+
+        if (result <= 0) {
+            return 0;
+        } else {
+            return keyHolder.getKey().longValue();
+        }
     }
 
     private static final String update_vehicle_sql =
