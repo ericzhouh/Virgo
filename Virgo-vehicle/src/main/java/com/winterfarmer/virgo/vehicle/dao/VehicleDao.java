@@ -1,5 +1,6 @@
 package com.winterfarmer.virgo.vehicle.dao;
 
+import com.winterfarmer.virgo.common.definition.CommonState;
 import com.winterfarmer.virgo.vehicle.model.Vehicle;
 
 import java.util.List;
@@ -12,5 +13,9 @@ public interface VehicleDao {
 
     boolean updateVehicle(Vehicle vehicle);
 
-    List<Vehicle> retrieveVehicles(long userId);
+    List<Vehicle> retrieveVehicles(long userId, CommonState state, int offset, int limit);
+
+    List<Vehicle> retrieveVehicles(int offset, int limit);
+
+    Vehicle retrieveById(long vehicleId);
 }

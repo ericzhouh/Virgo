@@ -20,6 +20,9 @@ public enum RestExceptionFactor {
     RESET_PASSWORD_FAILED(404, 4040007, "reset password failed"),
     MOBILE_NUMBER_HAS_BEEN_REGISTERED(404, 4040007, "mobile number has been registered"),
 
+    // VEHICLE Exception Factor
+    VEHICLE_NOT_EXISTED(404, 4041000, "vehicle not existed"),
+
     INTERNAL_SERVER_ERROR(500, 500_000_001, "Internal Server Error"),;
 
     private final int httpErrorCode;

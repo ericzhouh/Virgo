@@ -442,5 +442,6 @@
         <module>Virgo-base</module>
         <module>Virgo-restapi</module>
         <module>Virgo-vehicle</module>
+        <module>Virgo-aggregator</module>
     </modules>
 </project>

@@ -139,15 +139,15 @@ public class BaseDao {
             columnNames += "," + c.eqWhich();
         }
 
-        return "UPDATE " + tableName + " set " + columnNames;
+        return "UPDATE " + tableName + " set " + columnNames + " ";
     }
 
-    protected static String deleletSql(String tableName) {
+    protected static String deleteSql(String tableName) {
         return "DELETE from " + tableName + " ";
     }
 
     protected static String selectSql(String tableName) {
-        return "SELECT * FROM " + tableName;
+        return "SELECT * FROM " + tableName + " ";
     }
 
     protected static String selectSql(String tableName, Column column, Column... others) {
@@ -156,11 +156,17 @@ public class BaseDao {
             columnNames += "," + c.toString();
         }
 
-        return "SELECT " + columnNames + " FROM " + tableName;
+        return "SELECT " + columnNames + " FROM " + tableName + " ";
     }
 
     protected static class WhereClauseBuilder {
         String whereClause;
+        boolean limit = false;
+        boolean offset = false;
+
+        public WhereClauseBuilder() {
+            this.whereClause = "";
+        }
 
         public WhereClauseBuilder(String firstSubClause) {
             this.whereClause = firstSubClause;
@@ -176,8 +182,38 @@ public class BaseDao {
             return this;
         }
 
+        public WhereClauseBuilder limit() {
+            this.limit = true;
+            return this;
+        }
+
+        public WhereClauseBuilder offset() {
+            this.offset = true;
+            return this;
+        }
+
+        public WhereClauseBuilder limit(boolean limit) {
+            this.limit = limit;
+            return this;
+        }
+
+        public WhereClauseBuilder limitOffset() {
+            this.offset = true;
+            this.limit = true;
+            return this;
+        }
+
+
         public String build() {
-            return " where " + this.whereClause;
+            String whereClause = " where " + this.whereClause + " ";
+            if (limit != false) {
+                whereClause += " limit=? ";
+            }
+
+            if (offset != false) {
+                whereClause += " offset=? ";
+            }
+            return whereClause;
         }
 
         @Override

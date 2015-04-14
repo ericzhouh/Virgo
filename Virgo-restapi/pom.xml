@@ -37,6 +37,19 @@
             <artifactId>Virgo-account</artifactId>
             <version>${project.version}</version>
         </dependency>
+
+        <dependency>
+            <groupId>com.winterfarmer</groupId>
+            <artifactId>Virgo-aggregator</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.winterfarmer</groupId>
+            <artifactId>Virgo-vehicle</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+
     </dependencies>
 
     <build>
