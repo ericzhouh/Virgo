@@ -1,6 +1,6 @@
 package com.winterfarmer.virgo.vehicle.dao;
 
-import com.winterfarmer.virgo.common.definition.CommonState;
+import com.winterfarmer.virgo.base.model.CommonState;
 import com.winterfarmer.virgo.common.util.ParamChecker;
 import com.winterfarmer.virgo.database.BaseDao;
 import com.winterfarmer.virgo.database.helper.MysqlDDLBuilder;
@@ -10,7 +10,6 @@ import com.winterfarmer.virgo.database.helper.column.numeric.BigintColumn;
 import com.winterfarmer.virgo.database.helper.column.numeric.TinyIntColumn;
 import com.winterfarmer.virgo.database.helper.column.string.VarcharColumn;
 import com.winterfarmer.virgo.vehicle.model.Vehicle;
-import org.apache.commons.collections4.MapUtils;
 import org.springframework.jdbc.core.PreparedStatementCreator;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.support.GeneratedKeyHolder;

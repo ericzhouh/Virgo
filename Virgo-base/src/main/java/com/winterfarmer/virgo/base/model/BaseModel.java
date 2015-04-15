@@ -1,4 +1,4 @@
-package com.winterfarmer.virgo.common.model;
+package com.winterfarmer.virgo.base.model;
 
 import com.alibaba.fastjson.JSON;
 import com.google.common.base.Charsets;

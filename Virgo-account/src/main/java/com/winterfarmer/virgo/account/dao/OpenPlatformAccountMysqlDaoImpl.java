@@ -2,7 +2,7 @@ package com.winterfarmer.virgo.account.dao;
 
 import com.winterfarmer.virgo.account.model.OpenPlatformAccount;
 import com.winterfarmer.virgo.account.model.PlatformType;
-import com.winterfarmer.virgo.common.definition.CommonState;
+import com.winterfarmer.virgo.base.model.CommonState;
 import com.winterfarmer.virgo.database.BaseDao;
 import com.winterfarmer.virgo.database.helper.MysqlDDLBuilder;
 import com.winterfarmer.virgo.database.helper.column.Columns;

@@ -1,6 +1,5 @@
-package com.winterfarmer.virgo.common.definition;
+package com.winterfarmer.virgo.base.model;
 
-import com.google.common.base.MoreObjects;
 import com.winterfarmer.virgo.common.util.EnumUtil;
 
 /**

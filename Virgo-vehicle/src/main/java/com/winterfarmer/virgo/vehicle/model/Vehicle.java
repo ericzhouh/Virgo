@@ -1,7 +1,7 @@
 package com.winterfarmer.virgo.vehicle.model;
 
-import com.winterfarmer.virgo.common.definition.CommonState;
-import com.winterfarmer.virgo.common.model.BaseModel;
+import com.winterfarmer.virgo.base.model.CommonState;
+import com.winterfarmer.virgo.base.model.BaseModel;
 
 /**
  * Created by yangtianhang on 15-4-13.

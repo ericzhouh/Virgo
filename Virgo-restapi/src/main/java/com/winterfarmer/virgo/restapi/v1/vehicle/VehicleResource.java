@@ -4,7 +4,7 @@ import com.alibaba.fastjson.JSON;
 import com.google.common.base.Function;
 import com.google.common.collect.Lists;
 import com.winterfarmer.virgo.aggregator.model.ApiVehicle;
-import com.winterfarmer.virgo.common.definition.CommonState;
+import com.winterfarmer.virgo.base.model.CommonState;
 import com.winterfarmer.virgo.restapi.BaseResource;
 import com.winterfarmer.virgo.restapi.core.annotation.ParamSpec;
 import com.winterfarmer.virgo.restapi.core.annotation.RestApiInfo;

@@ -13,6 +13,7 @@ public class VirgoLogger {
     private static final Logger errorLog = LogManager.getLogger("error");
     private static final Logger fatalLog = LogManager.getLogger("fatal");
     private static final Logger requestLog = LogManager.getLogger("request");
+    private static final Logger httpClientLog = LogManager.getLogger("httpClient");
 
 //    static {
 //        Runtime.getRuntime().addShutdownHook(new Thread() {
@@ -88,5 +89,35 @@ public class VirgoLogger {
     public static void logResponse(String format, Object... arguments) {
         format = LogHelper.formatLogString(format);
         requestLog.info(format, arguments);
+    }
+
+    public static void httpDebug(String format, Object... arguments) {
+        format = LogHelper.formatLogString(format);
+        httpClientLog.debug(String.format(format, arguments), arguments);
+    }
+
+    public static void httpInfo(String format, Object... arguments) {
+        format = LogHelper.formatLogString(format);
+        httpClientLog.info(String.format(format, arguments), arguments);
+    }
+
+    public static void httpWarn(String format, Object... arguments) {
+        format = LogHelper.formatLogString(format);
+        httpClientLog.warn(String.format(format, arguments), arguments);
+    }
+
+    public static void httpError(String format, Object... arguments) {
+        format = LogHelper.formatLogString(format);
+        httpClientLog.error(String.format(format, arguments), arguments);
+    }
+
+    public static void httpWarn(Throwable t, String format, Object... arguments) {
+        format = LogHelper.formatLogString(format);
+        httpClientLog.warn(String.format(format, arguments), arguments, t);
+    }
+
+    public static void httpError(Throwable t, String format, Object... arguments) {
+        format = LogHelper.formatLogString(format);
+        httpClientLog.error(String.format(format, arguments), arguments, t);
     }
 }

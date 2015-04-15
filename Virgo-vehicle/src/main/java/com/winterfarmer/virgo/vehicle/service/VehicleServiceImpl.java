@@ -1,6 +1,6 @@
 package com.winterfarmer.virgo.vehicle.service;
 
-import com.winterfarmer.virgo.common.definition.CommonState;
+import com.winterfarmer.virgo.base.model.CommonState;
 import com.winterfarmer.virgo.vehicle.dao.VehicleDao;
 import com.winterfarmer.virgo.vehicle.model.Vehicle;
 import org.springframework.stereotype.Service;

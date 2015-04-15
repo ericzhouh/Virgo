@@ -1,7 +1,7 @@
 package com.winterfarmer.virgo.restapi;
 
 import com.alibaba.fastjson.JSON;
-import com.winterfarmer.virgo.common.model.BaseModel;
+import com.winterfarmer.virgo.base.model.BaseModel;
 
 /**
  * Created by yangtianhang on 15-4-13.
