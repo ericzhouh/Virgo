@@ -4,6 +4,7 @@ import com.google.i18n.phonenumbers.NumberParseException;
 import com.google.i18n.phonenumbers.PhoneNumberUtil;
 import com.google.i18n.phonenumbers.Phonenumber;
 import org.apache.commons.codec.binary.Base32;
+import org.apache.commons.lang3.StringUtils;
 
 import java.util.Arrays;
 
@@ -33,6 +34,10 @@ public class AccountUtil {
 
         String formatPhoneNumber = phoneNumberUtil.format(phoneNumber, PhoneNumberUtil.PhoneNumberFormat.E164);
         return formatPhoneNumber;
+    }
+
+    public static String removeMobileNationCode(String mobile) {
+        return StringUtils.removeStart(mobile, "+86");
     }
 
     public static String generateMobileSecret(String mobile) {

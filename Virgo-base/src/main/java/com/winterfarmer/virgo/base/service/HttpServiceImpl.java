@@ -37,10 +37,13 @@ public class HttpServiceImpl implements HttpService {
 
     private HttpClient client;
     private int maxSize;
-    private String proxyHostPort;
     private int soTimeOut;
 
     private ExecutorService httpPool;
+
+    public HttpServiceImpl(int maxConnPerHost, int connTimeOutMs, int soTimeOutMs, int maxSize) {
+        this(maxConnPerHost, connTimeOutMs, soTimeOutMs, maxSize, 1, 300);
+    }
 
     public HttpServiceImpl(int maxConnPerHost, int connTimeOutMs, int soTimeOutMs, int maxSize, int minThread, int maxThread) {
         connectionManager = new MultiThreadedHttpConnectionManager();
