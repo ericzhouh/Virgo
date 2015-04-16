@@ -64,7 +64,10 @@ public class AccountResource extends BaseResource {
             throw new VirgoRestException(RestExceptionFactor.REQUEST_SIGN_UP_MOBILE_VERIFICATION_CODE_TOO_FREQUENTLY);
         }
 
-        smsService.sendSignUpMobileVerificationCode(mobileNumber, AccountUtil.generateMobileCode(mobileNumber));
+        if (!smsService.sendSignUpMobileVerificationCode(mobileNumber, AccountUtil.generateMobileCode(mobileNumber))) {
+            return CommonResult.isSuccessfulCommonResult(false);
+        }
+
         accountService.cacheSentSignUpMobileVerificationCode(mobileNumber);
 
         return CommonResult.isSuccessfulCommonResult(true);
@@ -182,6 +185,7 @@ public class AccountResource extends BaseResource {
         }
         return CommonResult.isSuccessfulCommonResult(true);
     }
+
 
     @Path("testing.json")
     @GET

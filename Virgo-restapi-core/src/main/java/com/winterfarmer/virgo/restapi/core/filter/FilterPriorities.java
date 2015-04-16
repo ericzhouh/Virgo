@@ -12,6 +12,9 @@ public class FilterPriorities {
      * Security authentication filter/interceptor priority.
      */
     public static final int AUTHENTICATION = 1_000;
+
+    public static final int ROLES = 1_500;
+
     /**
      * Security authorization filter/interceptor priority.
      */

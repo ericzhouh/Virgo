@@ -23,6 +23,7 @@ import javax.annotation.Resource;
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
 import java.util.Calendar;
+import java.util.List;
 
 /**
  * Created by yangtianhang on 15-3-25.
@@ -173,6 +174,11 @@ public class AccountServiceImpl implements AccountService {
             default:
                 return null;
         }
+    }
+
+    @Override
+    public boolean hasPrivilege(long userId, List<Role> roleList) {
+        return false;
     }
 
     private Long getUserIdByMobile(String mobile) {

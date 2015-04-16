@@ -16,7 +16,7 @@ import javax.ws.rs.container.ContainerRequestContext;
  */
 public abstract class AccountFilter {
     @Resource(name = "accountService")
-    AccountService accountService;
+    protected AccountService accountService;
 
     protected String getAccessTokenString(ContainerRequestContext requestContext) {
         return ContainerRequestUtil.getAccessToken(requestContext);

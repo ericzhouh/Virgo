@@ -9,19 +9,22 @@ public enum RestExceptionFactor {
     INVALID_PARAM(400, 400_000_001, "invalid parameter"),
     MISSING_PARAM(400, 400_000_002, "missing parameter"),
 
-    // ACCOUNT Exception Factor
-    MISSING_ACCESS_TOKEN(403, 4030000, "missing access token"),
-    INVALID_ACCESS_TOKEN(403, 4030001, "invalid access token"),
-    EXPIRED_ACCESS_TOKEN(403, 4030002, "expired access token"),
-    INVALID_MOBILE_NUMBER(404, 4040003, "invalid mobile number"),
-    REQUEST_SIGN_UP_MOBILE_VERIFICATION_CODE_TOO_FREQUENTLY(404, 4040004, "repeat sign up mobile verification code too frequently"),
-    INVALID_MOBILE_VERIFICATION_CODE(404, 4040005, "invalid mobile verification code"),
-    INVALID_ID_OR_PASSWORD(404, 4040006, "invalid id or password"),
-    RESET_PASSWORD_FAILED(404, 4040007, "reset password failed"),
-    MOBILE_NUMBER_HAS_BEEN_REGISTERED(404, 4040007, "mobile number has been registered"),
+    // Privilege Exception Factor
+    MISSING_ACCESS_TOKEN(403, 403_000_000, "missing access token"),
+    INVALID_ACCESS_TOKEN(403, 403_000_001, "invalid access token"),
+    EXPIRED_ACCESS_TOKEN(403, 403_000_002, "expired access token"),
+    NO_RIGHTS(403, 403_000_003, "no rights"),
 
-    // VEHICLE Exception Factor
-    VEHICLE_NOT_EXISTED(404, 4041000, "vehicle not existed"),
+    // Account Exception Factor
+    INVALID_MOBILE_NUMBER(404, 404_001_000, "invalid mobile number"),
+    REQUEST_SIGN_UP_MOBILE_VERIFICATION_CODE_TOO_FREQUENTLY(404, 404_001_001, "repeat sign up mobile verification code too frequently"),
+    INVALID_MOBILE_VERIFICATION_CODE(404, 404_001_002, "invalid mobile verification code"),
+    INVALID_ID_OR_PASSWORD(404, 404_001_003, "invalid id or password"),
+    RESET_PASSWORD_FAILED(404, 404_001_004, "reset password failed"),
+    MOBILE_NUMBER_HAS_BEEN_REGISTERED(404, 404_001_005, "mobile number has been registered"),
+
+    // Vehicle Exception Factor
+    VEHICLE_NOT_EXISTED(404, 404_002_000, "vehicle not existed"),
 
     INTERNAL_SERVER_ERROR(500, 500_000_001, "Internal Server Error"),;
 

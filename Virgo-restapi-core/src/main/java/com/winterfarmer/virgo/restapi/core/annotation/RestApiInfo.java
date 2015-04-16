@@ -1,5 +1,7 @@
 package com.winterfarmer.virgo.restapi.core.annotation;
 
+import com.winterfarmer.virgo.account.model.RolePrivilege;
+import com.winterfarmer.virgo.account.model.RoleType;
 import com.winterfarmer.virgo.restapi.core.exception.RestExceptionFactor;
 import com.winterfarmer.virgo.restapi.core.exception.VirgoRestException;
 
@@ -7,34 +9,48 @@ import com.winterfarmer.virgo.restapi.core.exception.VirgoRestException;
  * Created by yangtianhang on 15-1-24.
  */
 public @interface RestApiInfo {
-    String desc() default "";
+    public String desc() default "";
 
-    Protocol protocol() default Protocol.HTTPS;
+    public Protocol protocol() default Protocol.HTTPS;
 
     public AuthPolicy authPolicy() default AuthPolicy.PUBLIC;
 
-    String[] cautions() default {};
+    public String[] cautions() default {};
 
-    String[] extraParamDesc() default {};
+    public String[] extraParamDesc() default {};
 
-    RestExceptionFactor[] errors() default {};
+    public RestExceptionFactor[] errors() default {};
+
+    public RoleType roleType() default RoleType.PUBLIC;
+
+    public RolePrivilege[] rolePrivileges() default {RolePrivilege.VIEW};
 
     public static enum Protocol {
         HTTP, HTTPS
     }
 
+    // 授权策略
     public static enum AuthPolicy {
         PUBLIC {
             @Override
             public String desc() {
                 return "公开";
             }
-        }, OAUTH {
+        },
+
+        OAUTH {
             @Override
             public String desc() {
                 return "OAuth";
             }
-        };
+        },
+
+        INTERNAL {
+            @Override
+            public String desc() {
+                return "Internal";
+            }
+        },;
 
         public abstract String desc();
     }

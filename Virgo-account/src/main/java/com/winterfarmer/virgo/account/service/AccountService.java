@@ -1,11 +1,10 @@
 package com.winterfarmer.virgo.account.service;
 
-import com.winterfarmer.virgo.account.model.AccessToken;
-import com.winterfarmer.virgo.account.model.OpenPlatformAccount;
-import com.winterfarmer.virgo.account.model.PlatformType;
-import com.winterfarmer.virgo.account.model.User;
+import com.winterfarmer.virgo.account.model.*;
 import com.winterfarmer.virgo.base.Exception.MobileNumberException;
 import com.winterfarmer.virgo.base.Exception.UnexpectedVirgoException;
+
+import java.util.List;
 
 /**
  * Created by yangtianhang on 15-2-14.
@@ -35,4 +34,6 @@ public interface AccountService {
     AccessToken createAccessToken(long userId, int appKey);
 
     Long getUserId(String openId, PlatformType platformType);
+
+    boolean hasPrivilege(long userId, List<Role> roleList);
 }
