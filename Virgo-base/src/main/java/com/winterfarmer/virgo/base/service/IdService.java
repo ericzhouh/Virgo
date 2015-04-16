@@ -64,7 +64,7 @@ public class IdService {
                     servers.add(new TFramedTransport(new TSocket(host, port, TIMEOUT_MS)));
                 }
             } catch (Exception e) {
-                VirgoLogger.error(e, "pass id service failed: {}", addr);
+                VirgoLogger.error("pass id service failed " + addr, e);
             }
         }
     }
@@ -122,7 +122,7 @@ public class IdService {
             connect();
             return ImmutableList.copyOf(client.get_ids(this.token, (short) num));
         } catch (TException e) {
-            VirgoLogger.error(e, "getIds failed: {}", e.getMessage());
+            VirgoLogger.error("getIds failed", e);
             disconnect();
             return null;
         }

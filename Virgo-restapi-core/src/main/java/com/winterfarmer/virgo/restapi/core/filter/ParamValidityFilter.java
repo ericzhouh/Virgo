@@ -75,7 +75,7 @@ public class ParamValidityFilter implements ContainerRequestFilter {
                     parameterType, defaultValue, range, parameter.getAnnotation(QueryParam.class) != null);
             this.validators.add(validator);
         } catch (Exception e) {
-            VirgoLogger.fatal(e, "Add validator failed, param name: %s.", parameter.getSourceName());
+            VirgoLogger.fatal("Add validator failed, param name: " + parameter.getSourceName(), e);
         }
     }
 

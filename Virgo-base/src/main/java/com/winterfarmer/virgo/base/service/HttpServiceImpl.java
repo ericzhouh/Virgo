@@ -89,7 +89,7 @@ public class HttpServiceImpl implements HttpService {
 
     public String get(String url, Collection<Pair<String, Object>> paramCollection) {
         if (HttpManager.isBlockResource(url)) {
-            VirgoLogger.httpDebug("getURL blockResource url=" + url);
+            VirgoLogger.httpDebug("getURL blockResource url={}", url);
             return "";
         }
         HttpMethod get = new GetMethod(url);
@@ -113,7 +113,7 @@ public class HttpServiceImpl implements HttpService {
 
     public String get(String url, Map<String, String> headers, String charset) {
         if (HttpManager.isBlockResource(url)) {
-            VirgoLogger.httpDebug("getURL blockResource url=" + url);
+            VirgoLogger.httpDebug("getURL blockResource url={}", url);
             return "";
         }
         HttpMethod get = new GetMethod(url);
@@ -195,7 +195,7 @@ public class HttpServiceImpl implements HttpService {
 
     public byte[] getByte(String url) {
         if (HttpManager.isBlockResource(url)) {
-            VirgoLogger.httpDebug("getURL blockResource url=" + url);
+            VirgoLogger.httpDebug("getURL blockResource url={}", url);
             return new byte[]{};
         }
         ByteArrayOutputStream out = new ByteArrayOutputStream(2048);
@@ -205,7 +205,7 @@ public class HttpServiceImpl implements HttpService {
         try {
             len = doExecuteMethod(get, out);
             return out.toByteArray();
-        } catch (ApiHttpClientExcpetion e) {
+        } catch (ApiHttpClientException e) {
             return new byte[]{};
         } finally {
             accessLog(System.currentTimeMillis() - start, "GET",
@@ -233,7 +233,7 @@ public class HttpServiceImpl implements HttpService {
 
     private String post(String url, String jsonParam, Map<String, String> headers, String charset) {
         if (HttpManager.isBlockResource(url)) {
-            VirgoLogger.httpDebug("requestURL blockResource url=" + url);
+            VirgoLogger.httpDebug("requestURL blockResource url={}", url);
             return "";
         }
         PostMethod post = new PostMethod(url);
@@ -251,7 +251,7 @@ public class HttpServiceImpl implements HttpService {
 
     public String post(String url, Map<String, ?> nameValues, Map<String, String> headers, String charset) {
         if (HttpManager.isBlockResource(url)) {
-            VirgoLogger.httpDebug("requestURL blockResource url=" + url);
+            VirgoLogger.httpDebug("requestURL blockResource url={}", url);
             return "";
         }
         PostMethod post = new PostMethod(url);
@@ -295,7 +295,7 @@ public class HttpServiceImpl implements HttpService {
 
     public String postMulti(String url, Map<String, Object> nameValues, String charset) {
         if (HttpManager.isBlockResource(url)) {
-            VirgoLogger.httpDebug("multURLblockResource url=" + url);
+            VirgoLogger.httpDebug("multURLblockResource url={}", url);
             return "";
         }
         PostMethod post = new PostMethod(url);
@@ -343,7 +343,7 @@ public class HttpServiceImpl implements HttpService {
         try {
             len = doExecuteMethod(method, out);
             return out.toByteArray();
-        } catch (ApiHttpClientExcpetion e) {
+        } catch (ApiHttpClientException e) {
             return new byte[]{};
         } finally {
             accessLog(System.currentTimeMillis() - start, method.getName(),
@@ -362,9 +362,9 @@ public class HttpServiceImpl implements HttpService {
             result = new String(out.toByteArray(), charset);
             return result;
         } catch (UnsupportedEncodingException e) {
-            VirgoLogger.httpWarn(e, "HttpServiceImpl.executeMethod UnsupportedEncodingException url:%s charset:%s", url, charset);
+            VirgoLogger.httpWarn(String.format("HttpServiceImpl.executeMethod UnsupportedEncodingException url:%s charset:%s", url, charset), e);
             return "";
-        } catch (ApiHttpClientExcpetion e) {
+        } catch (ApiHttpClientException e) {
             return "";
         } finally {
             accessLog(System.currentTimeMillis() - start, method.getName(),
@@ -373,7 +373,7 @@ public class HttpServiceImpl implements HttpService {
         }
     }
 
-    private int doExecuteMethod(HttpMethod httpMethod, OutputStream out) throws ApiHttpClientExcpetion {
+    private int doExecuteMethod(HttpMethod httpMethod, OutputStream out) throws ApiHttpClientException {
         long start = System.currentTimeMillis();
         int readLen = 0;
         try {
@@ -403,12 +403,17 @@ public class HttpServiceImpl implements HttpService {
                 }
             }
             in.close();
-        } catch (ApiHttpClientExcpetion ex) {
-            VirgoLogger.httpWarn(format("ApiHttpClientExcpetion url:%s message:%s", getHttpMethodURL(httpMethod),
-                    ex.getMessage()));
+        } catch (ApiHttpClientException ex) {
+            VirgoLogger.httpWarn(
+                    String.format("ApiHttpClientExcpetion url:%s message:%s", getHttpMethodURL(httpMethod), ex.getMessage()),
+                    ex
+            );
             throw ex;
         } catch (Exception ex) {
-            VirgoLogger.httpWarn(format("HttpServiceImpl.doExecuteMethod error! msg:%s", ex.getMessage()));
+            VirgoLogger.httpWarn(
+                    String.format("HttpServiceImpl.doExecuteMethod error! msg:%s", ex.getMessage()),
+                    ex
+            );
         } finally {
             httpMethod.releaseConnection();
         }
@@ -479,7 +484,7 @@ public class HttpServiceImpl implements HttpService {
             method.setParams(params);
             charset = DEFAULT_CHARSET;
             if (isBlock) {
-                VirgoLogger.httpDebug("blockResource url=" + url);
+                VirgoLogger.httpDebug("blockResource url={}", url);
             }
         }
 
@@ -752,7 +757,7 @@ public class HttpServiceImpl implements HttpService {
             url = uri + "?" + queryString;
         }
         if (time > soTimeOut) {
-            VirgoLogger.httpWarn("HTTP " + uri + " Error:" + time);
+            VirgoLogger.httpWarn("HTTP {} Error:{}", uri, time);
         }
         if (accessLog != null) {
             try {
@@ -763,19 +768,19 @@ public class HttpServiceImpl implements HttpService {
         }
     }
 
-    public class ApiHttpClientExcpetion extends Exception {
-        public ApiHttpClientExcpetion(String msg) {
+    public class ApiHttpClientException extends Exception {
+        public ApiHttpClientException(String msg) {
             super(msg);
         }
     }
 
-    public class ReadTimeOutException extends ApiHttpClientExcpetion {
+    public class ReadTimeOutException extends ApiHttpClientException {
         public ReadTimeOutException(String msg) {
             super(msg);
         }
     }
 
-    public class SizeException extends ApiHttpClientExcpetion {
+    public class SizeException extends ApiHttpClientException {
         public SizeException(String msg) {
             super(msg);
         }

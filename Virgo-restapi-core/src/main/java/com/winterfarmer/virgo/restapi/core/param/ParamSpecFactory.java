@@ -107,7 +107,7 @@ public class ParamSpecFactory {
         try {
             return (AbstractParamSpec<?>) paramSpecConstructor.newInstance(specNameAndValue[1]);
         } catch (Exception e) {
-            VirgoLogger.warn(e, "getParamSpec for %s failed.", strSpec);
+            VirgoLogger.warn("getParamSpec for " + strSpec + " failed.", e);
             throw new RuntimeException("getParamSpec for " + strSpec + " failed.");
         }
     }

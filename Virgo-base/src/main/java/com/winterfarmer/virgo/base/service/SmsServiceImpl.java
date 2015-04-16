@@ -24,9 +24,10 @@ public class SmsServiceImpl implements SmsService {
         return sendBaiwuSms(mobileNum, msg);
     }
 
+    private static final String VERIFICATION_CODE_MSG = "感谢您注册XXX，您的注册码是%d，二十分钟内有效。";
     @Override
     public boolean sendSignUpMobileVerificationCode(String mobileNum, int code) {
-        return false;
+        return sendSms(mobileNum, String.format(VERIFICATION_CODE_MSG, code));
     }
 
     private boolean sendBaiwuSms(String mobileNum, String msg) {
@@ -40,7 +41,11 @@ public class SmsServiceImpl implements SmsService {
         nameValues.put("msg_content", msg);
 
         String result = httpService.postAsync(BAIWU_URL, nameValues);
-        System.out.println(result);
-        return StringUtils.equals(result, "0#1%");
+        if (StringUtils.equals(result, "0#1%")) {
+            return true;
+        } else {
+            VirgoLogger.error("baiwu sms error: " + result);
+            return false;
+        }
     }
 }

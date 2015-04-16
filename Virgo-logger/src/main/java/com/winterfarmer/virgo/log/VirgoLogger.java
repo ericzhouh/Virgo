@@ -38,86 +38,75 @@ public class VirgoLogger {
         return debugLog.isDebugEnabled();
     }
 
-    public static void trace(String format, Object... arguments) {
-        debugLog.trace(LogHelper.formatLogString(format), arguments);
+    public static void trace(String logFormat, Object... arguments) {
+        debugLog.trace(LogHelper.formatLogString(logFormat), arguments);
     }
 
-    public static void debug(String format, Object... arguments) {
+    public static void debug(String logFormat, Object... arguments) {
         if (debugLog.isDebugEnabled()) {
-            debugLog.debug(LogHelper.formatLogString(format), arguments);
+            debugLog.debug(LogHelper.formatLogString(logFormat), arguments);
         }
     }
 
-    public static void info(String format, Object... arguments) {
+    public static void info(String logFormat, Object... arguments) {
         if (infoLog.isInfoEnabled()) {
-            infoLog.info(LogHelper.formatLogString(format), arguments);
+            infoLog.info(LogHelper.formatLogString(logFormat), arguments);
         }
     }
 
-    public static void warn(Throwable t, String format, Object... arguments) {
-        format = LogHelper.formatLogString(format);
-        warnLog.warn(String.format(format, arguments), t);
+    public static void warn(String msg, Throwable t) {
+        warnLog.warn(LogHelper.formatLogString(msg), t);
     }
 
-    public static void warn(String format, Object... arguments) {
-        warnLog.warn(LogHelper.formatLogString(format), arguments);
+    public static void warn(String logFormat, Object... arguments) {
+        warnLog.warn(LogHelper.formatLogString(logFormat), arguments);
     }
 
-    public static void error(Throwable t, String format, Object... arguments) {
-        format = LogHelper.formatLogString(format);
-        errorLog.error(String.format(format, arguments), t);
+    public static void error(String msg, Throwable t) {
+        errorLog.error(LogHelper.formatLogString(msg), t);
     }
 
-    public static void error(String format, Object... arguments) {
-        errorLog.error(LogHelper.formatLogString(format), arguments);
+    public static void error(String logFormat, Object... arguments) {
+        errorLog.error(LogHelper.formatLogString(logFormat), arguments);
     }
 
-    public static void fatal(Throwable t, String format, Object... arguments) {
-        format = LogHelper.formatLogString(format);
-        fatalLog.error(String.format(format, arguments), t);
+    public static void fatal(String msg, Throwable t) {
+        fatalLog.error(LogHelper.formatLogString(msg), t);
     }
 
-    public static void fatal(String format, Object... arguments) {
-        fatalLog.error(LogHelper.formatLogString(format), arguments);
+    public static void fatal(String logFormat, Object... arguments) {
+        fatalLog.error(LogHelper.formatLogString(logFormat), arguments);
     }
 
-    public static void logRequest(String format, Object... arguments) {
-        format = LogHelper.formatLogString(format);
-        requestLog.info(format, arguments);
+    public static void logRequest(String logFormat, Object... arguments) {
+        requestLog.info(LogHelper.formatLogString(logFormat), arguments);
     }
 
-    public static void logResponse(String format, Object... arguments) {
-        format = LogHelper.formatLogString(format);
-        requestLog.info(format, arguments);
+    public static void logResponse(String logFormat, Object... arguments) {
+        requestLog.info(LogHelper.formatLogString(logFormat), arguments);
     }
 
-    public static void httpDebug(String format, Object... arguments) {
-        format = LogHelper.formatLogString(format);
-        httpClientLog.debug(String.format(format, arguments), arguments);
+    public static void httpDebug(String logFormat, Object... arguments) {
+        requestLog.info(LogHelper.formatLogString(logFormat), arguments);
     }
 
-    public static void httpInfo(String format, Object... arguments) {
-        format = LogHelper.formatLogString(format);
-        httpClientLog.info(String.format(format, arguments), arguments);
+    public static void httpInfo(String logFormat, Object... arguments) {
+        requestLog.info(LogHelper.formatLogString(logFormat), arguments);
     }
 
-    public static void httpWarn(String format, Object... arguments) {
-        format = LogHelper.formatLogString(format);
-        httpClientLog.warn(String.format(format, arguments), arguments);
+    public static void httpWarn(String logFormat, Object... arguments) {
+        requestLog.info(LogHelper.formatLogString(logFormat), arguments);
     }
 
-    public static void httpError(String format, Object... arguments) {
-        format = LogHelper.formatLogString(format);
-        httpClientLog.error(String.format(format, arguments), arguments);
+    public static void httpError(String logFormat, Object... arguments) {
+        requestLog.info(LogHelper.formatLogString(logFormat), arguments);
     }
 
-    public static void httpWarn(Throwable t, String format, Object... arguments) {
-        format = LogHelper.formatLogString(format);
-        httpClientLog.warn(String.format(format, arguments), arguments, t);
+    public static void httpWarn(String msg, Throwable t) {
+        fatalLog.error(LogHelper.formatLogString(msg), t);
     }
 
-    public static void httpError(Throwable t, String format, Object... arguments) {
-        format = LogHelper.formatLogString(format);
-        httpClientLog.error(String.format(format, arguments), arguments, t);
+    public static void httpError(String msg, Throwable t) {
+        fatalLog.error(LogHelper.formatLogString(msg), t);
     }
 }

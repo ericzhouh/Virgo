@@ -218,7 +218,7 @@ public class AccountResource extends BaseResource {
 
         User user = accountService.getUser(openPlatformAccount.getUserId());
         if (user == null) {
-            VirgoLogger.error("no user id for open platform account: " + openId);
+            VirgoLogger.error("no user id for open platform account: {}", openId);
             throw new VirgoRestException(RestExceptionFactor.INVALID_ID_OR_PASSWORD);
         }
 

@@ -44,7 +44,7 @@ public class MobileParam extends AbstractParamSpec<String> {
             Phonenumber.PhoneNumber phoneNumber = phoneNumberUtil.parse(value, "CN");
             return phoneNumberUtil.isValidNumber(phoneNumber);
         } catch (NumberParseException e) {
-            VirgoLogger.debug("Invalid phone number: " + value);
+            VirgoLogger.debug("Invalid phone number: {}", value);
             return false;
         }
     }

@@ -22,7 +22,7 @@ public class DefaultHttpServiceLog implements HttpService.AccessLog {
             post = replacePwd(post);
         }
 
-        VirgoLogger.httpInfo("[HTTPCLI] %s %s %s %s %s %s %s", time, method, status, len, url,
+        VirgoLogger.httpInfo("[HTTPCLI] {} {} {} {} {} {} {}", time, method, status, len, url,
                 StringUtils.isEmpty(post) ? "-" : post, StringUtils.isEmpty(ret) ? "-" : ret);
     }
 
