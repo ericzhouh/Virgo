@@ -39,6 +39,6 @@ public enum RolePrivilege {
 
     @Override
     public String toString() {
-        return EnumUtil.toString(RoleType.class, this.name, this.index);
+        return EnumUtil.toString(GroupType.class, this.name, this.index);
     }
 }

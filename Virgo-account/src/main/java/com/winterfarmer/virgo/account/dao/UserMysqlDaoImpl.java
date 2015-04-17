@@ -27,7 +27,7 @@ import java.util.Map;
 public class UserMysqlDaoImpl extends BaseDao implements UserDao {
     public static final String USER_TABLE_NAME = "user";
 
-    private static final BigintColumn userId = Columns.newUserIdColumn(true, false);
+    private static final BigintColumn userId = Columns.newUserIdColumn(false, false);
     private static final TimeStampColumn createAt = Columns.newCreateAtColumn();
     private static final VarcharColumn nickName = (VarcharColumn) new VarcharColumn("nick_name", 128).
             setAllowNull(false).setComment("昵称").setUnique(true);

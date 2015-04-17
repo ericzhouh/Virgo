@@ -160,7 +160,7 @@ public class BaseDao {
         return "DELETE from " + tableName + " ";
     }
 
-    protected static String selectSql(String tableName) {
+    protected static String selectAllSql(String tableName) {
         return "SELECT * FROM " + tableName + " ";
     }
 

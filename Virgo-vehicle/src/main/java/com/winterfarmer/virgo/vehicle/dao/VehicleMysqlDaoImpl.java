@@ -110,10 +110,10 @@ public class VehicleMysqlDaoImpl extends BaseDao implements VehicleDao {
     };
 
     private static final String select_vehicles_by_user_id_sql_depend_on_state =
-            selectSql(VEHICLE_TABLE_NAME) + new WhereClauseBuilder(userId.eqWhich()).and(state.eqWhich()).limitOffset();
+            selectAllSql(VEHICLE_TABLE_NAME) + new WhereClauseBuilder(userId.eqWhich()).and(state.eqWhich()).limitOffset();
 
     private static final String select_vehicles_by_user_id_sql =
-            selectSql(VEHICLE_TABLE_NAME) + new WhereClauseBuilder(userId.eqWhich()).and(state.eqWhich()).limitOffset();
+            selectAllSql(VEHICLE_TABLE_NAME) + new WhereClauseBuilder(userId.eqWhich()).and(state.eqWhich()).limitOffset();
 
     @Override
     public List<Vehicle> retrieveVehicles(long userId, CommonState state, int offset, int limit) {
@@ -125,7 +125,7 @@ public class VehicleMysqlDaoImpl extends BaseDao implements VehicleDao {
     }
 
     private static final String select_vehicles =
-            selectSql(VEHICLE_TABLE_NAME) + new WhereClauseBuilder().limitOffset();
+            selectAllSql(VEHICLE_TABLE_NAME) + new WhereClauseBuilder().limitOffset();
 
     @Override
     public List<Vehicle> retrieveVehicles(int offset, int limit) {
@@ -133,7 +133,7 @@ public class VehicleMysqlDaoImpl extends BaseDao implements VehicleDao {
     }
 
     private static final String select_vehicle_by_vehicle_id =
-            selectSql(VEHICLE_TABLE_NAME) + new WhereClauseBuilder(vehicleId.eqWhich());
+            selectAllSql(VEHICLE_TABLE_NAME) + new WhereClauseBuilder(vehicleId.eqWhich());
 
     @Override
     public Vehicle retrieveById(long vehicleId) {

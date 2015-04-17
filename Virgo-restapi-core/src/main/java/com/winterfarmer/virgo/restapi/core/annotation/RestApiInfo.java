@@ -1,9 +1,8 @@
 package com.winterfarmer.virgo.restapi.core.annotation;
 
 import com.winterfarmer.virgo.account.model.RolePrivilege;
-import com.winterfarmer.virgo.account.model.RoleType;
+import com.winterfarmer.virgo.account.model.GroupType;
 import com.winterfarmer.virgo.restapi.core.exception.RestExceptionFactor;
-import com.winterfarmer.virgo.restapi.core.exception.VirgoRestException;
 
 /**
  * Created by yangtianhang on 15-1-24.
@@ -21,7 +20,7 @@ public @interface RestApiInfo {
 
     public RestExceptionFactor[] errors() default {};
 
-    public RoleType roleType() default RoleType.PUBLIC;
+    public GroupType roleType() default GroupType.PUBLIC;
 
     public RolePrivilege[] rolePrivileges() default {RolePrivilege.VIEW};
 

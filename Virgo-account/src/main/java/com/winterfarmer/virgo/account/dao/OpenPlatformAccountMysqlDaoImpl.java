@@ -68,7 +68,7 @@ public class OpenPlatformAccountMysqlDaoImpl extends BaseDao implements OpenPlat
     }
 
     private static final String retrieve_open_platform_account_sql =
-            selectSql(OPEN_PLATFORM_ACCOUNT_TABLE_NAME) + new WhereClauseBuilder(openId.eqWhich()).and(platform.eqWhich());
+            selectAllSql(OPEN_PLATFORM_ACCOUNT_TABLE_NAME) + new WhereClauseBuilder(openId.eqWhich()).and(platform.eqWhich());
 
     @Override
     public OpenPlatformAccount retrieveOpenPlatformAccount(String openId, PlatformType platformType) {
