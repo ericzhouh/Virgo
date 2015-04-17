@@ -5,5 +5,6 @@ package com.winterfarmer.virgo.data.redis;
  */
 public enum RedisBiz {
     Test,
-    Account
+    Account,
+    Privilege,
 }

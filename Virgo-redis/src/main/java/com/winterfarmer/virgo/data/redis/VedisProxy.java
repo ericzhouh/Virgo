@@ -48,13 +48,13 @@ public class VedisProxy implements InvocationHandler {
             Method jedisMethod = poolMethod.getLeft();
             result = jedisMethod.invoke(jedis, args);
         } catch (Exception e) {
-            VirgoLogger.error(e, "Jedis exception: {}", e.getMessage());
+            VirgoLogger.error("Jedis exception", e);
             jedisPool.returnBrokenResource(jedis);
         } finally {
             try {
                 jedisPool.returnResource(jedis);
             } catch (Exception e) {
-                VirgoLogger.error(e, "Jedis returnResource exception: {}", e.getMessage());
+                VirgoLogger.error("Jedis returnResource exception", e);
             }
         }
 
