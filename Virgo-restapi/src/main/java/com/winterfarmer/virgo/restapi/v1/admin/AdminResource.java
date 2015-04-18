@@ -12,12 +12,12 @@ import com.winterfarmer.virgo.account.service.StaffService;
 import com.winterfarmer.virgo.aggregator.model.ApiPrivilege;
 import com.winterfarmer.virgo.aggregator.model.ApiStaff;
 import com.winterfarmer.virgo.aggregator.model.ApiUser;
-import com.winterfarmer.virgo.base.model.CommonResult;
 import com.winterfarmer.virgo.common.util.CollectionsUtil;
 import com.winterfarmer.virgo.restapi.BaseResource;
 import com.winterfarmer.virgo.restapi.core.annotation.ParamSpec;
 import com.winterfarmer.virgo.restapi.core.annotation.RestApiInfo;
 import com.winterfarmer.virgo.restapi.core.exception.RestExceptionFactor;
+import com.winterfarmer.virgo.restapi.core.exception.VirgoRestException;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
@@ -39,10 +39,10 @@ public class AdminResource extends BaseResource {
     AccountService accountService;
 
     // list员工
-    @Path("list_staff.json")
+    @Path("staff_list.json")
     @GET
     @RestApiInfo(
-            desc = "根据手机号发送验证码",
+            desc = "列出员工",
             authPolicy = RestApiInfo.AuthPolicy.PUBLIC,
             groupType = GroupType.PUBLIC,
             rolePrivileges = {RolePrivilege.VIEW},
@@ -88,8 +88,63 @@ public class AdminResource extends BaseResource {
         return apiStaffList;
     }
 
+    @Path("staff_privilege.json")
+    @PUT
+    @RestApiInfo(
+            desc = "更新员工权限",
+            authPolicy = RestApiInfo.AuthPolicy.PUBLIC,
+            rolePrivileges = {RolePrivilege.ADMIN},
+            errors = {RestExceptionFactor.USER_ID_NOT_EXISTED,
+                    RestExceptionFactor.NO_RIGHTS}
+    )
+    @Produces(MediaType.APPLICATION_JSON)
+    ApiStaff setStaffPrivilege(
+            @FormParam("user_id")
+            @ParamSpec(isRequired = true, spec = USER_ID_SPEC, desc = USER_ID_DESC)
+            long userId,
+            @FormParam("group")
+            @ParamSpec(isRequired = true, spec = ENUM_COMPLETE_SPEC, desc = "权限组")
+            GroupType groupType,
+            @FormParam("privilege")
+            @ParamSpec(isRequired = true, spec = PRIVILEGE_BITS_SPEC, desc = PRIVILEGE_BITS_DESC)
+            int privilege,
+            @HeaderParam(HEADER_USER_ID)
+            long operatorId
+    ) {
+        User user = checkAndGetUser(userId);
+        Privilege operatorPrivilege = staffService.getPrivilege(operatorId, GroupType.SUPERVISOR);
+        if (operatorPrivilege != null && Privilege.hasPrivileges(RolePrivilege.ADMIN.getBit(), operatorPrivilege.getPrivileges())) {
+            // 超级管理员可以添加任何权限
+            // do nothing
+        } else {
+            // 其他，只有groupType权限组的管理员只可以添加groupType的权限
+            operatorPrivilege = staffService.getPrivilege(operatorId, groupType);
+            if (operatorPrivilege == null || !Privilege.hasPrivileges(RolePrivilege.ADMIN.getBit(), operatorPrivilege.getPrivileges())) {
+                throw new VirgoRestException(RestExceptionFactor.NO_RIGHTS);
+            }
+        }
 
-    // 设置某个人员的权限
+        if (!staffService.insertOrUpdatePrivilege(userId, groupType, privilege)) {
+            throw new VirgoRestException(RestExceptionFactor.INTERNAL_SERVER_ERROR);
+        }
+        List<Privilege> userPrivileges = staffService.getPrivileges(userId);
+        List<ApiPrivilege> apiPrivilegeList = Lists.transform(userPrivileges, new Function<Privilege, ApiPrivilege>() {
+            @Override
+            public ApiPrivilege apply(Privilege privilege) {
+                return new ApiPrivilege(privilege);
+            }
+        });
 
-    //
+        return new ApiStaff(new ApiUser(user), apiPrivilegeList);
+    }
+
+    private User checkAndGetUser(long userId) {
+        User user = accountService.getUser(userId);
+
+        if (user == null) {
+            throw new VirgoRestException(RestExceptionFactor.USER_ID_NOT_EXISTED);
+        }
+
+        return user;
+    }
 }

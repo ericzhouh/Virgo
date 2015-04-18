@@ -1,6 +1,7 @@
 package com.winterfarmer.virgo.account.dao;
 
 import com.alibaba.fastjson.JSON;
+import com.google.common.collect.Maps;
 import com.winterfarmer.virgo.account.model.*;
 import com.winterfarmer.virgo.base.dao.BaseRedisDao;
 import com.winterfarmer.virgo.data.redis.RedisBiz;
@@ -9,6 +10,7 @@ import com.winterfarmer.virgo.data.redis.VedisFactory;
 import org.springframework.stereotype.Repository;
 
 import javax.annotation.PostConstruct;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -100,5 +102,20 @@ public class AccountRedisDaoImpl extends BaseRedisDao implements AccountRedisDao
 
     private String getAccountSubKey(long userId, int appKey) {
         return appKey + ":" + userId;
+    }
+
+    private Map<GroupType, Integer> getPrivilegeMap(List<Role> roleList) {
+        Map<GroupType, Integer> privilegeMap = Maps.newHashMap();
+        for (Role role : roleList) {
+            if (!privilegeMap.containsKey(role.getGroupType())) {
+                privilegeMap.put(role.getGroupType(), 0);
+            }
+
+            int value = privilegeMap.get(role.getGroupType());
+            value += role.getRolePrivilege().getBit();
+            privilegeMap.put(role.getGroupType(), value);
+        }
+
+        return privilegeMap;
     }
 }

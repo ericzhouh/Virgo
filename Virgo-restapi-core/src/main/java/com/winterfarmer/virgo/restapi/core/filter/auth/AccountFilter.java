@@ -2,6 +2,7 @@ package com.winterfarmer.virgo.restapi.core.filter.auth;
 
 import com.winterfarmer.virgo.account.model.AccessToken;
 import com.winterfarmer.virgo.account.service.AccountService;
+import com.winterfarmer.virgo.account.service.StaffService;
 import com.winterfarmer.virgo.log.VirgoLogger;
 import com.winterfarmer.virgo.restapi.core.exception.RestExceptionFactor;
 import com.winterfarmer.virgo.restapi.core.exception.VirgoRestException;
@@ -17,6 +18,9 @@ import javax.ws.rs.container.ContainerRequestContext;
 public abstract class AccountFilter {
     @Resource(name = "accountService")
     protected AccountService accountService;
+
+    @Resource(name = "staffService")
+    protected StaffService staffService;
 
     protected String getAccessTokenString(ContainerRequestContext requestContext) {
         return ContainerRequestUtil.getAccessToken(requestContext);

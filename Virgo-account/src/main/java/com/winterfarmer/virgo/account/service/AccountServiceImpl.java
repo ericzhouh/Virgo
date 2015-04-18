@@ -22,7 +22,6 @@ import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
 import java.util.Calendar;
 import java.util.List;
-import java.util.Map;
 
 /**
  * Created by yangtianhang on 15-3-25.
@@ -186,27 +185,6 @@ public class AccountServiceImpl implements AccountService {
             default:
                 return null;
         }
-    }
-
-    @Override
-    public boolean hasPrivilege(long userId, List<Role> roleList) {
-        Map<GroupType, Integer> privilegeMap = Role.getPrivilegeMap(roleList);
-
-        if (accountRedisDao.hasPrivilege(userId, privilegeMap)) {
-            return true;
-        }
-
-        boolean hasPrivilege = true;
-        for (Map.Entry<GroupType, Integer> entry : privilegeMap.entrySet()) {
-            Privilege privilege = privilegeDao.retrievePrivilege(userId, entry.getKey());
-            if (Privilege.hasPrivileges(entry.getValue(), privilege.getPrivileges())) {
-                hasPrivilege = false;
-            }
-
-            accountRedisDao.setPrivilege(privilege);
-        }
-
-        return hasPrivilege;
     }
 
     private Long getUserIdByMobile(String mobile) {

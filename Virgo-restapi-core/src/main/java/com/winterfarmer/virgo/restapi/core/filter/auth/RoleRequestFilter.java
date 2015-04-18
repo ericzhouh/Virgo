@@ -27,7 +27,7 @@ public class RoleRequestFilter extends AccountFilter implements ContainerRequest
     @Override
     public void filter(ContainerRequestContext requestContext) throws IOException {
         AccessToken accessToken = getAccessTokenAndExplainToHeader(requestContext);
-        if (!accountService.hasPrivilege(accessToken.getUserId(), roleList)) {
+        if (!staffService.hasPrivilege(accessToken.getUserId(), roleList)) {
             throw new VirgoRestException(RestExceptionFactor.NO_RIGHTS);
         }
     }

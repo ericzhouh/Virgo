@@ -12,9 +12,7 @@ import java.util.List;
 public interface StaffService {
     boolean hasPrivilege(long userId, List<Role> roleList);
 
-    boolean createPrivilege(long userId, GroupType groupType, int privileges);
-
-    boolean updatePrivilege(long userId, GroupType groupType, int privileges);
+    boolean insertOrUpdatePrivilege(long userId, GroupType groupType, int privileges);
 
     List<Privilege> getPrivileges(long userId);
 

@@ -34,6 +34,12 @@ public abstract class BaseResource {
 
     protected static final String VERIFICATION_CODE_SPEC = "int:[0,999999]";
 
+    protected static final String USER_ID_SPEC = "long:[1,9223372036854775807]";
+    protected static final String USER_ID_DESC = "用户id";
+
+    protected static final String PRIVILEGE_BITS_SPEC = "int:[0,1024]";
+    protected static final String PRIVILEGE_BITS_DESC = "权限bit位组";
+
     protected static void setProperties(BaseModel model, String extension) {
         if (extension != null) {
             model.setProperties(JSON.parseObject(extension));
