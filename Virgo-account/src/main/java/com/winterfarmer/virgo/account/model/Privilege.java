@@ -10,9 +10,13 @@ public class Privilege extends BaseModel {
 
     private long userId;
     private GroupType groupType;
-    private int privileges;
+    private int privileges; // bit位表示
 
     public Privilege() {
+    }
+
+    public static boolean hasPrivileges(int need, int possess) {
+        return (need & possess) == need;
     }
 
     public long getUserId() {

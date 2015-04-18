@@ -1,9 +1,6 @@
 package com.winterfarmer.virgo.account.service;
 
-import com.winterfarmer.virgo.account.dao.AccessTokenDao;
-import com.winterfarmer.virgo.account.dao.AccountRedisDao;
-import com.winterfarmer.virgo.account.dao.OpenPlatformAccountDao;
-import com.winterfarmer.virgo.account.dao.UserDao;
+import com.winterfarmer.virgo.account.dao.*;
 import com.winterfarmer.virgo.account.model.*;
 import com.winterfarmer.virgo.base.Exception.MobileNumberException;
 import com.winterfarmer.virgo.base.Exception.UnexpectedVirgoException;
@@ -24,6 +21,7 @@ import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
 import java.util.Calendar;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by yangtianhang on 15-3-25.
@@ -44,6 +42,9 @@ public class AccountServiceImpl implements AccountService {
 
     @Resource(name = "accountRedisDao")
     AccountRedisDao accountRedisDao;
+
+    @Resource(name = "privilegeMysqlDao")
+    PrivilegeDao privilegeDao;
 
     private SecureRandom secureRandom;
 
@@ -178,7 +179,23 @@ public class AccountServiceImpl implements AccountService {
 
     @Override
     public boolean hasPrivilege(long userId, List<Role> roleList) {
-        return false;
+        Map<GroupType, Integer> privilegeMap = Role.getPrivilegeMap(roleList);
+
+        if (accountRedisDao.hasPrivilege(userId, privilegeMap)) {
+            return true;
+        }
+
+        boolean hasPrivilege = true;
+        for (Map.Entry<GroupType, Integer> entry : privilegeMap.entrySet()) {
+            Privilege privilege = privilegeDao.retrievePrivilege(userId, entry.getKey());
+            if (Privilege.hasPrivileges(entry.getValue(), privilege.getPrivileges())) {
+                hasPrivilege = false;
+            }
+
+            accountRedisDao.setPrivilege(privilege);
+        }
+
+        return hasPrivilege;
     }
 
     private Long getUserIdByMobile(String mobile) {

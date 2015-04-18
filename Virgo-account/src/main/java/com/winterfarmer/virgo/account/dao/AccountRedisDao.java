@@ -1,9 +1,12 @@
 package com.winterfarmer.virgo.account.dao;
 
 import com.winterfarmer.virgo.account.model.AccessToken;
+import com.winterfarmer.virgo.account.model.GroupType;
+import com.winterfarmer.virgo.account.model.Privilege;
 import com.winterfarmer.virgo.account.model.Role;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by yangtianhang on 15-4-11.
@@ -23,5 +26,7 @@ public interface AccountRedisDao {
 
     void setMobileUserId(String mobileNumber, long userId);
 
-    boolean hasPrivilege(long userId, List<Role> roleList);
+    boolean hasPrivilege(long userId, Map<GroupType, Integer> privilegeMap);
+
+    void setPrivilege(Privilege privilege);
 }

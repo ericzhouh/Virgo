@@ -1,20 +1,14 @@
 package com.winterfarmer.virgo.account.dao;
 
 import com.alibaba.fastjson.JSON;
-import com.google.common.collect.Maps;
-import com.winterfarmer.virgo.account.model.AccessToken;
-import com.winterfarmer.virgo.account.model.GroupType;
-import com.winterfarmer.virgo.account.model.Role;
-import com.winterfarmer.virgo.account.model.RolePrivilege;
+import com.winterfarmer.virgo.account.model.*;
 import com.winterfarmer.virgo.base.dao.BaseRedisDao;
-import com.winterfarmer.virgo.common.util.CollectionsUtil;
 import com.winterfarmer.virgo.data.redis.RedisBiz;
 import com.winterfarmer.virgo.data.redis.Vedis;
 import com.winterfarmer.virgo.data.redis.VedisFactory;
 import org.springframework.stereotype.Repository;
 
 import javax.annotation.PostConstruct;
-import java.util.List;
 import java.util.Map;
 
 /**
@@ -76,10 +70,28 @@ public class AccountRedisDaoImpl extends BaseRedisDao implements AccountRedisDao
     }
 
     @Override
-    public boolean hasPrivilege(long userId, List<Role> roleList) {
-        Map<GroupType, List<RolePrivilege>> privilegeMap = getPrivilegeMap(roleList);
-        getKey(PRIVILEGE, userId);
-        return false;
+    public boolean hasPrivilege(long userId, Map<GroupType, Integer> privilegeMap) {
+        for (Map.Entry<GroupType, Integer> entry : privilegeMap.entrySet()) {
+            String key = getKey(PRIVILEGE, entry.getKey().getIndex());
+            String privilege = vedis.hget(key, Long.toString(userId));
+            if (privilege == null) {
+                return false;
+            }
+
+            Integer privilegeBits = Integer.parseInt(privilege);
+            if (!Privilege.hasPrivileges(entry.getValue(), privilegeBits)) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    @Override
+    public void setPrivilege(Privilege privilege) {
+        String key = getKey(PRIVILEGE, privilege.getGroupType().getIndex());
+
+        vedis.hset(key, Long.toString(privilege.getUserId()), Integer.toString(privilege.getPrivileges()));
     }
 
     private String getAccessTokenKey(long userId, int appKey) {
@@ -88,14 +100,5 @@ public class AccountRedisDaoImpl extends BaseRedisDao implements AccountRedisDao
 
     private String getAccountSubKey(long userId, int appKey) {
         return appKey + ":" + userId;
-    }
-
-    private Map<GroupType, List<RolePrivilege>> getPrivilegeMap(List<Role> roleList) {
-        Map<GroupType, List<RolePrivilege>> privilegeMap = Maps.newHashMap();
-        for (Role role : roleList) {
-            CollectionsUtil.putMapList(privilegeMap, role.getGroupType(), role.getRolePrivilege());
-        }
-
-        return privilegeMap;
     }
 }
