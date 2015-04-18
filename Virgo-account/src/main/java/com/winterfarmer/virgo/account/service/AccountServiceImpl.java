@@ -1,5 +1,6 @@
 package com.winterfarmer.virgo.account.service;
 
+import com.google.common.collect.Lists;
 import com.winterfarmer.virgo.account.dao.*;
 import com.winterfarmer.virgo.account.model.*;
 import com.winterfarmer.virgo.base.Exception.MobileNumberException;
@@ -65,6 +66,16 @@ public class AccountServiceImpl implements AccountService {
     @Override
     public User getUser(long userId) {
         return userDao.retrieveUser(userId, false);
+    }
+
+    @Override
+    public List<User> getUsers(long... userIds) {
+        List<User> users = Lists.newArrayList();
+        for (long userId : userIds) {
+            users.add(getUser(userId));
+        }
+
+        return users;
     }
 
     @Override

@@ -219,7 +219,12 @@ public class BaseDao {
 
 
         public String build() {
-            String whereClause = " where " + this.whereClause + " ";
+            String whereClause;
+            if (StringUtils.isBlank(this.whereClause)) {
+                whereClause = "";
+            } else {
+                whereClause = " where " + this.whereClause + " ";
+            }
             if (limit != false) {
                 whereClause += " limit=? ";
             }
@@ -238,5 +243,9 @@ public class BaseDao {
 
     protected static WhereClauseBuilder where(String firstSubClause) {
         return new WhereClauseBuilder(firstSubClause);
+    }
+
+    protected static WhereClauseBuilder where() {
+        return new WhereClauseBuilder();
     }
 }

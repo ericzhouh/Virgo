@@ -42,7 +42,7 @@ public class AuthDynamicFilter implements DynamicFeature {
             List<Role> roleList = Lists.newArrayList();
             Set<RolePrivilege> rolePrivileges = Sets.newHashSet(restApiInfo.rolePrivileges());
             for (RolePrivilege rolePrivilege : rolePrivileges) {
-                roleList.add(new Role(restApiInfo.roleType(), rolePrivilege));
+                roleList.add(new Role(restApiInfo.groupType(), rolePrivilege));
             }
 
             context.register(new RoleRequestFilter(roleList));

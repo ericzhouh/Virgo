@@ -25,6 +25,11 @@
             <artifactId>Virgo-vehicle</artifactId>
             <version>${project.version}</version>
         </dependency>
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>Virgo-account</artifactId>
+            <version>${project.version}</version>
+        </dependency>
     </dependencies>
 
 </project>

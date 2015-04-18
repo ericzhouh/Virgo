@@ -1,23 +1,26 @@
 package com.winterfarmer.virgo.account.service;
 
-import com.google.common.collect.Maps;
+import com.winterfarmer.virgo.account.dao.PrivilegeDao;
 import com.winterfarmer.virgo.account.model.GroupType;
 import com.winterfarmer.virgo.account.model.Privilege;
 import com.winterfarmer.virgo.account.model.Role;
-import com.winterfarmer.virgo.account.model.RolePrivilege;
-import com.winterfarmer.virgo.common.util.CollectionsUtil;
 import com.winterfarmer.virgo.data.redis.RedisBiz;
 import com.winterfarmer.virgo.data.redis.Vedis;
 import com.winterfarmer.virgo.data.redis.VedisFactory;
+import org.springframework.stereotype.Service;
 
 import javax.annotation.PostConstruct;
+import javax.annotation.Resource;
 import java.util.List;
-import java.util.Map;
 
 /**
  * Created by yangtianhang on 15-4-17.
  */
-public class PrivilegeServiceImpl implements PrivilegeService {
+@Service("staffService")
+public class StaffServiceImpl implements StaffService {
+    @Resource(name = "privilegeMysqlDao")
+    PrivilegeDao privilegeDao;
+
     private Vedis vedis;
 
     @PostConstruct
@@ -31,7 +34,6 @@ public class PrivilegeServiceImpl implements PrivilegeService {
     // hash table的key是group type
     // hash table的field 是user id
     // hash table的val 是user对应field权限的bit位值
-
     @Override
     public boolean hasPrivilege(long userId, List<Role> roleList) {
         return false;
@@ -48,12 +50,17 @@ public class PrivilegeServiceImpl implements PrivilegeService {
     }
 
     @Override
-    public List<Privilege> retrievePrivileges(long userId) {
+    public List<Privilege> getPrivileges(long userId) {
         return null;
     }
 
     @Override
-    public Privilege retrievePrivilege(long userId, GroupType groupType) {
+    public Privilege getPrivilege(long userId, GroupType groupType) {
         return null;
+    }
+
+    @Override
+    public List<Privilege> listStaffPrivilege(GroupType groupType, int page, int count) {
+        return privilegeDao.retrievePrivileges(groupType, page * count, count);
     }
 }

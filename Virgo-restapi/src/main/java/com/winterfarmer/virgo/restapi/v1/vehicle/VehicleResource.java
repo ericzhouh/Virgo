@@ -71,10 +71,12 @@ public class VehicleResource extends BaseResource {
     @Produces(MediaType.APPLICATION_JSON)
     public List<ApiVehicle> getUserVehicleList(
             @QueryParam("page")
-            @ParamSpec(isRequired = true, spec = NORMAL_PAGE_SPEC, desc = NORMAL_PAGE_DESC)
+            @ParamSpec(isRequired = false, spec = NORMAL_PAGE_SPEC, desc = NORMAL_PAGE_DESC)
+            @DefaultValue(NORMAL_DEFAULT_PAGE_NUM)
             int page,
             @QueryParam("count")
-            @ParamSpec(isRequired = true, spec = NORMAL_COUNT_SPEC, desc = NORMAL_COUNT_DESC)
+            @ParamSpec(isRequired = false, spec = NORMAL_COUNT_SPEC, desc = NORMAL_COUNT_DESC)
+            @DefaultValue(NORMAL_DEFAULT_PAGE_COUNT)
             int count,
             @HeaderParam(HEADER_USER_ID)
             long userId) {

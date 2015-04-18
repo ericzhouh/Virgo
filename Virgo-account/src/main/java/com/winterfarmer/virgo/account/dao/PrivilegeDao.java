@@ -16,4 +16,6 @@ public interface PrivilegeDao {
     List<Privilege> retrievePrivileges(long userId);
 
     Privilege retrievePrivilege(long userId, GroupType groupType);
+
+    List<Privilege> retrievePrivileges(GroupType groupType, int offset, int limit);
 }

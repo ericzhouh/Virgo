@@ -12,6 +12,8 @@ import java.util.List;
 public interface AccountService {
     User getUser(long userId);
 
+    List<User> getUsers(long... userIds);
+
     String getHashedPassword(String password, String salt);
 
     AccessToken signUpByMobile(String mobileNumber, String password, String nickName,

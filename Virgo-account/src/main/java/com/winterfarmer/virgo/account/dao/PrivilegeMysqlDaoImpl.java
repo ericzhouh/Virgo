@@ -79,4 +79,19 @@ public class PrivilegeMysqlDaoImpl extends BaseDao implements PrivilegeDao {
     public Privilege retrievePrivilege(long userId, GroupType groupType) {
         return queryForObject(getReadJdbcTemplate(), select_privilege, privilegeRowMapper, userId, groupType.getIndex());
     }
+
+    private static final String select_privileges = selectAllSql(PRIVILEGE_TABLE_NAME) +
+            where().limitOffset().build();
+
+    private static final String select_privileges_by_group = selectAllSql(PRIVILEGE_TABLE_NAME) +
+            where(group.eqWhich()).limitOffset().build();
+
+    @Override
+    public List<Privilege> retrievePrivileges(GroupType groupType, int offset, int limit) {
+        if (groupType == null) {
+            return queryForList(getReadJdbcTemplate(), select_privileges, privilegeRowMapper, limit, offset);
+        } else {
+            return queryForList(getReadJdbcTemplate(), select_privileges_by_group, privilegeRowMapper, groupType.getIndex(), offset, limit);
+        }
+    }
 }

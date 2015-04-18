@@ -20,7 +20,7 @@ public @interface RestApiInfo {
 
     public RestExceptionFactor[] errors() default {};
 
-    public GroupType roleType() default GroupType.PUBLIC;
+    public GroupType groupType() default GroupType.PUBLIC;
 
     public RolePrivilege[] rolePrivileges() default {RolePrivilege.VIEW};
 

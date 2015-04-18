@@ -9,14 +9,17 @@ import java.util.List;
 /**
  * Created by yangtianhang on 15-4-17.
  */
-public interface PrivilegeService {
+public interface StaffService {
     boolean hasPrivilege(long userId, List<Role> roleList);
 
     boolean createPrivilege(long userId, GroupType groupType, int privileges);
 
     boolean updatePrivilege(long userId, GroupType groupType, int privileges);
 
-    List<Privilege> retrievePrivileges(long userId);
+    List<Privilege> getPrivileges(long userId);
 
-    Privilege retrievePrivilege(long userId, GroupType groupType);
+    Privilege getPrivilege(long userId, GroupType groupType);
+
+    // groupType == null -> 返回所有的
+    List<Privilege> listStaffPrivilege(GroupType groupType, int page, int count);
 }
