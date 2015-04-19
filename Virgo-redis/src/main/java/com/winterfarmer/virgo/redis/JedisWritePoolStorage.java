@@ -1,4 +1,4 @@
-package com.winterfarmer.virgo.data.redis;
+package com.winterfarmer.virgo.redis;
 
 import org.apache.commons.lang3.tuple.Pair;
 import redis.clients.jedis.JedisPool;

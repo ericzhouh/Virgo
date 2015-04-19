@@ -1,6 +1,8 @@
-package com.winterfarmer.virgo.data.redis.command;
+package com.winterfarmer.virgo.redis.command;
 
-import redis.clients.jedis.*;
+import redis.clients.jedis.BitOP;
+import redis.clients.jedis.SortingParams;
+import redis.clients.jedis.ZParams;
 
 import java.util.List;
 

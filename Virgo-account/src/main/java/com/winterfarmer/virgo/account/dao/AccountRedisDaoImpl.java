@@ -2,11 +2,14 @@ package com.winterfarmer.virgo.account.dao;
 
 import com.alibaba.fastjson.JSON;
 import com.google.common.collect.Maps;
-import com.winterfarmer.virgo.account.model.*;
+import com.winterfarmer.virgo.account.model.AccessToken;
+import com.winterfarmer.virgo.account.model.GroupType;
+import com.winterfarmer.virgo.account.model.Privilege;
+import com.winterfarmer.virgo.account.model.Role;
 import com.winterfarmer.virgo.base.dao.BaseRedisDao;
-import com.winterfarmer.virgo.data.redis.RedisBiz;
-import com.winterfarmer.virgo.data.redis.Vedis;
-import com.winterfarmer.virgo.data.redis.VedisFactory;
+import com.winterfarmer.virgo.redis.RedisBiz;
+import com.winterfarmer.virgo.redis.Vedis;
+import com.winterfarmer.virgo.redis.VedisFactory;
 import org.springframework.stereotype.Repository;
 
 import javax.annotation.PostConstruct;
@@ -18,6 +21,7 @@ import java.util.Map;
  */
 @Repository(value = "accountRedisDao")
 public class AccountRedisDaoImpl extends BaseRedisDao implements AccountRedisDao {
+//    @Resource(name = "accountVedis")
     private Vedis vedis;
 
     @PostConstruct

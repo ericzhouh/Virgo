@@ -34,6 +34,14 @@
             <artifactId>Virgo-common</artifactId>
         </dependency>
         <dependency>
+            <groupId>com.winterfarmer</groupId>
+            <artifactId>Virgo-redis</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.winterfarmer</groupId>
+            <artifactId>Virgo-database</artifactId>
+        </dependency>
+        <dependency>
             <groupId>commons-httpclient</groupId>
             <artifactId>commons-httpclient</artifactId>
             <version>3.1</version>

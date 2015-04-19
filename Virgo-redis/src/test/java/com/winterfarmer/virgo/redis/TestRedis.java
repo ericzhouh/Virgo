@@ -1,4 +1,4 @@
-package com.winterfarmer.virgo.data.redis;
+package com.winterfarmer.virgo.redis;
 
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Maps;

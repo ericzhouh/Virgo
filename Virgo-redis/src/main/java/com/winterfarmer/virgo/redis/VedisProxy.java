@@ -1,11 +1,11 @@
-package com.winterfarmer.virgo.data.redis;
+package com.winterfarmer.virgo.redis;
 
 import com.google.common.collect.Maps;
-import com.winterfarmer.virgo.data.redis.command.JedisReadCommands;
-import com.winterfarmer.virgo.data.redis.command.JedisWriteCommands;
-import com.winterfarmer.virgo.data.redis.command.MultiKeyReadCommands;
-import com.winterfarmer.virgo.data.redis.command.MultiKeyWriteCommands;
 import com.winterfarmer.virgo.log.VirgoLogger;
+import com.winterfarmer.virgo.redis.command.JedisReadCommands;
+import com.winterfarmer.virgo.redis.command.JedisWriteCommands;
+import com.winterfarmer.virgo.redis.command.MultiKeyReadCommands;
+import com.winterfarmer.virgo.redis.command.MultiKeyWriteCommands;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.tuple.Pair;
 import redis.clients.jedis.Jedis;

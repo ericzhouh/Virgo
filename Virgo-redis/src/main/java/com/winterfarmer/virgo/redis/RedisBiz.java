@@ -1,4 +1,4 @@
-package com.winterfarmer.virgo.data.redis;
+package com.winterfarmer.virgo.redis;
 
 /**
  * Created by yangtianhang on 15-4-9.

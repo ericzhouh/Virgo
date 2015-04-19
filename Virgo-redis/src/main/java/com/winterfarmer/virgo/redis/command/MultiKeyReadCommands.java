@@ -1,6 +1,6 @@
-package com.winterfarmer.virgo.data.redis.command;
+package com.winterfarmer.virgo.redis.command;
 
-import redis.clients.jedis.*;
+import redis.clients.jedis.ScanResult;
 
 import java.util.List;
 import java.util.Set;

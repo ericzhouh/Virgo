@@ -1,7 +1,6 @@
 package com.winterfarmer.virgo.aggregator.model;
 
 import com.alibaba.fastjson.annotation.JSONField;
-import com.winterfarmer.virgo.account.model.User;
 import com.winterfarmer.virgo.base.annotation.ApiField;
 import com.winterfarmer.virgo.base.annotation.ApiMode;
 

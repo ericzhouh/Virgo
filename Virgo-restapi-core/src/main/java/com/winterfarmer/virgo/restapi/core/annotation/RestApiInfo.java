@@ -1,7 +1,7 @@
 package com.winterfarmer.virgo.restapi.core.annotation;
 
-import com.winterfarmer.virgo.account.model.RolePrivilege;
 import com.winterfarmer.virgo.account.model.GroupType;
+import com.winterfarmer.virgo.account.model.RolePrivilege;
 import com.winterfarmer.virgo.restapi.core.exception.RestExceptionFactor;
 
 /**

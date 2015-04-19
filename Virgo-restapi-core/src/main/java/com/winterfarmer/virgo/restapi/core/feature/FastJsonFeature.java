@@ -1,8 +1,7 @@
 package com.winterfarmer.virgo.restapi.core.feature;
 
-import org.glassfish.jersey.CommonProperties;
 import com.winterfarmer.virgo.restapi.core.provider.FastJsonProvider;
-import org.glassfish.jersey.server.spring.scope.RequestContextFilter;
+import org.glassfish.jersey.CommonProperties;
 
 import javax.ws.rs.core.Feature;
 import javax.ws.rs.core.FeatureContext;

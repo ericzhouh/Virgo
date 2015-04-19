@@ -1,4 +1,4 @@
-package com.winterfarmer.virgo.data.redis.command;
+package com.winterfarmer.virgo.redis.command;
 
 import redis.clients.jedis.Client;
 

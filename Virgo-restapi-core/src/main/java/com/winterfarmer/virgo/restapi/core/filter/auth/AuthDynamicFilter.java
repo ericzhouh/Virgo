@@ -11,11 +11,10 @@ import org.glassfish.jersey.server.model.AnnotatedMethod;
 import javax.ws.rs.container.DynamicFeature;
 import javax.ws.rs.container.ResourceInfo;
 import javax.ws.rs.core.FeatureContext;
-
 import java.util.List;
 import java.util.Set;
 
-import static com.winterfarmer.virgo.restapi.core.annotation.RestApiInfo.*;
+import static com.winterfarmer.virgo.restapi.core.annotation.RestApiInfo.AuthPolicy;
 
 /**
  * Created by yangtianhang on 15-3-29.

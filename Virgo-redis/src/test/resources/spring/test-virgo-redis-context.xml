@@ -7,7 +7,7 @@
     <!-- 开启ignore-unresolvable＝true是为了防止其他spring配置文件开启了property-placeholder后导致其他的property configurer失效 -->
     <context:property-placeholder location="classpath:redis.properties" ignore-unresolvable="true"/>
 
-    <bean class="com.winterfarmer.virgo.data.redis.VedisFactory"/>
+    <bean class="com.winterfarmer.virgo.redis.VedisFactory"/>
 
     <!--<context:property-placeholder location="classpath:redis.properties" ignore-unresolvable="true"/>-->
     <bean id="jedisPoolConfig" class="redis.clients.jedis.JedisPoolConfig"
@@ -16,14 +16,14 @@
           p:maxWaitMillis="${redis.pool.maxWaitMillis}"
           p:testOnBorrow="${redis.pool.testOnBorrow}"/>
 
-    <bean id="testJedisPoolFactory" class="com.winterfarmer.virgo.data.redis.JedisPoolFactory">
+    <bean id="testJedisPoolFactory" class="com.winterfarmer.virgo.redis.JedisPoolFactory">
         <constructor-arg index="0" ref="jedisPoolConfig"/>
         <constructor-arg index="1" value="${redis.biz.test}"/>
         <constructor-arg index="2" value="1000"/>
         <constructor-arg index="3" value=""/>
     </bean>
 
-    <bean id="testVedisProxy" class="com.winterfarmer.virgo.data.redis.VedisProxy">
+    <bean id="testVedisProxy" class="com.winterfarmer.virgo.redis.VedisProxy">
         <constructor-arg ref="testJedisPoolFactory"/>
     </bean>
 
