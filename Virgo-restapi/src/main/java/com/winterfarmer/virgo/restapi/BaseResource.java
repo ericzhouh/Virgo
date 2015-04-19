@@ -22,7 +22,7 @@ public abstract class BaseResource {
     protected static final String NORMAL_DEFAULT_PAGE_COUNT = "20";
 
     protected static final String COMMON_STATE_SPEC = "enum:{0,1}";
-    protected static final String ENUM_COMPLETE_SPEC = "enum:U";
+    protected static final String ENUM_COMPLETE_SPEC = "enum:{U}";
 
     protected static final String NORMAL_LONG_ID_SPEC = "long:[1,9999999999]";
     protected static final String EXTENSION_SPEC = "string:0~32768";

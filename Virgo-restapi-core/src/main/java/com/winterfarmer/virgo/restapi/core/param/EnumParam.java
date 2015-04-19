@@ -25,13 +25,22 @@ public class EnumParam extends AbstractParamSpec<Integer> {
             checkParentheses(specValue);
             specValue = retrieveParentheses(specValue);
             Set<Integer> enumSet = getEnumSet(specValue);
-            return ArrayUtils.toPrimitive(new Integer[enumSet.size()]);
+            if (enumSet == null) {
+                return null;
+            }
+
+            return ArrayUtils.toPrimitive(enumSet.toArray(new Integer[0]));
         } catch (Exception e) {
             throw new ParamSpecException("Invalid enum param spec: " + specValue);
         }
     }
 
     private static Set<Integer> getEnumSet(String specValue) {
+        // 全集返回null
+        if (StringUtils.trim(specValue).equalsIgnoreCase("U")) {
+            return null;
+        }
+
         String[] strings = specValue.split(",");
         Set<Integer> enumSet = Sets.newTreeSet();
 
@@ -54,11 +63,11 @@ public class EnumParam extends AbstractParamSpec<Integer> {
     }
 
     private static void checkParentheses(String specValue) {
-        if (StringUtils.startsWith(specValue, "{")) {
+        if (!StringUtils.startsWith(specValue, "{")) {
             throw new RuntimeException();
         }
 
-        if (StringUtils.endsWith(specValue, "}")) {
+        if (!StringUtils.endsWith(specValue, "}")) {
             throw new RuntimeException();
         }
     }
@@ -79,11 +88,15 @@ public class EnumParam extends AbstractParamSpec<Integer> {
     }
 
     public EnumParam(int[] enums) {
-        for (int i : enums) {
-            enumSet.add(i);
+        if (enums == null) { // complete set
+            this.specValue = "{U}";
+        } else {
+            for (int i : enums) {
+                enumSet.add(i);
+            }
+            this.specValue = createSpecValue(enums);
         }
 
-        this.specValue = createSpecValue(enums);
         this.spec = createSpec(getName(), getValue());
     }
 
