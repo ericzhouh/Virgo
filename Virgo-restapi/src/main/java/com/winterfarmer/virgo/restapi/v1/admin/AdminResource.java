@@ -89,7 +89,7 @@ public class AdminResource extends BaseResource {
     }
 
     @Path("staff_privilege.json")
-    @PUT
+    @POST
     @RestApiInfo(
             desc = "更新员工权限",
             authPolicy = RestApiInfo.AuthPolicy.PUBLIC,

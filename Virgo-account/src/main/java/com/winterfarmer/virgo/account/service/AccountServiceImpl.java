@@ -153,7 +153,7 @@ public class AccountServiceImpl implements AccountService {
         // 重设密码
         String hashedPassword = getHashedPassword(password, user.getSalt());
         user.setHashedPassword(hashedPassword);
-        if (!userDao.updateUser(user)) {
+        if (!userDao.updatePassword(user.getUserId(), user.getHashedPassword())) {
             throw new UnexpectedVirgoException("update user(" + user.getUserId() + ")  failed: ");
         }
         // 删除所有相关token

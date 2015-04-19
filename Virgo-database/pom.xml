@@ -24,10 +24,6 @@
             <artifactId>Virgo-logger</artifactId>
         </dependency>
         <dependency>
-            <groupId>com.alibaba</groupId>
-            <artifactId>fastjson</artifactId>
-        </dependency>
-        <dependency>
             <groupId>com.winterfarmer</groupId>
             <artifactId>Virgo-common</artifactId>
         </dependency>

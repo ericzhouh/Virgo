@@ -14,4 +14,6 @@ public interface UserDao {
     boolean createUser(long userId, String nickName, String hashedPassword, String salt, AccountVersion version, Map<String, Object> extInfo);
 
     boolean updateUser(User user);
+
+    boolean updatePassword(long userId, String password);
 }

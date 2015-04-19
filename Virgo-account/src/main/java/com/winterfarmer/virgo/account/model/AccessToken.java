@@ -64,6 +64,6 @@ public class AccessToken extends BaseModel {
     }
 
     public boolean isExpire() {
-        return expireAt > System.currentTimeMillis();
+        return System.currentTimeMillis() > expireAt;
     }
 }

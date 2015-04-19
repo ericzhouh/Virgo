@@ -85,7 +85,7 @@ public class UserMysqlDaoImpl extends BaseDao implements UserDao {
 
     private static final String update_user_sql = "update " + USER_TABLE_NAME + " set " +
             nickName.eqWhich() + ", " +
-            extInfo.eqWhich() + ", " +
+            extInfo.eqWhich() +
             " where " + userId.eqWhich() + ";";
 
     @Override
@@ -93,5 +93,13 @@ public class UserMysqlDaoImpl extends BaseDao implements UserDao {
         ParamChecker.notNull(user, "user");
         return update(update_user_sql,
                 user.getNickName(), ExtInfoColumn.toBytes(user.getProperties()), user.getUserId()) > 0;
+    }
+
+    private static final String update_password = updateSql(USER_TABLE_NAME, hashedPassword) +
+            where(userId.eqWhich());
+
+    @Override
+    public boolean updatePassword(long userId, String password) {
+        return update(update_password, password, userId) > 0;
     }
 }
