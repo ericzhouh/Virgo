@@ -29,13 +29,18 @@ public class DaoInit {
     @Resource(name = "openPlatformAccountMysqlDao")
     OpenPlatformAccountDao openPlatformAccountDao;
 
-//    @Resource(name = "oauth2MysqlDao")
-//    OAuth2Dao oauth2Dao;
+    @Resource(name = "oauth2MysqlDao")
+    OAuth2Dao oauth2Dao;
+
+    @Resource(name = "privilegeMysqlDao")
+    PrivilegeDao privilegeDao;
 
     @Test
     public void init() {
         ((UserMysqlDaoImpl) userDao).initTable(true);
         ((AccessTokenMysqlDaoImpl) accessTokenDao).initTable(true);
         ((OpenPlatformAccountMysqlDaoImpl) openPlatformAccountDao).initTable(true);
+        ((OAuth2MysqlDaoImpl) oauth2Dao).initTable(true);
+        ((PrivilegeMysqlDaoImpl) privilegeDao).initTable(true);
     }
 }

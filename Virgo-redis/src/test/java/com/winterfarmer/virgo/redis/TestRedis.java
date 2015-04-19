@@ -25,7 +25,7 @@ import java.util.Set;
  */
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(locations = {"classpath:spring/test-virgo-redis-context.xml"})
+@ContextConfiguration(locations = {"classpath:spring/virgo-test-redis-context.xml"})
 public class TestRedis {
     Vedis vedis;
 
