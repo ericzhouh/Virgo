@@ -31,7 +31,9 @@ public class VedisProxy implements InvocationHandler {
     }
 
     public Vedis newVedis() {
-        return (Vedis) Proxy.newProxyInstance(Vedis.class.getClassLoader(), new Class[]{Vedis.class}, this);
+        ClassLoader loader = Vedis.class.getClassLoader();
+        Vedis vedis = (Vedis) Proxy.newProxyInstance(loader, new Class[]{Vedis.class}, this);
+        return vedis;
     }
 
     @Override

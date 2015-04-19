@@ -11,7 +11,11 @@ public class VedisFactory implements ApplicationContextAware {
     private static ApplicationContext context;
 
     public static Vedis getVedis(RedisBiz redisBiz) {
-        System.out.println(redisBiz.name());
+        System.out.println("=============" + redisBiz.name().toLowerCase() + "Vedis");
+        for (String beanName : context.getBeanDefinitionNames()) {
+            System.out.println("====== bean =======" + beanName);
+        }
+
         return context.getBean(redisBiz.name().toLowerCase() + "Vedis", Vedis.class);
     }
 
