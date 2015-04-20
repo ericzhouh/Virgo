@@ -4,9 +4,16 @@ import com.winterfarmer.virgo.account.model.GroupType;
 import com.winterfarmer.virgo.account.model.RolePrivilege;
 import com.winterfarmer.virgo.restapi.core.exception.RestExceptionFactor;
 
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
+
 /**
  * Created by yangtianhang on 15-1-24.
  */
+@Retention(RetentionPolicy.RUNTIME)
+@Target(ElementType.METHOD)
 public @interface RestApiInfo {
     public String desc() default "";
 

@@ -12,6 +12,10 @@ import java.io.IOException;
  */
 @Priority(FilterPriorities.AUTHENTICATION)
 public class InternalRequestFilter extends AccountFilter implements ContainerRequestFilter {
+    public InternalRequestFilter() {
+        super();
+    }
+
     @Override
     public void filter(ContainerRequestContext requestContext) throws IOException {
 

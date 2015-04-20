@@ -9,6 +9,7 @@ import com.winterfarmer.virgo.database.helper.column.binary.ExtInfoColumn;
 import com.winterfarmer.virgo.database.helper.column.numeric.BigintColumn;
 import com.winterfarmer.virgo.database.helper.column.numeric.TinyIntColumn;
 import com.winterfarmer.virgo.database.helper.column.string.VarcharColumn;
+import com.winterfarmer.virgo.log.VirgoLogger;
 import com.winterfarmer.virgo.vehicle.model.Vehicle;
 import org.springframework.jdbc.core.PreparedStatementCreator;
 import org.springframework.jdbc.core.RowMapper;
@@ -55,6 +56,7 @@ public class VehicleMysqlDaoImpl extends BaseDao implements VehicleDao {
             insertIntoSQL(VEHICLE_TABLE_NAME, userId, licensePlate, vehicleIdNo, engineNo, state, extInfo);
 
     private PreparedStatement createInsertPreparedStatement(Connection connection, final Vehicle vehicle) throws SQLException {
+        VirgoLogger.info(insert_vehicle_sql);
         PreparedStatement ps = connection.prepareStatement(insert_vehicle_sql, new String[]{vehicleId.getName()});
         ps.setLong(1, vehicle.getUserId());
         ps.setString(2, vehicle.getLicensePlate());

@@ -7,6 +7,7 @@ import org.glassfish.hk2.api.ServiceHandle;
 import org.springframework.context.ApplicationContext;
 
 import javax.annotation.Resource;
+import javax.inject.Singleton;
 import java.lang.reflect.*;
 import java.util.Map;
 import java.util.logging.Logger;
@@ -14,6 +15,7 @@ import java.util.logging.Logger;
 /**
  * Created by yangtianhang on 15-1-28.
  */
+@Singleton
 public class ResourceInjectResolver implements InjectionResolver<Resource> {
     private static final Logger LOGGER = Logger.getLogger(ResourceInjectResolver.class.getName());
 

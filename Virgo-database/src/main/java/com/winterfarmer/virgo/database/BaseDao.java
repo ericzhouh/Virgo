@@ -225,11 +225,11 @@ public class BaseDao {
                 whereClause = " where " + this.whereClause + " ";
             }
             if (limit != false) {
-                whereClause += " limit=? ";
+                whereClause += " limit ? ";
             }
 
             if (offset != false) {
-                whereClause += " offset=? ";
+                whereClause += " offset ? ";
             }
             return whereClause;
         }

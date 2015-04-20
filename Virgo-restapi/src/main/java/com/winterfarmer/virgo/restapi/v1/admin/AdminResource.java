@@ -98,7 +98,7 @@ public class AdminResource extends BaseResource {
                     RestExceptionFactor.NO_RIGHTS}
     )
     @Produces(MediaType.APPLICATION_JSON)
-    ApiStaff setStaffPrivilege(
+    public ApiStaff setStaffPrivilege(
             @FormParam("user_id")
             @ParamSpec(isRequired = true, spec = USER_ID_SPEC, desc = USER_ID_DESC)
             long userId,

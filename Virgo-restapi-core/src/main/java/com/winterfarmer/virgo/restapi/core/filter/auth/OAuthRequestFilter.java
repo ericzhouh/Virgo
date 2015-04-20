@@ -13,6 +13,10 @@ import java.io.IOException;
  */
 @Priority(FilterPriorities.AUTHENTICATION)
 public class OAuthRequestFilter extends AccountFilter implements ContainerRequestFilter {
+    public OAuthRequestFilter() {
+        super();
+    }
+
     @Override
     public void filter(ContainerRequestContext requestContext) throws IOException {
         AccessToken accessToken = getAccessTokenAndExplainToHeader(requestContext);

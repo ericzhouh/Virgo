@@ -89,92 +89,99 @@ public class VehicleResource extends BaseResource {
         });
     }
 
-//    @Path("vehicle.json")
-//    @POST
-//    @RestApiInfo(
-//            desc = "用户添加车辆信息",
-//            authPolicy = RestApiInfo.AuthPolicy.OAUTH,
-//            errors = {RestExceptionFactor.VEHICLE_NOT_EXISTED}
-//    )
-//    @Produces(MediaType.APPLICATION_JSON)
-//    public ApiVehicle createUserVehicle(
-//            @FormParam("license_plate")
-//            @ParamSpec(isRequired = true, spec = LICENSE_PLATE_SPEC, desc = "车牌号")
-//            String licensePlate,
-//            @FormParam("vehicle_id_no")
-//            @ParamSpec(isRequired = false, spec = VEHICLE_ID_NO_SPEC, desc = "车架号")
-//            String vehicleIdNo,
-//            @FormParam("engine_no")
-//            @ParamSpec(isRequired = false, spec = ENGINE_NO_SPEC, desc = "发动机号")
-//            String engineNo,
-//            @FormParam("extension")
-//            @ParamSpec(isRequired = false, spec = EXTENSION_SPEC, desc = "扩展信息")
-//            String extension,
-//            @HeaderParam(HEADER_USER_ID)
-//            long userId) {
-//        Vehicle vehicle = new Vehicle();
-//        vehicle.setLicensePlate(licensePlate);
-//        vehicle.setVehicleIdNo(vehicleIdNo);
-//        vehicle.setEngineNo(engineNo);
-//        if (extension != null) {
-//            vehicle.setProperties(JSON.parseObject(extension));
-//        }
-//        vehicle.setUserId(userId);
-//
-//        Vehicle newVehicle = vehicleService.createVehicle(vehicle);
-//        if (newVehicle == null) {
-//            throw new VirgoRestException(RestExceptionFactor.INTERNAL_SERVER_ERROR);
-//        } else {
-//            return transVehicleApiFunc.apply(newVehicle);
-//        }
-//    }
-//
-//    @Path("vehicle.json")
-//    @POST
-//    @RestApiInfo(
-//            desc = "用户修改车辆信息",
-//            authPolicy = RestApiInfo.AuthPolicy.OAUTH,
-//            errors = {RestExceptionFactor.VEHICLE_NOT_EXISTED}
-//    )
-//    @Produces(MediaType.APPLICATION_JSON)
-//    public ApiVehicle updateUserVehicle(
-//            @FormParam("vehicle_id")
-//            @ParamSpec(isRequired = true, spec = NORMAL_LONG_ID_SPEC, desc = "用户汽车id")
-//            long vehicleId,
-//            @FormParam("license_plate")
-//            @ParamSpec(isRequired = true, spec = LICENSE_PLATE_SPEC, desc = "车牌号")
-//            String licensePlate,
-//            @FormParam("vehicle_id_no")
-//            @ParamSpec(isRequired = true, spec = VEHICLE_ID_NO_SPEC, desc = "车架号")
-//            String vehicleIdNo,
-//            @FormParam("engine_no")
-//            @ParamSpec(isRequired = true, spec = ENGINE_NO_SPEC, desc = "发动机号")
-//            String engineNo,
-//            @FormParam("state")
-//            @ParamSpec(isRequired = true, spec = COMMON_STATE_SPEC, desc = "删除 or 正常")
-//            CommonState state,
-//            @FormParam("extension")
-//            @ParamSpec(isRequired = true, spec = EXTENSION_SPEC, desc = "扩展信息")
-//            String extension,
-//            @HeaderParam(HEADER_USER_ID)
-//            long userId) {
-//        Vehicle vehicle = vehicleService.getVehicle(vehicleId);
-//        if (vehicle == null || vehicle.getUserId() != userId) {
-//            throw new VirgoRestException(RestExceptionFactor.VEHICLE_NOT_EXISTED);
-//        }
-//
-//        vehicle.setLicensePlate(licensePlate);
-//        vehicle.setVehicleIdNo(vehicleIdNo);
-//        vehicle.setEngineNo(engineNo);
-//        vehicle.setState(state);
-//        setProperties(vehicle, extension);
-//        vehicle.setUserId(userId);
-//
-//        boolean result = vehicleService.updateVehicle(vehicle);
-//        if (result) {
-//            return transVehicleApiFunc.apply(vehicle);
-//        } else {
-//            throw new VirgoRestException(RestExceptionFactor.INTERNAL_SERVER_ERROR);
-//        }
-//    }
+    @Path("new_vehicle.json")
+    @POST
+    @RestApiInfo(
+            desc = "用户添加车辆信息",
+            authPolicy = RestApiInfo.AuthPolicy.OAUTH,
+            errors = {RestExceptionFactor.VEHICLE_NOT_EXISTED}
+    )
+    @Produces(MediaType.APPLICATION_JSON)
+    public ApiVehicle createUserVehicle(
+            @FormParam("license_plate")
+            @ParamSpec(isRequired = true, spec = LICENSE_PLATE_SPEC, desc = "车牌号")
+            String licensePlate,
+            @FormParam("vehicle_id_no")
+            @ParamSpec(isRequired = false, spec = VEHICLE_ID_NO_SPEC, desc = "车架号")
+            String vehicleIdNo,
+            @FormParam("engine_no")
+            @ParamSpec(isRequired = false, spec = ENGINE_NO_SPEC, desc = "发动机号")
+            String engineNo,
+            @FormParam("extension")
+            @ParamSpec(isRequired = false, spec = EXTENSION_SPEC, desc = "扩展信息")
+            String extension,
+            @HeaderParam(HEADER_USER_ID)
+            long userId) {
+        Vehicle vehicle = new Vehicle();
+        vehicle.setLicensePlate(licensePlate);
+        vehicle.setVehicleIdNo(vehicleIdNo);
+        vehicle.setEngineNo(engineNo);
+        if (extension != null) {
+            vehicle.setProperties(JSON.parseObject(extension));
+        }
+        vehicle.setUserId(userId);
+        vehicle.setState(CommonState.NORMAL);
+
+        Vehicle newVehicle = vehicleService.createVehicle(vehicle);
+        if (newVehicle == null) {
+            throw new VirgoRestException(RestExceptionFactor.INTERNAL_SERVER_ERROR);
+        } else {
+            return transVehicleApiFunc.apply(newVehicle);
+        }
+    }
+
+    @Path("vehicle.json")
+    @POST
+    @RestApiInfo(
+            desc = "用户修改车辆信息",
+            authPolicy = RestApiInfo.AuthPolicy.OAUTH,
+            errors = {RestExceptionFactor.VEHICLE_NOT_EXISTED}
+    )
+    @Produces(MediaType.APPLICATION_JSON)
+    public ApiVehicle updateUserVehicle(
+            @FormParam("vehicle_id")
+            @ParamSpec(isRequired = true, spec = NORMAL_LONG_ID_SPEC, desc = "用户汽车id")
+            long vehicleId,
+            @FormParam("license_plate")
+            @ParamSpec(isRequired = true, spec = LICENSE_PLATE_SPEC, desc = "车牌号")
+            String licensePlate,
+            @FormParam("state")
+            @ParamSpec(isRequired = true, spec = COMMON_STATE_SPEC, desc = "删除 or 正常")
+            CommonState state,
+            @FormParam("vehicle_id_no")
+            @ParamSpec(isRequired = false, spec = VEHICLE_ID_NO_SPEC, desc = "车架号")
+            String vehicleIdNo,
+            @FormParam("engine_no")
+            @ParamSpec(isRequired = false, spec = ENGINE_NO_SPEC, desc = "发动机号")
+            String engineNo,
+            @FormParam("extension")
+            @ParamSpec(isRequired = false, spec = EXTENSION_SPEC, desc = "扩展信息")
+            String extension,
+            @HeaderParam(HEADER_USER_ID)
+            long userId) {
+        Vehicle vehicle = vehicleService.getVehicle(vehicleId);
+        if (vehicle == null || vehicle.getUserId() != userId) {
+            throw new VirgoRestException(RestExceptionFactor.VEHICLE_NOT_EXISTED);
+        }
+
+        vehicle.setLicensePlate(licensePlate);
+        vehicle.setState(state);
+
+        if (vehicleIdNo != null) {
+            vehicle.setVehicleIdNo(vehicleIdNo);
+        }
+        if (engineNo != null) {
+            vehicle.setEngineNo(engineNo);
+        }
+        if (extension != null) {
+            setProperties(vehicle, extension);
+        }
+
+        boolean result = vehicleService.updateVehicle(vehicle);
+        if (result) {
+            return transVehicleApiFunc.apply(vehicle);
+        } else {
+            throw new VirgoRestException(RestExceptionFactor.INTERNAL_SERVER_ERROR);
+        }
+    }
 }

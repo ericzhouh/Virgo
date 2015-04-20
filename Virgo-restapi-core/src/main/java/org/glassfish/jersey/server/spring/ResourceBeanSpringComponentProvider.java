@@ -14,6 +14,9 @@ import org.jvnet.hk2.spring.bridge.api.SpringIntoHK2Bridge;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Controller;
+import org.springframework.stereotype.Repository;
+import org.springframework.stereotype.Service;
 import org.springframework.web.context.support.WebApplicationContextUtils;
 
 import javax.servlet.ServletContext;
@@ -63,10 +66,11 @@ public class ResourceBeanSpringComponentProvider implements ComponentProvider {
 
         // register Spring @Autowired annotation handler with HK2 ServiceLocator
         ServiceLocatorUtilities.addOneConstant(locator, new AutowiredInjectResolver(ctx));
+        // register Spring @Resource annotation handler with HK2 ServiceLocator
         ServiceLocatorUtilities.addOneConstant(locator, new ResourceInjectResolver(ctx));
+
         ServiceLocatorUtilities.addOneConstant(locator, ctx, "SpringContext", ApplicationContext.class);
         LOGGER.config(LocalizationMessages.SPRING_COMPONENT_PROVIDER_INITIALIZED());
-
 
 //        filter是new的spring无法注入，需要在filter的构造函数里对需要的bean赋值，也行有更好的实现方式
         ApplicationContextHolder.setApplicatioinContext(ctx);
@@ -80,10 +84,13 @@ public class ResourceBeanSpringComponentProvider implements ComponentProvider {
             return false;
         }
 
-        if (component.isAnnotationPresent(Component.class)) {
+        if (component.isAnnotationPresent(Component.class) ||
+                component.isAnnotationPresent(Service.class) ||
+                component.isAnnotationPresent(Repository.class) ||
+                component.isAnnotationPresent(Controller.class)) {
             DynamicConfiguration c = Injections.getConfiguration(locator);
             String[] beanNames = ctx.getBeanNamesForType(component);
-            if (beanNames == null || beanNames.length != 1) {
+            if ((beanNames == null || beanNames.length != 1)) {
                 LOGGER.severe(LocalizationMessages.NONE_OR_MULTIPLE_BEANS_AVAILABLE(component));
                 return false;
             }

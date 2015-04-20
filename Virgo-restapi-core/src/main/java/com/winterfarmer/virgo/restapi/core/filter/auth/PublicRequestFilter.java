@@ -13,6 +13,10 @@ import java.io.IOException;
  */
 @Priority(FilterPriorities.AUTHENTICATION)
 public class PublicRequestFilter extends AccountFilter implements ContainerRequestFilter {
+    public PublicRequestFilter() {
+        super();
+    }
+
     @Override
     public void filter(ContainerRequestContext requestContext) throws IOException {
         if (StringUtils.isBlank(getAccessTokenString(requestContext))) {

@@ -8,11 +8,11 @@ import com.winterfarmer.virgo.account.model.AccessToken;
 public interface AccessTokenDao {
     AccessToken retrieveAccessToken(long userId, int appKey);
 
-    public boolean createAccessToken(long userId, int appKey, String accessToken, long expireAt);
+    boolean createAccessToken(long userId, int appKey, String accessToken, long expireAt);
 
-    public boolean updateAccessToken(long userId, int appKey, String accessToken, long expireAt);
+    boolean updateAccessToken(long userId, int appKey, String accessToken, long expireAt);
 
-    public boolean deleteAccessToken(long userId);
+    boolean deleteAccessToken(long userId);
 
-    public boolean deleteAccessToken(long userId, int appKey);
+    boolean deleteAccessToken(long userId, int appKey);
 }
