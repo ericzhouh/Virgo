@@ -185,13 +185,4 @@
         <level value="debug"/>
     </logger>
 
-    <!--============================================================-->
-    <!--                     ROOT Loggers                           -->
-    <!--                     STDOUT & AMQP                          -->
-    <!--============================================================-->
-    <root>
-        <level value="debug"/>
-        <appender-ref ref="stdout"/>
-        <appender-ref ref="amqp"/>
-    </root>
 </log4j:configuration>

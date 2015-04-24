@@ -1,19 +1,20 @@
 package com.winterfarmer.virgo.log;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+//import org.apache.log4j.LogManager;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Created by yangtianhang on 15-1-6.
  */
 public class VirgoLogger {
-    private static final Logger debugLog = LogManager.getLogger("debug");
-    private static final Logger infoLog = LogManager.getLogger("info");
-    private static final Logger warnLog = LogManager.getLogger("warn");
-    private static final Logger errorLog = LogManager.getLogger("error");
-    private static final Logger fatalLog = LogManager.getLogger("fatal");
-    private static final Logger requestLog = LogManager.getLogger("request");
-    private static final Logger httpClientLog = LogManager.getLogger("httpClient");
+    private static final Logger debugLog = LoggerFactory.getLogger("debug");
+    private static final Logger infoLog = LoggerFactory.getLogger("info");
+    private static final Logger warnLog = LoggerFactory.getLogger("warn");
+    private static final Logger errorLog = LoggerFactory.getLogger("error");
+    private static final Logger fatalLog = LoggerFactory.getLogger("fatal");
+    private static final Logger requestLog = LoggerFactory.getLogger("request");
+    private static final Logger httpClientLog = LoggerFactory.getLogger("httpClient");
 
 //    static {
 //        Runtime.getRuntime().addShutdownHook(new Thread() {
