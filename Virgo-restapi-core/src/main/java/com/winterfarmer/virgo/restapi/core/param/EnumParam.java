@@ -136,7 +136,16 @@ public class EnumParam extends AbstractParamSpec<Integer> {
 
     @Override
     public boolean isValid(String value) {
-        return false;
+        try {
+            int val = Integer.parseInt(value);
+            if (enumSet == null) {
+                return true;
+            } else {
+                return enumSet.contains(val);
+            }
+        } catch (NumberFormatException e) {
+            return false;
+        }
     }
 
     @Override

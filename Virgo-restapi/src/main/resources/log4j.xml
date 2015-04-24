@@ -1,0 +1,197 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE log4j:configuration SYSTEM "log4j.dtd">
+<log4j:configuration xmlns:log4j="http://jakarta.apache.org/log4j/">
+    <!--============================================================-->
+    <!--                    Druid Appender                          -->
+    <!--============================================================-->
+    <appender class="org.apache.log4j.DailyRollingFileAppender" name="druidconnection">
+        <param value="${constant.local.logs.dir.path}/druid/connection.log" name="File"/>
+        <layout class="org.apache.log4j.EnhancedPatternLayout">
+            <param value="${log4j.file.log.pattern}" name="ConversionPattern"/>
+        </layout>
+    </appender>
+    <appender class="org.apache.log4j.DailyRollingFileAppender" name="druiddatasource">
+        <param value="${constant.local.logs.dir.path}/druid/dataSource.log" name="File"/>
+        <layout class="org.apache.log4j.EnhancedPatternLayout">
+            <param value="${log4j.file.log.pattern}" name="ConversionPattern"/>
+        </layout>
+    </appender>
+    <appender class="org.apache.log4j.DailyRollingFileAppender" name="druidresultset">
+        <param value="${constant.local.logs.dir.path}/druid/resultSet.log" name="File"/>
+        <layout class="org.apache.log4j.EnhancedPatternLayout">
+            <param value="${log4j.file.log.pattern}" name="ConversionPattern"/>
+        </layout>
+    </appender>
+    <appender class="org.apache.log4j.DailyRollingFileAppender" name="druidstat">
+        <param value="${constant.local.logs.dir.path}/druid/statement.log" name="File"/>
+        <layout class="org.apache.log4j.EnhancedPatternLayout">
+            <param value="${log4j.file.log.pattern}" name="ConversionPattern"/>
+        </layout>
+    </appender>
+
+
+    <!--============================================================-->
+    <!--                     Virgo Appenders                        -->
+    <!--============================================================-->
+    <appender class="org.apache.log4j.DailyRollingFileAppender" name="debugfile">
+        <param value="'.'yyyyMMdd-HH" name="DatePattern"/>
+        <param value="${constant.local.logs.dir.path}/debug.log" name="file"/>
+        <layout class="org.apache.log4j.EnhancedPatternLayout">
+            <param value="${log4j.file.log.pattern}" name="ConversionPattern"/>
+        </layout>
+    </appender>
+
+    <appender class="org.apache.log4j.DailyRollingFileAppender" name="infofile">
+        <param value="'.'yyyyMMdd-HH" name="DatePattern"/>
+        <param value="${constant.local.logs.dir.path}/info.log" name="file"/>
+        <layout class="org.apache.log4j.EnhancedPatternLayout">
+            <param value="${log4j.file.log.pattern}" name="ConversionPattern"/>
+        </layout>
+    </appender>
+
+    <appender class="org.apache.log4j.DailyRollingFileAppender" name="warnfile">
+        <param value="'.'yyyyMMdd" name="DatePattern"/>
+        <param value="${constant.local.logs.dir.path}/warn.log" name="file"/>
+        <layout class="org.apache.log4j.EnhancedPatternLayout">
+            <param value="${log4j.file.log.pattern}" name="ConversionPattern"/>
+        </layout>
+    </appender>
+
+    <appender class="org.apache.log4j.DailyRollingFileAppender" name="errorfile">
+        <param value="'.'yyyyMMdd" name="DatePattern"/>
+        <param value="${constant.local.logs.dir.path}/error.log" name="file"/>
+        <layout class="org.apache.log4j.EnhancedPatternLayout">
+            <param value="${log4j.file.log.pattern}" name="ConversionPattern"/>
+        </layout>
+    </appender>
+
+    <appender class="org.apache.log4j.DailyRollingFileAppender" name="httpfile">
+        <param value="'.'yyyyMMdd-HH" name="DatePattern"/>
+        <param value="${constant.local.logs.dir.path}/http.log" name="file"/>
+        <layout class="org.apache.log4j.EnhancedPatternLayout">
+            <param value="${log4j.file.log.pattern}" name="ConversionPattern"/>
+        </layout>
+    </appender>
+
+
+    <appender class="org.apache.log4j.DailyRollingFileAppender" name="requestfile">
+        <param value="'.'yyyyMMdd-HH" name="DatePattern"/>
+        <param value="${constant.local.logs.dir.path}/request.log" name="file"/>
+        <layout class="org.apache.log4j.EnhancedPatternLayout">
+            <param value="${log4j.file.log.pattern}" name="ConversionPattern"/>
+        </layout>
+    </appender>
+
+    <!--============================================================-->
+    <!--                    Unexpected Appenders                    -->
+    <!--============================================================-->
+    <appender class="org.apache.log4j.DailyRollingFileAppender" name="unexpected">
+        <param value="'.'yyyyMMdd-HH" name="DatePattern"/>
+        <param value="${constant.local.logs.dir.path}/unexpected.log" name="file"/>
+        <layout class="org.apache.log4j.EnhancedPatternLayout">
+            <param value="${log4j.file.log.pattern}" name="ConversionPattern"/>
+        </layout>
+    </appender>
+
+    <!--============================================================-->
+    <!--                    Console Appender                        -->
+    <!--============================================================-->
+    <appender class="org.apache.log4j.ConsoleAppender" name="stdout">
+        <layout class="com.jcabi.log.MulticolorLayout">
+            <param value="${log4j.console.log.pattern}" name="ConversionPattern"/>
+        </layout>
+    </appender>
+
+    <!--============================================================-->
+    <!--                     Druid Loggers                          -->
+    <!--============================================================-->
+    <logger name="druid.sql.Connection">
+        <level value="error"/>
+        <appender-ref ref="druidconnection"/>
+    </logger>
+    <logger name="druid.sql.DataSource">
+        <level value="error"/>
+        <appender-ref ref="druiddatasource"/>
+    </logger>
+    <logger name="druid.sql.ResultSet">
+        <level value="error"/>
+        <appender-ref ref="druidresultset"/>
+    </logger>
+    <logger name="druid.sql.Statement">
+        <level value="error"/>
+        <appender-ref ref="druidstat"/>
+    </logger>
+
+
+    <!--============================================================-->
+    <!--                     Virgo Loggers                          -->
+    <!--============================================================-->
+    <logger name="debug">
+        <level value="debug"/>
+        <appender-ref ref="debugfile"/>
+    </logger>
+    <logger name="info">
+        <level value="info"/>
+        <appender-ref ref="infofile"/>
+    </logger>
+    <logger name="warn">
+        <level value="warn"/>
+        <appender-ref ref="warnfile"/>
+    </logger>
+    <logger name="error">
+        <level value="error"/>
+        <appender-ref ref="errorfile"/>
+    </logger>
+
+    <logger name="httpClient">
+        <level value="info"/>
+        <appender-ref ref="httpfile"/>
+    </logger>
+
+    <logger name="apiRequest">
+        <level value="debug"/>
+        <appender-ref ref="requestfile"/>
+    </logger>
+
+    <!--============================================================-->
+    <!--                     Unexpected Loggers                     -->
+    <!--============================================================-->
+    <logger name="com">
+        <level value="warn"/>
+        <appender-ref ref="unexpected"/>
+    </logger>
+    <logger name="net">
+        <level value="warn"/>
+        <appender-ref ref="unexpected"/>
+    </logger>
+    <logger name="org">
+        <level value="warn"/>
+        <appender-ref ref="unexpected"/>
+    </logger>
+
+    <logger name="com.winterfarmer.virgo">
+        <level value="info"/>
+        <appender-ref ref="unexpected"/>
+    </logger>
+
+    <!--============================================================-->
+    <!--                     Console Loggers                        -->
+    <!--                     Spring & Unit Test                     -->
+    <!--============================================================-->
+    <logger name="org.springframework">
+        <level value="info"/>
+    </logger>
+    <logger name="testlog">
+        <level value="debug"/>
+    </logger>
+
+    <!--============================================================-->
+    <!--                     ROOT Loggers                           -->
+    <!--                     STDOUT & AMQP                          -->
+    <!--============================================================-->
+    <root>
+        <level value="debug"/>
+        <appender-ref ref="stdout"/>
+        <appender-ref ref="amqp"/>
+    </root>
+</log4j:configuration>

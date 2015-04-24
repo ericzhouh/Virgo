@@ -14,8 +14,8 @@ public class ApiUser {
     @ApiField(desc = "用户id")
     private long userId;
 
-    @JSONField(name = "昵称")
-    @ApiField(desc = "nick_name")
+    @JSONField(name = "nick_name")
+    @ApiField(desc = "昵称")
     private String nickName;
 
     public ApiUser(User user) {

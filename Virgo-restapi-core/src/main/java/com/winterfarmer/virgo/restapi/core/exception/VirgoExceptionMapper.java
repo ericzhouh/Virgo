@@ -48,7 +48,7 @@ public class VirgoExceptionMapper implements ExceptionMapper<Throwable> {
             // log exception
             if (throwable instanceof VirgoRestException) {
                 if (((VirgoRestException) throwable).getFactor() == RestExceptionFactor.INTERNAL_SERVER_ERROR) {
-                    // ApiLogger.error("Throwable caught:%s", ((ApolloRestException) t).getExFactor().getError_msg());
+                    // ApiLogger.error("Throwable caught:%s", ((VirgoRestException) t).getExFactor().getError_msg());
                 }
             } else {
                 if (throwable instanceof ParamException) {

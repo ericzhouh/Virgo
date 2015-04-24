@@ -55,7 +55,7 @@ public class AdminResource extends BaseResource {
             GroupType groupType,
             @QueryParam("page")
             @ParamSpec(isRequired = false, spec = NORMAL_PAGE_SPEC, desc = NORMAL_PAGE_DESC)
-            @DefaultValue(NORMAL_DEFAULT_PAGE_COUNT)
+            @DefaultValue(NORMAL_DEFAULT_PAGE_NUM)
             int page,
             @QueryParam("count")
             @ParamSpec(isRequired = false, spec = NORMAL_COUNT_SPEC, desc = NORMAL_COUNT_DESC)
