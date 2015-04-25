@@ -14,8 +14,9 @@ echo "tomcat bin path: ${TOMCAT_BIN_PATH}"
 echo "virgo code root: ${VIRGO_CODE_ROOT}"
 
 #echo "building virgo..."
-#cd ${VIRGO_CODE_ROOT}
-#mvn -U clean package
+cd ${VIRGO_CODE_ROOT}
+git pull origin master
+mvn -U clean package
 #echo "building virgo complete"
 
 echo "shutdown tomcat..."
