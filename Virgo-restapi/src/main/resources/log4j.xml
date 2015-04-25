@@ -148,7 +148,7 @@
         <appender-ref ref="httpfile"/>
     </logger>
 
-    <logger name="apiRequest">
+    <logger name="request">
         <level value="debug"/>
         <appender-ref ref="requestfile"/>
     </logger>
