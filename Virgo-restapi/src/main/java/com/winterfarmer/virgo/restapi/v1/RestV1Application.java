@@ -19,9 +19,11 @@ import javax.ws.rs.ApplicationPath;
  */
 @ApplicationPath("v1")
 public class RestV1Application extends ResourceConfig {
+    public static final String apiResourceClassPackage = "com.winterfarmer.virgo.restapi.v1";
+
     public RestV1Application() {
         VirgoLogger.info("init RestV1Application()");
-        packages("com.winterfarmer.virgo.restapi.v1");
+        packages(apiResourceClassPackage);
         register(VirgoLogFilter.class);
         register(VirgoExceptionMapper.class);
         register(JsonProcessingFeature.class).property(JsonGenerator.PRETTY_PRINTING, false);

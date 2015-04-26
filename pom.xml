@@ -499,5 +499,6 @@
         <module>Virgo-vehicle</module>
         <module>Virgo-aggregator</module>
         <module>Virgo-feed</module>
+        <module>Virgo-restapi-doc</module>
     </modules>
 </project>

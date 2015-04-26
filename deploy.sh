@@ -31,4 +31,4 @@ echo "start tomcat..."
 ${TOMCAT_BIN_PATH}/startup.sh
 echo "start tomcat complete"
 
-cd CURRENT_PATH
+cd ${CURRENT_PATH}

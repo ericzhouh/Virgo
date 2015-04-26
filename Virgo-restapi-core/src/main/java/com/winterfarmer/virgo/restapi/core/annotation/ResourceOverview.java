@@ -6,14 +6,10 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * Created by yangtianhang on 15-1-10.
+ * Created by yangtianhang on 15/4/26.
  */
 @Retention(RetentionPolicy.RUNTIME)
-@Target(ElementType.PARAMETER)
-public @interface ParamSpec {
-    boolean isRequired();
-
-    String desc() default "";
-
-    String spec() default "";
+@Target(ElementType.TYPE)
+public @interface ResourceOverview {
+    String value() default "";
 }

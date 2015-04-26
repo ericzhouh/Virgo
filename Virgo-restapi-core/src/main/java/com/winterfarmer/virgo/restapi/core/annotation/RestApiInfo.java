@@ -2,6 +2,7 @@ package com.winterfarmer.virgo.restapi.core.annotation;
 
 import com.winterfarmer.virgo.account.model.GroupType;
 import com.winterfarmer.virgo.account.model.RolePrivilege;
+import com.winterfarmer.virgo.base.model.CommonResult;
 import com.winterfarmer.virgo.restapi.core.exception.RestExceptionFactor;
 
 import java.lang.annotation.ElementType;
@@ -15,49 +16,51 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.METHOD)
 public @interface RestApiInfo {
-    public String desc() default "";
+    String desc() default "";
 
-    public Protocol protocol() default Protocol.HTTPS;
+    Protocol protocol() default Protocol.HTTPS;
 
-    public AuthPolicy authPolicy() default AuthPolicy.PUBLIC;
+    AuthPolicy authPolicy() default AuthPolicy.PUBLIC;
 
-    public String[] cautions() default {};
+    String[] cautions() default {};
 
-    public String[] extraParamDesc() default {};
+    String[] extraParamDesc() default {};
 
-    public RestExceptionFactor[] errors() default {};
+    RestExceptionFactor[] errors() default {};
 
-    public GroupType groupType() default GroupType.PUBLIC;
+    GroupType groupType() default GroupType.PUBLIC;
 
-    public RolePrivilege[] rolePrivileges() default {RolePrivilege.VIEW};
+    RolePrivilege[] rolePrivileges() default {RolePrivilege.VIEW};
 
-    public static enum Protocol {
+    Class resultDemo() default CommonResult.class;
+
+    enum Protocol {
         HTTP, HTTPS
     }
 
     // 授权策略
-    public static enum AuthPolicy {
+    enum AuthPolicy {
         PUBLIC {
             @Override
-            public String desc() {
+            String desc() {
                 return "公开";
             }
         },
 
         OAUTH {
             @Override
-            public String desc() {
+            String desc() {
                 return "OAuth";
             }
         },
 
         INTERNAL {
             @Override
-            public String desc() {
+            String desc() {
                 return "Internal";
             }
         },;
 
-        public abstract String desc();
+        abstract String desc();
     }
 }
