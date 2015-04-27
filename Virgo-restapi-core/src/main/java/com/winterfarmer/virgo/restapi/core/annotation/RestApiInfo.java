@@ -42,25 +42,25 @@ public @interface RestApiInfo {
     enum AuthPolicy {
         PUBLIC {
             @Override
-            String desc() {
+            public String desc() {
                 return "公开";
             }
         },
 
         OAUTH {
             @Override
-            String desc() {
+            public String desc() {
                 return "OAuth";
             }
         },
 
         INTERNAL {
             @Override
-            String desc() {
+            public String desc() {
                 return "Internal";
             }
         },;
 
-        abstract String desc();
+        public abstract String desc();
     }
 }

@@ -13,7 +13,7 @@
     <dependencies>
         <dependency>
             <groupId>com.winterfarmer</groupId>
-            <artifactId>Virgo-restapi</artifactId>
+            <artifactId>Virgo-restapi-core</artifactId>
             <version>${parent.version}</version>
         </dependency>
         <dependency>

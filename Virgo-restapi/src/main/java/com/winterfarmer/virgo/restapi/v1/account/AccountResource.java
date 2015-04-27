@@ -209,9 +209,9 @@ public class AccountResource extends BaseResource {
     }
 
     private void checkMobileVerificationCode(String mobilePhone, int code) {
-//        if (!AccountUtil.checkMobileCode(mobilePhone, code)) {
-//            throw new VirgoRestException(RestExceptionFactor.INVALID_MOBILE_VERIFICATION_CODE);
-//        }
+        if (!AccountUtil.checkMobileCode(mobilePhone, code)) {
+            throw new VirgoRestException(RestExceptionFactor.INVALID_MOBILE_VERIFICATION_CODE);
+        }
     }
 
     private User checkAndGetUser(String openId, PlatformType platformType) {
