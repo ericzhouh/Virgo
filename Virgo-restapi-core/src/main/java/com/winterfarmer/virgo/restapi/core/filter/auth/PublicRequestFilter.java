@@ -19,7 +19,7 @@ public class PublicRequestFilter extends AccountFilter implements ContainerReque
 
     @Override
     public void filter(ContainerRequestContext requestContext) throws IOException {
-        if (StringUtils.isBlank(getAccessTokenString(requestContext))) {
+        if (StringUtils.isNotBlank(getAccessTokenString(requestContext))) {
             getAccessTokenAndExplainToHeader(requestContext);
         }
     }
