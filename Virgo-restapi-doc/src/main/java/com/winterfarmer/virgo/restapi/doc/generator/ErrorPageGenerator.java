@@ -23,7 +23,7 @@ public class ErrorPageGenerator extends DocGenerator {
 
     @Override
     public String getTemplatePath() {
-        return templateBase + SEP + "ErrorDesc.markdown";
+        return TEMPLATE_BASE + SEP + "ErrorDesc.markdown";
     }
 
     @Override

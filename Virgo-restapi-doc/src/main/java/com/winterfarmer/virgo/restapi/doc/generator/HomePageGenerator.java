@@ -18,9 +18,8 @@ import java.util.logging.Logger;
 /**
  * Created by yangtianhang on 15/4/26.
  */
-public class InterfacePageGenerator extends DocGenerator {
-    String indexTemplatePath = "doclet/Home.markdown";
-    String indexDocPath = "Home.markdown";
+public class HomePageGenerator extends DocGenerator {
+    String HOME_PAGE_NAME = "Home.markdown";
     String packageBaseToScan = "com.winterfarmer.virgo";
 
     @Override
@@ -47,7 +46,7 @@ public class InterfacePageGenerator extends DocGenerator {
                     String parentPath = entry.getValue();
 
                     out.println();
-                    out.println("## " + parentPath + NEWLINE + overview.value());
+                    out.println("## " + parentPath + NEWLINE + overview.desc());
                     out.println();
 
                     //(2) write sub apis
@@ -62,6 +61,9 @@ public class InterfacePageGenerator extends DocGenerator {
                         String doclink = path.substring(1).replace('/', '_').replace(".json", "");
 
                         RestApiInfo apiInfo = m.getAnnotation(RestApiInfo.class);
+                        if (apiInfo == null) {
+                            continue;
+                        }
 
                         String desc = apiInfo.desc();
                         // 没有 api status这个
@@ -98,8 +100,8 @@ public class InterfacePageGenerator extends DocGenerator {
                 }
             }
             rstmap.put("{indexTables}", baos.toString("UTF-8"));
-        } catch (UnsupportedEncodingException ex) {
-            Logger.getLogger(InterfacePageGenerator.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (Exception ex) {
+            ex.printStackTrace();
             throw ex;
         } finally {
             return rstmap;
@@ -108,12 +110,12 @@ public class InterfacePageGenerator extends DocGenerator {
 
     @Override
     public String getTemplatePath() {
-        return templateBase + SEP + "ErrorDesc.markdown";
+        return TEMPLATE_BASE + SEP + HOME_PAGE_NAME;
     }
 
     @Override
     public String getDocPath() {
-        return defaultDocBase + SEP + "base" + SEP + "error_code_info.md";
+        return defaultDocBase + SEP + HOME_PAGE_NAME;
     }
 
     @Override

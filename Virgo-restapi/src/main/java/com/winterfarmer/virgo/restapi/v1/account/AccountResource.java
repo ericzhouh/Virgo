@@ -13,6 +13,7 @@ import com.winterfarmer.virgo.common.util.AccountUtil;
 import com.winterfarmer.virgo.log.VirgoLogger;
 import com.winterfarmer.virgo.restapi.BaseResource;
 import com.winterfarmer.virgo.restapi.core.annotation.ParamSpec;
+import com.winterfarmer.virgo.restapi.core.annotation.ResourceOverview;
 import com.winterfarmer.virgo.restapi.core.annotation.RestApiInfo;
 import com.winterfarmer.virgo.restapi.core.exception.RestExceptionFactor;
 import com.winterfarmer.virgo.restapi.core.exception.VirgoRestException;
@@ -26,6 +27,7 @@ import javax.ws.rs.core.MediaType;
  * Created by yangtianhang on 15-3-30.
  */
 @Path("account")
+@ResourceOverview(desc = "账号接口")
 @Component("accountResource")
 public class AccountResource extends BaseResource {
     @Resource(name = "accountService")

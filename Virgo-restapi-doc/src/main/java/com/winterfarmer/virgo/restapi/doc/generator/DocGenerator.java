@@ -33,9 +33,9 @@ public abstract class DocGenerator {
 
     public static final String docBasePropKey = "com.winterfarmer.virgo.docbase";
     public static final String defaultDocBase = System.getProperty(docBasePropKey) != null ?
-            System.getProperty(docBasePropKey) : System.getProperty("user.home") + "/apollo.wiki";
+            System.getProperty(docBasePropKey) : System.getProperty("user.home") + "/virgo.wiki";
 
-    public static String templateBase = "doclet";
+    public static String TEMPLATE_BASE = "doc";
 
     public static final String HOME_PAGE_PATH = defaultDocBase + "/Home.markdown";
     public static final String API_DOC_DIR = defaultDocBase + "/apidocs";

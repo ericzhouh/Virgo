@@ -63,7 +63,7 @@ public class StringParam extends TextParam {
 
     @Override
     public String sample() {
-        return "normal string";
+        return "normal_string";
     }
 
     @Override

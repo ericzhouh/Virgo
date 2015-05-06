@@ -15,6 +15,7 @@ import com.winterfarmer.virgo.aggregator.model.ApiUser;
 import com.winterfarmer.virgo.common.util.CollectionsUtil;
 import com.winterfarmer.virgo.restapi.BaseResource;
 import com.winterfarmer.virgo.restapi.core.annotation.ParamSpec;
+import com.winterfarmer.virgo.restapi.core.annotation.ResourceOverview;
 import com.winterfarmer.virgo.restapi.core.annotation.RestApiInfo;
 import com.winterfarmer.virgo.restapi.core.exception.RestExceptionFactor;
 import com.winterfarmer.virgo.restapi.core.exception.VirgoRestException;
@@ -30,6 +31,7 @@ import java.util.Map;
  * Created by yangtianhang on 15-4-16.
  */
 @Path("admin")
+@ResourceOverview(desc = "管理员接口")
 @Component("adminResource")
 public class AdminResource extends BaseResource {
     @Resource(name = "staffService")

@@ -29,7 +29,7 @@ import java.util.logging.Logger;
  */
 public class RestapiDocTool {
     private static final String PACKAGE_ROOT = "com.winterfarmer.virgo";
-    public static final String JSON_FORMATTER = "doclet/dumpjson.js";
+    public static final String JSON_FORMATTER = "doc/dumpjson.js";
 
     public static void main(String[] args) {
         Map<String, String> parentUriMap = findParentUri(PACKAGE_ROOT);

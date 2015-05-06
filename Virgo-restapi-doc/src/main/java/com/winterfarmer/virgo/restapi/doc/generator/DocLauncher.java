@@ -6,9 +6,9 @@ package com.winterfarmer.virgo.restapi.doc.generator;
 public class DocLauncher {
     public static void generateDoc() throws Throwable {
         DocGenerator.doClean();
-        new ErrorPageGenerator().run();
-        new InterfacePageGenerator().run();
-        new ModelPageGenerator().run();
+//        new ErrorPageGenerator().run();
+        new HomePageGenerator().run();
+//        new ModelPageGenerator().run();
     }
 
     public static void main(String[] args) throws Throwable {

@@ -7,6 +7,7 @@ import com.winterfarmer.virgo.aggregator.model.ApiVehicle;
 import com.winterfarmer.virgo.base.model.CommonState;
 import com.winterfarmer.virgo.restapi.BaseResource;
 import com.winterfarmer.virgo.restapi.core.annotation.ParamSpec;
+import com.winterfarmer.virgo.restapi.core.annotation.ResourceOverview;
 import com.winterfarmer.virgo.restapi.core.annotation.RestApiInfo;
 import com.winterfarmer.virgo.restapi.core.exception.RestExceptionFactor;
 import com.winterfarmer.virgo.restapi.core.exception.VirgoRestException;
@@ -23,6 +24,7 @@ import java.util.List;
  * Created by yangtianhang on 15-4-14.
  */
 @Path("vehicle")
+@ResourceOverview(desc = "车辆接口")
 @Component("vehicleResource")
 public class VehicleResource extends BaseResource {
     protected static final String LICENSE_PLATE_SPEC = "string:6~24";

@@ -6,7 +6,7 @@
 URL
 ==============
 
-{protocol}://opentest.seriousapps.cn{requestURI}
+{protocol}://this_is_fake_demo{requestURI}
 
 
 HTTP请求方式
@@ -39,7 +39,7 @@ HTTP请求方式
 命令行调用
 =========
 
-curl  {curlPostParam} "{protocol}://opentest.seriousapps.cn{requestURI}{curlGetParam}"
+curl  {curlPostParam} "{protocol}://this_is_fake_demo{requestURI}{curlGetParam}"
 
 
 注意事项
@@ -49,8 +49,8 @@ curl  {curlPostParam} "{protocol}://opentest.seriousapps.cn{requestURI}{curlGetP
 
 返回结果示例
 ===============
-
 {retRst}
+
 	{retRstJSON}
 
 

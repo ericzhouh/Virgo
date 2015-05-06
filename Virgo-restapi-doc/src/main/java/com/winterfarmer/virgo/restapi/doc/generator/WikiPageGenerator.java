@@ -8,6 +8,8 @@ import com.winterfarmer.virgo.base.annotation.ApiMode;
 import com.winterfarmer.virgo.base.model.CommonResult;
 import com.winterfarmer.virgo.restapi.core.annotation.ParamSpec;
 import com.winterfarmer.virgo.restapi.core.annotation.RestApiInfo;
+import com.winterfarmer.virgo.restapi.core.param.AbstractParamSpec;
+import com.winterfarmer.virgo.restapi.core.param.ParamSpecFactory;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
 
@@ -68,7 +70,7 @@ public class WikiPageGenerator extends DocGenerator {
             isCollection = true;
         }
 
-        rstMap.put("{retRst}", (isCollection ? "集合" : "单独实体") + resolveDemoWikiLink(restApiInfo.resultDemo()));
+        rstMap.put("{retRst}", (isCollection ? "集合: " : "单独实体: ") + resolveDemoWikiLink(restApiInfo.resultDemo()));
         rstMap.put("{retRstJSON}", resolveDemoJSON(isCollection, restApiInfo.resultDemo()));
         rstMap.putAll(resolveParamTable());
 
@@ -101,7 +103,7 @@ public class WikiPageGenerator extends DocGenerator {
         String link = "[#mode_name#](#mode_link#) ";
         ApiMode apiMode = (ApiMode) aClass.getAnnotation(ApiMode.class);
         if (aClass == CommonResult.class) {
-            return "通用对象";
+            return "通用对象 (CommonResult)";
         }
 
         if (apiMode == null) {
@@ -118,6 +120,7 @@ public class WikiPageGenerator extends DocGenerator {
 
         StringBuilder postParam = new StringBuilder(" ");
         StringBuilder getParam = new StringBuilder(" ");
+
         boolean isMultiPart = isMultiPart();
         String p = isMultiPart ? "-F" : "-d";
         resolveCurlMethod(postParam);
@@ -151,7 +154,11 @@ public class WikiPageGenerator extends DocGenerator {
                     required = paramDesc.isRequired();
                     desc = paramDesc.desc();
                     range = paramDesc.spec();
-                    type = type + "(range=" + range + ")";
+                    if (StringUtils.isNotBlank(type)) {
+                        type = type + ": " + paramDesc.spec();
+                    } else {
+                        type = paramDesc.spec();
+                    }
                 }
                 if (annotation.annotationType().getSimpleName()
                         .endsWith("Param")) {
@@ -252,19 +259,17 @@ public class WikiPageGenerator extends DocGenerator {
     private String parseTypeStr(Class<?> param) {
         String type = param.getSimpleName().toLowerCase() + "";
 
-        if (type.equals("long")) {
-            type = "int64";
-        }
-        if (type.equals("double")) {
-            type = "float64";
-        }
+//        if (type.equals("long")) {
+//            type = "int64";
+//        }
+//        if (type.equals("double")) {
+//            type = "float64";
+//        }
         if (type.contains("stream") || type.contains("data")) {
-            type = "binary";
+            return "binary";
+        } else {
+            return "";
         }
-        if (param.isEnum()) {
-            type = "enum";
-        }
-        return type;
     }
 
 
@@ -357,7 +362,7 @@ public class WikiPageGenerator extends DocGenerator {
 
     @Override
     public String getTemplatePath() {
-        return templateBase + SEP + "ApiPage.markdown";
+        return TEMPLATE_BASE + SEP + "ApiPage.markdown";
     }
 
     @Override
@@ -373,9 +378,9 @@ public class WikiPageGenerator extends DocGenerator {
     }
 
     private void generateCurlParamDemo(boolean isMultiPart,
-                                       boolean isPathParam, String name, String type, String range,
+                                       boolean isPathParam, String name, String type, String strSpec,
                                        String p, StringBuilder postParam, StringBuilder getParam) {
-        String value = resolveDemoParamValue(type, range);
+        String value = resolveDemoParamValue(type, strSpec);
         if (resourceMethod.isAnnotationPresent(POST.class)) {
             if (isMultiPart) {
                 postParam.append(" ").append(p).append(" \"").append(name)
@@ -393,23 +398,21 @@ public class WikiPageGenerator extends DocGenerator {
         }
     }
 
-    private String resolveDemoParamValue(String type, String range) {
-        String result = "{value}";
-        if (!type.equals("binary")) {
-            if (range != null && range.length() > 0) {
-                try {
-                    // TODO: 后面再加上demo
-                    result = "";
-                } catch (Exception e) {
-                    result = resolveValueByType(type);
-                }
-            } else {
-                result = resolveValueByType(type);
+    private String resolveDemoParamValue(String type, String strSpec) {
+        return type.equals("binary") ? "1.jpg" : resolveNoBinaryDemoParamValue(type, strSpec);
+    }
+
+    private String resolveNoBinaryDemoParamValue(String type, String strSpec) {
+        if (StringUtils.isNotEmpty(strSpec)) {
+            try {
+                AbstractParamSpec spec = ParamSpecFactory.getParamSpec(strSpec);
+                return spec.sample();
+            } catch (Exception e) {
+                return resolveValueByType(type);
             }
         } else {
-            result = "1.jpg";
+            return resolveValueByType(type);
         }
-        return result;
     }
 
     private String resolveValueByType(String type) {

@@ -15,7 +15,7 @@ import java.util.*;
  */
 public class ModelPageGenerator extends DocGenerator {
 //    private final String indexTemplatePath = "doclet/Home.markdown";
-//    private final String indexDocPath = "Home.markdown";
+//    private final String HOME_PAGE_NAME = "Home.markdown";
     
     private final String packageBaseToScan = "com.ricebook";
 
@@ -182,7 +182,7 @@ public class ModelPageGenerator extends DocGenerator {
 
     @Override
     public String getTemplatePath() {
-        return templateBase + SEP + "api_mode.markdown";
+        return TEMPLATE_BASE + SEP + "api_mode.markdown";
     }
 
     @Override
