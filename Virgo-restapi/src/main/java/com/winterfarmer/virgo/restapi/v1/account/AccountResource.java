@@ -5,6 +5,7 @@ import com.winterfarmer.virgo.account.model.OpenPlatformAccount;
 import com.winterfarmer.virgo.account.model.PlatformType;
 import com.winterfarmer.virgo.account.model.User;
 import com.winterfarmer.virgo.account.service.AccountService;
+import com.winterfarmer.virgo.aggregator.model.ApiStaff;
 import com.winterfarmer.virgo.base.Exception.MobileNumberException;
 import com.winterfarmer.virgo.base.Exception.UnexpectedVirgoException;
 import com.winterfarmer.virgo.base.model.CommonResult;
@@ -52,6 +53,7 @@ public class AccountResource extends BaseResource {
     @RestApiInfo(
             desc = "根据手机号发送验证码",
             authPolicy = RestApiInfo.AuthPolicy.PUBLIC,
+            resultDemo = CommonResult.class,
             errors = {RestExceptionFactor.INVALID_MOBILE_NUMBER,
                     RestExceptionFactor.REQUEST_SIGN_UP_MOBILE_VERIFICATION_CODE_TOO_FREQUENTLY}
     )
@@ -80,6 +82,7 @@ public class AccountResource extends BaseResource {
     @RestApiInfo(
             desc = "注册并获取access token",
             authPolicy = RestApiInfo.AuthPolicy.PUBLIC,
+            resultDemo = AccessToken.class,
             errors = {RestExceptionFactor.INVALID_MOBILE_NUMBER,
                     RestExceptionFactor.INVALID_MOBILE_VERIFICATION_CODE,
                     RestExceptionFactor.MOBILE_NUMBER_HAS_BEEN_REGISTERED}
@@ -125,6 +128,7 @@ public class AccountResource extends BaseResource {
     @RestApiInfo(
             desc = "获取access token",
             authPolicy = RestApiInfo.AuthPolicy.PUBLIC,
+            resultDemo = AccessToken.class,
             errors = {RestExceptionFactor.INVALID_MOBILE_NUMBER,
                     RestExceptionFactor.INVALID_ID_OR_PASSWORD
             }
@@ -162,6 +166,7 @@ public class AccountResource extends BaseResource {
     @RestApiInfo(
             desc = "重置密码",
             authPolicy = RestApiInfo.AuthPolicy.PUBLIC,
+            resultDemo = CommonResult.class,
             errors = {RestExceptionFactor.INVALID_MOBILE_NUMBER,
                     RestExceptionFactor.INVALID_MOBILE_VERIFICATION_CODE,
                     RestExceptionFactor.RESET_PASSWORD_FAILED}

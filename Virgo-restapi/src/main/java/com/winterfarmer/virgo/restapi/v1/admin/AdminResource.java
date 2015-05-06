@@ -48,6 +48,7 @@ public class AdminResource extends BaseResource {
             authPolicy = RestApiInfo.AuthPolicy.PUBLIC,
             groupType = GroupType.PUBLIC,
             rolePrivileges = {RolePrivilege.VIEW},
+            resultDemo = ApiStaff.class,
             errors = {}
     )
     @Produces(MediaType.APPLICATION_JSON)
@@ -96,6 +97,7 @@ public class AdminResource extends BaseResource {
             desc = "更新员工权限",
             authPolicy = RestApiInfo.AuthPolicy.PUBLIC,
             rolePrivileges = {RolePrivilege.ADMIN},
+            resultDemo = ApiStaff.class,
             errors = {RestExceptionFactor.USER_ID_NOT_EXISTED,
                     RestExceptionFactor.NO_RIGHTS}
     )

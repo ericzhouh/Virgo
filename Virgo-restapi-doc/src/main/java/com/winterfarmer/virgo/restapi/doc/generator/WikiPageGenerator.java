@@ -147,13 +147,13 @@ public class WikiPageGenerator extends DocGenerator {
             String type = parseTypeStr(param);
             String desc = "";
             boolean isPathParam = false;
-            String range = "";
+            String spec = "";
             for (Annotation annotation : annotations) {
                 if (annotation.annotationType().equals(ParamSpec.class)) {
                     ParamSpec paramDesc = (ParamSpec) annotation;
                     required = paramDesc.isRequired();
                     desc = paramDesc.desc();
-                    range = paramDesc.spec();
+                    spec = paramDesc.spec();
                     if (StringUtils.isNotBlank(type)) {
                         type = type + ": " + paramDesc.spec();
                     } else {
@@ -187,10 +187,10 @@ public class WikiPageGenerator extends DocGenerator {
 
                 if (required) {
                     generateCurlParamDemo(isMultiPart, isPathParam, name, type,
-                            range, p, postParam, getParam);
+                            spec, p, postParam, getParam);
                 } else if (!required && optparam <= 0) {
                     generateCurlParamDemo(isMultiPart, isPathParam, name, type,
-                            range, p, postParam, getParam);
+                            spec, p, postParam, getParam);
                     optparam++;
                 }
             }

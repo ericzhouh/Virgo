@@ -17,7 +17,7 @@ public class ModelPageGenerator extends DocGenerator {
 //    private final String indexTemplatePath = "doclet/Home.markdown";
 //    private final String HOME_PAGE_NAME = "Home.markdown";
     
-    private final String packageBaseToScan = "com.ricebook";
+    private final String packageBaseToScan = "com.winterfarmer.virgo";
 
     @Override
     public Map<String, String> prepare() throws Throwable {

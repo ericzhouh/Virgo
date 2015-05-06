@@ -3,6 +3,7 @@ package com.winterfarmer.virgo.restapi.v1.vehicle;
 import com.alibaba.fastjson.JSON;
 import com.google.common.base.Function;
 import com.google.common.collect.Lists;
+import com.winterfarmer.virgo.account.model.AccessToken;
 import com.winterfarmer.virgo.aggregator.model.ApiVehicle;
 import com.winterfarmer.virgo.base.model.CommonState;
 import com.winterfarmer.virgo.restapi.BaseResource;
@@ -46,6 +47,7 @@ public class VehicleResource extends BaseResource {
     @RestApiInfo(
             desc = "获取用户车辆信息",
             authPolicy = RestApiInfo.AuthPolicy.OAUTH,
+            resultDemo = ApiVehicle.class,
             errors = {RestExceptionFactor.VEHICLE_NOT_EXISTED}
     )
     @Produces(MediaType.APPLICATION_JSON)
@@ -68,6 +70,7 @@ public class VehicleResource extends BaseResource {
     @RestApiInfo(
             desc = "获取用户车辆信息列表",
             authPolicy = RestApiInfo.AuthPolicy.OAUTH,
+            resultDemo = ApiVehicle.class,
             errors = {}
     )
     @Produces(MediaType.APPLICATION_JSON)
@@ -96,6 +99,7 @@ public class VehicleResource extends BaseResource {
     @RestApiInfo(
             desc = "用户添加车辆信息",
             authPolicy = RestApiInfo.AuthPolicy.OAUTH,
+            resultDemo = ApiVehicle.class,
             errors = {RestExceptionFactor.VEHICLE_NOT_EXISTED}
     )
     @Produces(MediaType.APPLICATION_JSON)
@@ -137,6 +141,7 @@ public class VehicleResource extends BaseResource {
     @RestApiInfo(
             desc = "用户修改车辆信息",
             authPolicy = RestApiInfo.AuthPolicy.OAUTH,
+            resultDemo = ApiVehicle.class,
             errors = {RestExceptionFactor.VEHICLE_NOT_EXISTED}
     )
     @Produces(MediaType.APPLICATION_JSON)
