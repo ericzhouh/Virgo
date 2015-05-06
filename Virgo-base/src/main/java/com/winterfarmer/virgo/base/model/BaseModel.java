@@ -3,13 +3,9 @@ package com.winterfarmer.virgo.base.model;
 import com.alibaba.fastjson.JSON;
 import com.google.common.base.Charsets;
 import com.google.common.collect.Maps;
-import org.apache.commons.collections4.CollectionUtils;
-import org.apache.commons.lang3.ArrayUtils;
-import org.apache.commons.lang3.tuple.Pair;
 import org.apache.http.annotation.NotThreadSafe;
 
 import java.io.Serializable;
-import java.util.Collection;
 import java.util.Map;
 
 /**

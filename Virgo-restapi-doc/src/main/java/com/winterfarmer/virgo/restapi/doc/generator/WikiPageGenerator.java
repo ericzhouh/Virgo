@@ -1,10 +1,9 @@
-package com.winterfarmer.virgo.restapi.doc;
+package com.winterfarmer.virgo.restapi.doc.generator;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.serializer.SerializerFeature;
 import com.google.common.base.Joiner;
 import com.google.common.collect.Lists;
-import com.winterfarmer.virgo.aggregator.model.ApiUser;
 import com.winterfarmer.virgo.base.annotation.ApiMode;
 import com.winterfarmer.virgo.base.model.CommonResult;
 import com.winterfarmer.virgo.restapi.core.annotation.ParamSpec;
@@ -472,44 +471,44 @@ public class WikiPageGenerator extends DocGenerator {
 
     public static void main(String[] args) {
 
-        try {
-            Class clz = ApiUser.class;
-            Constructor zeroArgConstructor = null;
-            Constructor argConstructor = null;
-            int lastArgNums = 10000;
-            for (Constructor c : clz.getDeclaredConstructors()) {
-                if (c.getGenericParameterTypes().length == 0) {
-                    zeroArgConstructor = c;
-                    break;
-                } else {
-                    if (c.getGenericParameterTypes().length < lastArgNums) {
-                        argConstructor = c;
-                        lastArgNums = c.getGenericParameterTypes().length;
-                    }
-                }
-            }
-            if (zeroArgConstructor != null) {
-                System.out.println(zeroArgConstructor.newInstance());
-            } else {
-
-                // TODO: fix args generating: currently, we don't support any model class without a default constructor
-
-                Object[] arr = new Object[argConstructor.getGenericParameterTypes().length];
-                for (int i = 0; i < argConstructor.getGenericParameterTypes().length; i++) {
-                    Type t = argConstructor.getGenericParameterTypes()[i];
-                    arr[i] = Class.forName(((Class) t).getCanonicalName()).newInstance();
-                    // TODO: fix args generating
-                }
-
-                System.out.println(argConstructor.newInstance(arr));
-//                return new CommonResult();
-            }
-
-        } catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException ex) {
-            System.out.println(ex);
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
-        }
+//        try {
+//            Class clz = ApiUser.class;
+//            Constructor zeroArgConstructor = null;
+//            Constructor argConstructor = null;
+//            int lastArgNums = 10000;
+//            for (Constructor c : clz.getDeclaredConstructors()) {
+//                if (c.getGenericParameterTypes().length == 0) {
+//                    zeroArgConstructor = c;
+//                    break;
+//                } else {
+//                    if (c.getGenericParameterTypes().length < lastArgNums) {
+//                        argConstructor = c;
+//                        lastArgNums = c.getGenericParameterTypes().length;
+//                    }
+//                }
+//            }
+//            if (zeroArgConstructor != null) {
+//                System.out.println(zeroArgConstructor.newInstance());
+//            } else {
+//
+//                // TODO: fix args generating: currently, we don't support any model class without a default constructor
+//
+//                Object[] arr = new Object[argConstructor.getGenericParameterTypes().length];
+//                for (int i = 0; i < argConstructor.getGenericParameterTypes().length; i++) {
+//                    Type t = argConstructor.getGenericParameterTypes()[i];
+//                    arr[i] = Class.forName(((Class) t).getCanonicalName()).newInstance();
+//                    // TODO: fix args generating
+//                }
+//
+//                System.out.println(argConstructor.newInstance(arr));
+////                return new CommonResult();
+//            }
+//
+//        } catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException ex) {
+//            System.out.println(ex);
+//        } catch (ClassNotFoundException e) {
+//            e.printStackTrace();
+//        }
     }
 
 }

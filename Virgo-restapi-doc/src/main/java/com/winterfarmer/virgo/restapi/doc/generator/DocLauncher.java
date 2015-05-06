@@ -1,4 +1,4 @@
-package com.winterfarmer.virgo.restapi.doc;
+package com.winterfarmer.virgo.restapi.doc.generator;
 
 /**
  * Created by yangtianhang on 15/4/26.

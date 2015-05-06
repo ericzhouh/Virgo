@@ -1,4 +1,4 @@
-package com.winterfarmer.virgo.restapi.doc;
+package com.winterfarmer.virgo.restapi.doc.generator;
 
 import com.winterfarmer.virgo.account.model.GroupType;
 import com.winterfarmer.virgo.account.model.RolePrivilege;
@@ -9,7 +9,9 @@ import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
 import java.io.UnsupportedEncodingException;
 import java.lang.reflect.Method;
-import java.util.*;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 

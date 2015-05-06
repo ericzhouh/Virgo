@@ -1,4 +1,4 @@
-package com.winterfarmer.virgo.restapi.doc;
+package com.winterfarmer.virgo.restapi.doc.generator;
 
 import com.google.common.base.Charsets;
 import org.apache.commons.io.FileUtils;

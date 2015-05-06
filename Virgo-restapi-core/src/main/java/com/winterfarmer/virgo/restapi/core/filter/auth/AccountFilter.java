@@ -10,7 +10,6 @@ import com.winterfarmer.virgo.restapi.core.filter.ApplicationContextHolder;
 import com.winterfarmer.virgo.restapi.core.request.ContainerRequestUtil;
 import org.apache.commons.lang3.StringUtils;
 
-import javax.annotation.Resource;
 import javax.ws.rs.container.ContainerRequestContext;
 
 /**

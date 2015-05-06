@@ -50,6 +50,12 @@
             <version>${project.version}</version>
         </dependency>
 
+        <dependency>
+            <groupId>com.winterfarmer</groupId>
+            <artifactId>Virgo-restapi-doc</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+
     </dependencies>
 
     <build>

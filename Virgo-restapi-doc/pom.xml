@@ -16,20 +16,5 @@
             <artifactId>Virgo-restapi-core</artifactId>
             <version>${parent.version}</version>
         </dependency>
-        <dependency>
-            <groupId>com.winterfarmer</groupId>
-            <artifactId>Virgo-aggregator</artifactId>
-            <version>${parent.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>com.winterfarmer</groupId>
-            <artifactId>Virgo-account</artifactId>
-            <version>1.0-SNAPSHOT</version>
-        </dependency>
-        <dependency>
-            <groupId>com.winterfarmer</groupId>
-            <artifactId>Virgo-vehicle</artifactId>
-            <version>1.0-SNAPSHOT</version>
-        </dependency>
     </dependencies>
 </project>
