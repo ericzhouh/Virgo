@@ -11,10 +11,10 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.FIELD)
 public @interface ApiField {
-    public String desc();
+    String desc();
 
-    public Class targetEnum() default Object.class;
+    Class targetEnum() default Object.class;
 
-    public Class[] referClass() default {};
+    Class[] referClass() default {};
 }
 

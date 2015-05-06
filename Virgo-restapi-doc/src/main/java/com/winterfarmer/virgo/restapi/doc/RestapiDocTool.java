@@ -3,6 +3,8 @@ package com.winterfarmer.virgo.restapi.doc;
 import com.google.common.base.Charsets;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
+import com.google.common.collect.Sets;
+import com.winterfarmer.virgo.base.annotation.ApiMode;
 import com.winterfarmer.virgo.restapi.core.annotation.ResourceOverview;
 import org.apache.commons.lang3.ArrayUtils;
 import org.glassfish.jersey.server.ResourceFinder;
@@ -250,5 +252,30 @@ public class RestapiDocTool {
         }
 
         return sb.toString();
+    }
+
+    /**
+     * find any class annotated with ApplicationPath and deciding the resource package names.
+     * caution: these classes must have a field named "resourceClassPackage", which is
+     * passed to the packages method.
+     *
+     * @param packageNames
+     * @return
+     */
+    public static Set<Class> findJSONModelClass(String... packageNames) {
+        PackageNamesScanner scanner = new PackageNamesScanner(packageNames, true);
+        AnnotationAcceptingListener afl = new AnnotationAcceptingListener(ApiMode.class);
+        Set<Class> clsSet = Sets.newHashSet();
+
+        scanClass(scanner, afl);
+        Set<Class<?>> subTypes = afl.getAnnotatedClasses();
+
+        for (Class<?> clazz : subTypes) {
+            if (clazz.isAnnotationPresent(ApiMode.class)) {
+                clsSet.add(clazz);
+            }
+        }
+
+        return clsSet;
     }
 }

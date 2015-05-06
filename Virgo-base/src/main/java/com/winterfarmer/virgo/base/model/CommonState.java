@@ -14,7 +14,7 @@ public enum CommonState {
     private final String name;
     private final int index;
 
-    private CommonState(String name, int index) {
+    CommonState(String name, int index) {
         this.name = name;
         this.index = index;
     }

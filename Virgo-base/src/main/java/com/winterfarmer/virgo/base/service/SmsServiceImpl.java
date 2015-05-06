@@ -44,7 +44,6 @@ public class SmsServiceImpl implements SmsService {
         Map<String, String> headers = Maps.newHashMap();
         headers.put("Content-Type", "application/x-www-form-urlencoded;charset=gbk");
         String result = httpService.post(BAIWU_URL, nameValues, headers, "UTF-8");
-        
         if (StringUtils.startsWith(result, "0#")) {
             return true;
         } else {
