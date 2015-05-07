@@ -32,7 +32,7 @@ public class HomePageGenerator extends DocGenerator {
             for (Map.Entry<String, String> e : parentPathPackagePairs.entrySet()) {
                 // write version
                 out.println();
-                out.println("#接口目录 v" + e.getKey().replace("/", ""));
+                out.println("#接口目录 " + e.getKey().replace("/", ""));
                 out.println();
 
                 Map<Method, String> subResourceMethods = RestapiDocTool.findResourceMethods(e.getValue());
@@ -115,7 +115,7 @@ public class HomePageGenerator extends DocGenerator {
 
     @Override
     public String getDocPath() {
-        return defaultDocBase + SEP + HOME_PAGE_NAME;
+        return HOME_PAGE_PATH;
     }
 
     @Override

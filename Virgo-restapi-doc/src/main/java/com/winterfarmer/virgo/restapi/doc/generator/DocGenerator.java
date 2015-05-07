@@ -33,11 +33,11 @@ public abstract class DocGenerator {
 
     public static final String docBasePropKey = "com.winterfarmer.virgo.docbase";
     public static final String defaultDocBase = System.getProperty(docBasePropKey) != null ?
-            System.getProperty(docBasePropKey) : System.getProperty("user.home") + "/virgo.wiki";
+            System.getProperty(docBasePropKey) : System.getProperty("user.home") + "/workspace/virgo.wiki";
 
     public static String TEMPLATE_BASE = "doc";
 
-    public static final String HOME_PAGE_PATH = defaultDocBase + "/Home.markdown";
+    public static final String HOME_PAGE_PATH = defaultDocBase + "/Home.md";
     public static final String API_DOC_DIR = defaultDocBase + "/apidocs";
     public static final String ERROR_DOC_PATH = defaultDocBase + "/base/error_code_info.md";
     public static final String API_MODEL_PATH = defaultDocBase + "/base/api_json.md";
@@ -59,6 +59,7 @@ public abstract class DocGenerator {
         Map<String, String> param = prepare();
         String template = readTemplateAsString(getTemplatePath());
         String docContent = renderingTemplateWithParam(param, template);
+        System.out.println(getDocPath());
         saveDocument(new File(getDocPath()), docContent);
         postActions();
     }
