@@ -20,4 +20,8 @@ public class DocGenerator extends TestCase {
             fail("Document generating processMessageBody failed!  " + t.getMessage());
         }
     }
+
+    @Test
+    public void testRSA() {
+    }
 }

@@ -38,11 +38,6 @@
         </dependency>
 
         <dependency>
-            <groupId>org.springframework</groupId>
-            <artifactId>spring-beans</artifactId>
-        </dependency>
-
-        <dependency>
             <groupId>com.winterfarmer</groupId>
             <artifactId>Virgo-common</artifactId>
         </dependency>
