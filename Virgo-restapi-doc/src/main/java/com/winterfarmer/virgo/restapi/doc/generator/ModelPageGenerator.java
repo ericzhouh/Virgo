@@ -14,9 +14,6 @@ import java.util.*;
  * Created by yangtianhang on 15/4/26.
  */
 public class ModelPageGenerator extends DocGenerator {
-//    private final String indexTemplatePath = "doclet/Home.markdown";
-//    private final String HOME_PAGE_NAME = "Home.markdown";
-    
     private final String packageBaseToScan = "com.winterfarmer.virgo";
 
     @Override
