@@ -7,13 +7,10 @@ import com.winterfarmer.virgo.restapi.core.annotation.RestApiInfo;
 
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
-import java.io.UnsupportedEncodingException;
 import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  * Created by yangtianhang on 15/4/26.

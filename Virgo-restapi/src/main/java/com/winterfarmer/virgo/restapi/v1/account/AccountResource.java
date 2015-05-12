@@ -5,7 +5,6 @@ import com.winterfarmer.virgo.account.model.OpenPlatformAccount;
 import com.winterfarmer.virgo.account.model.PlatformType;
 import com.winterfarmer.virgo.account.model.User;
 import com.winterfarmer.virgo.account.service.AccountService;
-import com.winterfarmer.virgo.aggregator.model.ApiStaff;
 import com.winterfarmer.virgo.base.Exception.MobileNumberException;
 import com.winterfarmer.virgo.base.Exception.UnexpectedVirgoException;
 import com.winterfarmer.virgo.base.model.CommonResult;

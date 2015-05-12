@@ -92,7 +92,7 @@ public class BaseDao {
             return jdbcTemplate.queryForObject(sql, rowMapper, args);
         } catch (EmptyResultDataAccessException emptyResultDataAccessException) {
             if (VirgoLogger.isDebugEnabled()) {
-                VirgoLogger.debug("class:{}, queryForObject sql:{} ,params:{}, rowmapper:{} , no_result", this.getClass().getSimpleName(), sql, JSON.toJSONString(args), rowMapper.getClass().getSimpleName());
+                VirgoLogger.debug("class:{}, queryForObject sql:{}, params:{}, rowmapper:{}, no_result", this.getClass().getSimpleName(), sql, JSON.toJSONString(args), rowMapper.getClass().getSimpleName());
             }
             return null;
         }

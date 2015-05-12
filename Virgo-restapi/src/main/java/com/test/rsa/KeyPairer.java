@@ -4,13 +4,13 @@ package com.test.rsa;
  * Created by yangtianhang on 15/5/11.
  */
 
+import org.apache.commons.codec.binary.Base64;
+
 import java.security.KeyFactory;
 import java.security.PrivateKey;
 import java.security.PublicKey;
 import java.security.spec.PKCS8EncodedKeySpec;
 import java.security.spec.X509EncodedKeySpec;
-
-import org.apache.commons.codec.binary.Base64;
 
 
 public class KeyPairer {

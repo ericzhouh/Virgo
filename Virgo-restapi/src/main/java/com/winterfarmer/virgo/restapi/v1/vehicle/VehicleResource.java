@@ -3,7 +3,6 @@ package com.winterfarmer.virgo.restapi.v1.vehicle;
 import com.alibaba.fastjson.JSON;
 import com.google.common.base.Function;
 import com.google.common.collect.Lists;
-import com.winterfarmer.virgo.account.model.AccessToken;
 import com.winterfarmer.virgo.aggregator.model.ApiVehicle;
 import com.winterfarmer.virgo.base.model.CommonState;
 import com.winterfarmer.virgo.restapi.BaseResource;

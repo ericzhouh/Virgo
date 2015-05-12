@@ -19,7 +19,7 @@ public class SignatureTest {
 		 */
 //        String verifyStr = "验证字符：yanzhengzifu";
 
-        String verifyStr = "<Request><InputsList><Inputs type=\"vehicleInfo\"></Inputs><Inputs type=\"ownerInfo\"></Inputs><Inputs type=\"luxury\"> <input name=\"cov_200\">134400.00</input> <input name=\"cov_600\">50000.00</input> <input name=\"cov_701\">10000.00</input> <input name=\"cov_702\">10000.00</input> <input name=\"cov_500\">69027.84</input> <input name=\"cov_231\">1</input> <input name=\"cov_310\">115046.40</input> <input name=\"cov_210\">2000.00</input> <input name=\"cov_321\">15.00</input> <input name=\"cov_911\">1</input> <input name=\"cov_912\">1</input> <input name=\"cov_928\">1</input> <input name=\"cov_929\">1</input> <input name=\"cov_921\">1</input> <input name=\"cov_922\">0</input> <input name=\"cov_291\">1</input> <input name=\"cov_390\">1</input> <input name=\"cov_640\">10000.00</input> <input name=\"forceFlag\">0</input></Inputs><Inputs type=\"deadline\"> <input name=\"bizBeginDate\">2015-05-12</input> <input name=\"forceBeginDate\">2015-05-12</input></Inputs><Inputs type=\"force\"></Inputs><Inputs type=\"lifeTableCpm\"> <input name=\"presentType\">0</input> <input name=\"presentVal\">0</input> <input name=\"hasAddPresent\">0</input></Inputs><Inputs type=\"runAreaType\"></Inputs><Inputs type=\"driverInfoFlag\"></Inputs></InputsList></Request>";
+        String verifyStr = "<Request><InputsList><Inputs><input name=\"packageType\">基本型</input></Inputs></InputsList></Request>";
         //生产签名串 和 验证类
         PartnerSignerImpl signer = new PartnerSignerImpl();
 

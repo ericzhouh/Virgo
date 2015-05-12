@@ -4,11 +4,11 @@ package com.test.rsa;
  * Created by yangtianhang on 15/5/11.
  */
 
+import org.apache.commons.codec.binary.Base64;
+
 import java.security.PrivateKey;
 import java.security.PublicKey;
 import java.security.Signature;
-
-import org.apache.commons.codec.binary.Base64;
 
 public class PartnerSignerImpl {
     public String sign(byte[] data, PrivateKey priKey) {

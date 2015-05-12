@@ -503,5 +503,6 @@
         <module>Virgo-3rd-part</module>
         <module>Virgo-knowledge</module>
         <module>Virgo-prestige</module>
+        <module>Virgo-graph-storage</module>
     </modules>
 </project>
