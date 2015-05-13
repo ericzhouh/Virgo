@@ -7,6 +7,7 @@ import com.google.common.util.concurrent.Futures;
 import com.google.common.util.concurrent.ListenableFuture;
 import com.google.common.util.concurrent.ListeningExecutorService;
 import com.google.common.util.concurrent.MoreExecutors;
+import com.sun.jndi.toolkit.ctx.HeadTail;
 import com.winterfarmer.virgo.database.JdbcTemplateFactory;
 import com.winterfarmer.virgo.log.VirgoLogger;
 import com.winterfarmer.virgo.storage.graph.Edge;
@@ -65,8 +66,8 @@ public class MysqlGraphDaoImpl implements GraphDao {
             "  `update_at_ms` bigint(20) NOT NULL DEFAULT '0',\n" +
 
             "  PRIMARY KEY (`vertex`),\n" +
-            "  INDEX `idx_degree` using btree (`degree`)\n" +
-            "  INDEX `idx_create_at_ms` using btree (`create_at_ms`)\n" +
+            "  INDEX `idx_degree` using btree (`degree`),\n" +
+            "  INDEX `idx_create_at_ms` using btree (`create_at_ms`),\n" +
             "  INDEX `idx_update_at_ms` using btree (`update_at_ms`)\n" +
             ") ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci";
 
@@ -80,9 +81,9 @@ public class MysqlGraphDaoImpl implements GraphDao {
     public static final String GRAPH_VERTEX_HEAD_TABLE_PRE_FIX = "graph_vertex_head_";
     public static final String GRAPH_VERTEX_TAIL_TABLE = "graph_vertex_tail_";
     public static final String INSERT_OR_UPDATE_VERTEX_DEGREE_SQL = "INSERT INTO %s "
-            + " (vertex, count, create_at_ms, update_at_ms) "
+            + " (vertex, degree, create_at_ms, update_at_ms) "
             + " VALUES (?, ?, ?, ?) ON DUPLICATE KEY UPDATE "
-            + " count=VALUES(count), "
+            + " degree=VALUES(degree), "
             + " create_at_ms=VALUES(create_at_ms), "
             + " update_at_ms=VALUES(update_at_ms)";
 
@@ -110,8 +111,8 @@ public class MysqlGraphDaoImpl implements GraphDao {
 
     public void initiateEdgeTable(boolean dropBeforeCreate) {
         if (dropBeforeCreate) {
-            String ddl = String.format(EDGE_DROP, getGraphEdgeTable());
-            jdbcTemplateFactory.getWriteJdbcTemplate().execute(ddl);
+            String drop = String.format(EDGE_DROP, getGraphEdgeTable());
+            jdbcTemplateFactory.getWriteJdbcTemplate().execute(drop);
         }
 
         String ddl = String.format(EDGE_DDL, getGraphEdgeTable());
@@ -178,14 +179,18 @@ public class MysqlGraphDaoImpl implements GraphDao {
     }
 
     public static final String insert_or_update_edges_sql = "INSERT INTO %s "
-            + " (head, tail, state, position, category, update_at_ts, accessory_id, ext_info) "
-            + " VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?) ON DUPLICATE KEY UPDATE "
+            + " (head, tail, state, position, category, update_at_ms, accessory_id, ext_info) "
+            + " VALUES (?, ?, ?, ?, ?, ?, ?, ?) ON DUPLICATE KEY UPDATE "
             + " state=VALUES(state), "
             + " position=VALUES(position), "
             + " category=VALUES(category), "
-            + " update_at_ts=VALUES(update_at_ts), "
+            + " update_at_ms=VALUES(update_at_ms), "
             + " accessory_id=VALUES(accessory_id), "
             + " ext_info=VALUES(ext_info)";
+
+//    public static final String insert_or_update_edges_sql = "INSERT INTO %s "
+//            + " (head, tail, state, position, category, update_at_ms, accessory_id, ext_info) "
+//            + " VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
 
     private class InsertBatchEdgePreparedStatementSetter implements BatchPreparedStatementSetter {
         private final Edge[] edges;
@@ -232,10 +237,10 @@ public class MysqlGraphDaoImpl implements GraphDao {
             @Override
             public Integer call() throws Exception {
                 int[] counts = jdbcTemplateFactory.getWriteJdbcTemplate().batchUpdate(
-                        String.format(insert_or_update_edges_sql, bizName), new InsertBatchEdgePreparedStatementSetter(edges));
+                        String.format(insert_or_update_edges_sql, getGraphEdgeTable()), new InsertBatchEdgePreparedStatementSetter(edges));
                 updateHeadVertexDegree(edges);
                 updateTailVertexDegree(edges);
-                return sumInt(counts);
+                return sumInsertOrUpdateEdgesAffectRows(counts);
             }
         });
 
@@ -245,6 +250,22 @@ public class MysqlGraphDaoImpl implements GraphDao {
             VirgoLogger.error(String.format("Failed to insert or update table [%s]", getGraphEdgeTable()), e);
             return 0;
         }
+    }
+
+    // 使用 on duplicate 方式, 重复的数据算2, 所以这里都是对sum进行自增
+    private int sumInsertOrUpdateEdgesAffectRows(int[] ints) {
+        int sum = 0;
+        if (ArrayUtils.isEmpty(ints)) {
+            return sum;
+        }
+
+        for (int i : ints) {
+            if (i > 0) {
+                ++sum;
+            }
+        }
+
+        return sum;
     }
 
     @Override
@@ -299,12 +320,12 @@ public class MysqlGraphDaoImpl implements GraphDao {
 
     @Override
     public List<Edge> queryEdgesByTail(long tail, int limit, int offset) {
-        return queryEdges(true, true, tail, limit, offset);
+        return queryEdges(false, true, tail, limit, offset);
     }
 
     @Override
     public List<Edge> queryEdgesByTail(long tail, int limit, int offset, boolean updateAtDesc) {
-        return queryEdges(true, updateAtDesc, tail, limit, offset);
+        return queryEdges(false, updateAtDesc, tail, limit, offset);
     }
 
     @Override
@@ -332,7 +353,12 @@ public class MysqlGraphDaoImpl implements GraphDao {
     @Override
     public HeadVertex queryHeadVertex(long head) {
         final String sql = "select * from " + getGraphVertexHeadTable() + " where vertex=?";
-        return queryForObject(jdbcTemplateFactory.getReadJdbcTemplate(), sql, headVertexMapper, head);
+        HeadVertex headVertex = queryForObject(jdbcTemplateFactory.getReadJdbcTemplate(), sql, headVertexMapper, head);
+        if (headVertex == null) {
+            headVertex = HeadVertex.notExistVertex(head);
+        }
+
+        return headVertex;
     }
 
     private static final RowMapper<TailVertex> tailVertexMapper = new RowMapper<TailVertex>() {
@@ -347,7 +373,12 @@ public class MysqlGraphDaoImpl implements GraphDao {
     @Override
     public TailVertex queryTailVertex(long tail) {
         final String sql = "select * from " + getGraphVertexTailTable() + " where vertex=?";
-        return queryForObject(jdbcTemplateFactory.getReadJdbcTemplate(), sql, tailVertexMapper, tail);
+        TailVertex tailVertex = queryForObject(jdbcTemplateFactory.getReadJdbcTemplate(), sql, tailVertexMapper, tail);
+        if (tailVertex == null) {
+            tailVertex = TailVertex.notExistVertex(tail);
+        }
+
+        return tailVertex;
     }
 
     private void updateHeadVertexDegree(final Edge[] edges) {
@@ -406,21 +437,6 @@ public class MysqlGraphDaoImpl implements GraphDao {
         }
 
         return tailVertexSet;
-    }
-
-    private static int sumInt(int[] ints) {
-        int sum = 0;
-        if (ArrayUtils.isEmpty(ints)) {
-            return sum;
-        }
-
-        for (int i : ints) {
-            if (i > 0) {
-                sum = sum + i;
-            }
-        }
-
-        return sum;
     }
 
     protected <T> T queryForObject(JdbcTemplate jdbcTemplate, String sql, RowMapper<T> rowMapper, Object... args) {

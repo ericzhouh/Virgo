@@ -59,4 +59,14 @@ public abstract class Vertex {
     public void setUpdateAtMs(long updateAtMs) {
         this.updateAtMs = updateAtMs;
     }
+
+    @Override
+    public String toString() {
+        return "Vertex{" +
+                "vertex=" + vertex +
+                ", degree=" + degree +
+                ", createAtMs=" + createAtMs +
+                ", updateAtMs=" + updateAtMs +
+                '}';
+    }
 }

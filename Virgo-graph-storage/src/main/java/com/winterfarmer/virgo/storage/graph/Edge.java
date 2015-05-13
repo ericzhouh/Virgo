@@ -6,6 +6,9 @@ import com.google.common.base.Charsets;
  * Created by yangtianhang on 15/5/12.
  */
 public class Edge {
+    public static final int DELETED_EDGE = 0;
+    public static final int NORMAL_EDGE = 1;
+
     private long head; // 起点
     private long tail; // 终点
     private int state; // 状态, 分为正常(1)和删除(0)两种
@@ -18,6 +21,10 @@ public class Edge {
     private byte[] extInfo; // 扩展信息, 最好是json的格式
 
     public Edge() {
+    }
+
+    public Edge(long head, long tail) {
+        this(head, tail, 1);
     }
 
     public Edge(long head, long tail, int state) {
