@@ -1,15 +1,14 @@
 package com.winterfarmer.virgo.knowledge.model;
 
-import com.winterfarmer.virgo.base.model.BaseModel;
+import com.winterfarmer.virgo.base.model.BaseIdModel;
 import com.winterfarmer.virgo.base.model.CommonState;
 
 /**
  * Created by yangtianhang on 15/5/11.
  */
-public class Answer extends BaseModel {
-    private static final long serialVersionUID = -1499986423315815946L;
+public class Answer extends BaseIdModel {
+    private static final long serialVersionUID = -9177417427886797005L;
 
-    private long answerId;
     private long answererId;
     private long questionId;
 
@@ -19,14 +18,6 @@ public class Answer extends BaseModel {
     private CommonState commonState;
     private long createAtMs;
     private long updateAtMs;
-
-    public long getAnswerId() {
-        return answerId;
-    }
-
-    public void setAnswerId(long answerId) {
-        this.answerId = answerId;
-    }
 
     public long getAnswererId() {
         return answererId;

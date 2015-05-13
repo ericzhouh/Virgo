@@ -12,7 +12,7 @@ import java.util.Map;
  * Created by yangtianhang on 15-2-14.
  */
 @NotThreadSafe
-public class BaseModel implements Serializable {
+abstract public class BaseModel implements Serializable {
     private static final long serialVersionUID = -2411840775944740500L;
 
     private Map<String, Object> properties;
