@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:p="http://www.springframework.org/schema/p"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+        http://www.springframework.org/schema/beans/spring-beans.xsd
+        http://www.springframework.org/schema/context
+        http://www.springframework.org/schema/context/spring-context.xsd">
+
+    <import resource="classpath*:spring/virgo-database-context.xml"/>
+    <context:annotation-config/>
+    <context:component-scan base-package="com.winterfarmer.virgo.storage.graph.*"/>
+
+    <!--命名规则：名1动名2/名1名2 名1:head, 名2:tail, 由业务层确定是有向图还是无向图-->
+    <!--Tips: 一般来说, 在业务层中, 永远是二部图的是无向图, 其他的是有向图-->
+    <bean id="userAgreeQuestionGraphMysqlDao" class="com.winterfarmer.virgo.storage.graph.dao.MysqlGraphDaoImpl"
+          init-method="init"
+          p:jdbcTemplateFactory-ref="jdbcTemplateFactory"
+          p:bizName="user_agree_question"/>
+
+    <bean id="userDisagreeQuestionGraphMysqlDao" class="com.winterfarmer.virgo.storage.graph.dao.MysqlGraphDaoImpl"
+          init-method="init"
+          p:jdbcTemplateFactory-ref="jdbcTemplateFactory"
+          p:bizName="user_disagree_question"/>
+
+    <bean id="userFollowQuestionGraphMysqlDao" class="com.winterfarmer.virgo.storage.graph.dao.MysqlGraphDaoImpl"
+          init-method="init"
+          p:jdbcTemplateFactory-ref="jdbcTemplateFactory"
+          p:bizName="user_follow_question"/>
+
+    <bean id="userAgreeAnswerGraphMysqlDao" class="com.winterfarmer.virgo.storage.graph.dao.MysqlGraphDaoImpl"
+          init-method="init"
+          p:jdbcTemplateFactory-ref="jdbcTemplateFactory"
+          p:bizName="user_agree_answer"/>
+
+    <bean id="userDisagreeAnswerGraphMysqlDao" class="com.winterfarmer.virgo.storage.graph.dao.MysqlGraphDaoImpl"
+          init-method="init"
+          p:jdbcTemplateFactory-ref="jdbcTemplateFactory"
+          p:bizName="user_disagree_answer"/>
+
+    <bean id="userCollectAnswerGraphMysqlDao" class="com.winterfarmer.virgo.storage.graph.dao.MysqlGraphDaoImpl"
+          init-method="init"
+          p:jdbcTemplateFactory-ref="jdbcTemplateFactory"
+          p:bizName="user_collect_answer"/>
+
+    <bean id="questionTagGraphMysqlDao" class="com.winterfarmer.virgo.storage.graph.dao.MysqlGraphDaoImpl"
+          init-method="init"
+          p:jdbcTemplateFactory-ref="jdbcTemplateFactory"
+          p:bizName="question_tag"/>
+</beans>
