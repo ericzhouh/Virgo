@@ -3,7 +3,7 @@ package com.winterfarmer.virgo.account.dao;
 import com.winterfarmer.virgo.account.model.OpenPlatformAccount;
 import com.winterfarmer.virgo.account.model.PlatformType;
 import com.winterfarmer.virgo.base.model.CommonState;
-import com.winterfarmer.virgo.database.BaseDao;
+import com.winterfarmer.virgo.database.BaseMysqlDao;
 import com.winterfarmer.virgo.database.helper.MysqlDDLBuilder;
 import com.winterfarmer.virgo.database.helper.column.Columns;
 import com.winterfarmer.virgo.database.helper.column.binary.ExtInfoColumn;
@@ -21,7 +21,7 @@ import java.sql.SQLException;
  * Created by yangtianhang on 15-3-26.
  */
 @Repository(value = "openPlatformAccountMysqlDao")
-public class OpenPlatformAccountMysqlDaoImpl extends BaseDao implements OpenPlatformAccountDao {
+public class OpenPlatformAccountMysqlDaoImpl extends BaseMysqlDao implements OpenPlatformAccountDao {
     public static final String OPEN_PLATFORM_ACCOUNT_TABLE_NAME = "open_platform_account";
 
     private static final VarcharColumn openId = (VarcharColumn) new VarcharColumn("open_id", 128).setAllowNull(false).setComment("第三方id");
@@ -39,7 +39,7 @@ public class OpenPlatformAccountMysqlDaoImpl extends BaseDao implements OpenPlat
             setPrimaryKey(openId, platform).buildCreateDDL();
 
     public void initTable(boolean dropBeforeCreate) {
-        super.initTable(createDDL, BaseDao.dropDDL(OPEN_PLATFORM_ACCOUNT_TABLE_NAME), dropBeforeCreate);
+        super.initTable(createDDL, BaseMysqlDao.dropDDL(OPEN_PLATFORM_ACCOUNT_TABLE_NAME), dropBeforeCreate);
     }
 
     public static final RowMapper<OpenPlatformAccount> openPlatformAccountRowMapper = new RowMapper<OpenPlatformAccount>() {

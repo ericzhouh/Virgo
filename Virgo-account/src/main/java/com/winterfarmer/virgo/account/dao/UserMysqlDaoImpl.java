@@ -3,7 +3,7 @@ package com.winterfarmer.virgo.account.dao;
 import com.winterfarmer.virgo.account.model.AccountVersion;
 import com.winterfarmer.virgo.account.model.User;
 import com.winterfarmer.virgo.common.util.ParamChecker;
-import com.winterfarmer.virgo.database.BaseDao;
+import com.winterfarmer.virgo.database.BaseMysqlDao;
 import com.winterfarmer.virgo.database.helper.MysqlDDLBuilder;
 import com.winterfarmer.virgo.database.helper.column.Columns;
 import com.winterfarmer.virgo.database.helper.column.binary.ExtInfoColumn;
@@ -22,7 +22,7 @@ import java.util.Map;
  * Created by yangtianhang on 15-3-5.
  */
 @Repository(value = "userMysqlDao")
-public class UserMysqlDaoImpl extends BaseDao implements UserDao {
+public class UserMysqlDaoImpl extends BaseMysqlDao implements UserDao {
     public static final String USER_TABLE_NAME = "user";
 
     private static final BigintColumn userId = Columns.newUserIdColumn(false, false);
@@ -60,7 +60,7 @@ public class UserMysqlDaoImpl extends BaseDao implements UserDao {
     };
 
     public void initTable(boolean dropBeforeCreate) {
-        super.initTable(createDDL, BaseDao.dropDDL(USER_TABLE_NAME), dropBeforeCreate);
+        super.initTable(createDDL, BaseMysqlDao.dropDDL(USER_TABLE_NAME), dropBeforeCreate);
     }
 
     private static final String retrieve_user_sql =

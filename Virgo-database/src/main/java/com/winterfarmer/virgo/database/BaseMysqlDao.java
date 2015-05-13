@@ -25,7 +25,7 @@ import java.util.Map;
 /**
  * Created by yangtianhang on 15-3-3.
  */
-public class BaseDao {
+public class BaseMysqlDao {
     @Resource
     JdbcTemplateFactory jdbcTemplateFactory;
 

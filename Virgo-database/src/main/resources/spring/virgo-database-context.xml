@@ -78,7 +78,7 @@
         </constructor-arg>
     </bean>
 
-    <bean id="baseDAO" class="com.winterfarmer.virgo.database.BaseDao">
+    <bean id="baseDAO" class="com.winterfarmer.virgo.database.BaseMysqlDao">
         <property name="jdbcTemplateFactory" ref="jdbcTemplateFactory"/>
     </bean>
 

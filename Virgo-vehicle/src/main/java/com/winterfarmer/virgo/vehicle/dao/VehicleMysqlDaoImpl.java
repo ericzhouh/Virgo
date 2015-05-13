@@ -2,7 +2,7 @@ package com.winterfarmer.virgo.vehicle.dao;
 
 import com.winterfarmer.virgo.base.model.CommonState;
 import com.winterfarmer.virgo.common.util.ParamChecker;
-import com.winterfarmer.virgo.database.BaseDao;
+import com.winterfarmer.virgo.database.BaseMysqlDao;
 import com.winterfarmer.virgo.database.helper.MysqlDDLBuilder;
 import com.winterfarmer.virgo.database.helper.column.Columns;
 import com.winterfarmer.virgo.database.helper.column.binary.ExtInfoColumn;
@@ -27,7 +27,7 @@ import java.util.List;
  * Created by yangtianhang on 15-4-13.
  */
 @Repository(value = "vehicleMysqlDao")
-public class VehicleMysqlDaoImpl extends BaseDao implements VehicleDao {
+public class VehicleMysqlDaoImpl extends BaseMysqlDao implements VehicleDao {
     public static final String VEHICLE_TABLE_NAME = "vehicle";
 
     private static final BigintColumn vehicleId = (BigintColumn) new BigintColumn("vehicle_id").
@@ -49,7 +49,7 @@ public class VehicleMysqlDaoImpl extends BaseDao implements VehicleDao {
             setPrimaryKey(vehicleId).addIndex(userId).setAutoIncrement(16800).buildCreateDDL();
 
     public void initTable(boolean dropBeforeCreate) {
-        super.initTable(createDDL, BaseDao.dropDDL(VEHICLE_TABLE_NAME), dropBeforeCreate);
+        super.initTable(createDDL, BaseMysqlDao.dropDDL(VEHICLE_TABLE_NAME), dropBeforeCreate);
     }
 
     private static final String insert_vehicle_sql =

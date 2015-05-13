@@ -2,7 +2,7 @@ package com.winterfarmer.virgo.account.dao;
 
 import com.winterfarmer.virgo.account.model.GroupType;
 import com.winterfarmer.virgo.account.model.Privilege;
-import com.winterfarmer.virgo.database.BaseDao;
+import com.winterfarmer.virgo.database.BaseMysqlDao;
 import com.winterfarmer.virgo.database.helper.MysqlDDLBuilder;
 import com.winterfarmer.virgo.database.helper.column.Columns;
 import com.winterfarmer.virgo.database.helper.column.numeric.BigintColumn;
@@ -19,7 +19,7 @@ import java.util.List;
  * Created by yangtianhang on 15-4-17.
  */
 @Repository(value = "privilegeMysqlDao")
-public class PrivilegeMysqlDaoImpl extends BaseDao implements PrivilegeDao {
+public class PrivilegeMysqlDaoImpl extends BaseMysqlDao implements PrivilegeDao {
     public static final String PRIVILEGE_TABLE_NAME = "privilege";
 
     private static final BigintColumn userId = Columns.newUserIdColumn(true, false);
@@ -33,7 +33,7 @@ public class PrivilegeMysqlDaoImpl extends BaseDao implements PrivilegeDao {
             setPrimaryKey(userId, group).buildCreateDDL();
 
     public void initTable(boolean dropBeforeCreate) {
-        super.initTable(createDDL, BaseDao.dropDDL(PRIVILEGE_TABLE_NAME), dropBeforeCreate);
+        super.initTable(createDDL, BaseMysqlDao.dropDDL(PRIVILEGE_TABLE_NAME), dropBeforeCreate);
     }
 
     private static final String insert_privilege_sql =

@@ -1,7 +1,7 @@
 package com.winterfarmer.virgo.account.dao;
 
 import com.winterfarmer.virgo.account.model.AccessToken;
-import com.winterfarmer.virgo.database.BaseDao;
+import com.winterfarmer.virgo.database.BaseMysqlDao;
 import com.winterfarmer.virgo.database.helper.IndexType;
 import com.winterfarmer.virgo.database.helper.MysqlDDLBuilder;
 import com.winterfarmer.virgo.database.helper.column.Columns;
@@ -21,7 +21,7 @@ import java.sql.Timestamp;
  * Created by yangtianhang on 15-3-26.
  */
 @Repository(value = "accessTokenMysqlDao")
-public class AccessTokenMysqlDaoImpl extends BaseDao implements AccessTokenDao {
+public class AccessTokenMysqlDaoImpl extends BaseMysqlDao implements AccessTokenDao {
     public static final String ACCESS_TOKEN_TABLE_NAME = "access_token";
 
     private static final BigintColumn userId = Columns.newUserIdColumn(false, false);
@@ -41,7 +41,7 @@ public class AccessTokenMysqlDaoImpl extends BaseDao implements AccessTokenDao {
             addIndex(IndexType.btree, createAt).buildCreateDDL();
 
     public void initTable(boolean dropBeforeCreate) {
-        super.initTable(createAccessTokenDDL, BaseDao.dropDDL(ACCESS_TOKEN_TABLE_NAME), dropBeforeCreate);
+        super.initTable(createAccessTokenDDL, BaseMysqlDao.dropDDL(ACCESS_TOKEN_TABLE_NAME), dropBeforeCreate);
     }
 
     private static final String retrieve_user_sql =
