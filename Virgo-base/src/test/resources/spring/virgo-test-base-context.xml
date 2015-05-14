@@ -19,4 +19,6 @@
           c:soTimeOutMs="2000"
           c:maxSize="1048576"
           p:accessLog-ref="accessLog"/>
+
+    <bean id="toyIdModelDao" class="com.winterfarmer.virgo.base.dao.IdModelRedisDao"></bean>
 </beans>

@@ -14,6 +14,10 @@ public class VedisFactory implements ApplicationContextAware {
         return context.getBean(redisBiz.name().toLowerCase() + "Vedis", Vedis.class);
     }
 
+    public static Vedis getVedis(String redisBiz) {
+        return context.getBean(redisBiz.toLowerCase() + "Vedis", Vedis.class);
+    }
+
     @Override
     public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
         context = applicationContext;

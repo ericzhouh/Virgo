@@ -108,7 +108,7 @@ public class ModelPageGenerator extends DocGenerator {
             if (valueByIndexMethod != null) { //我们系统内常用的枚举类型
                 for (Object enumObj : enumObjects) {
                     try {
-                        Method getName = enumObj.getClass().getDeclaredMethod("getName", null);
+                        Method getName = enumObj.getClass().getDeclaredMethod("getBizName", null);
                         Method getIndex = enumObj.getClass().getDeclaredMethod("getIndex", null);
 
                         String name = (String) getName.invoke(enumObj, null);
