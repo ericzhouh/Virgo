@@ -28,6 +28,10 @@ public class Columns {
         return (BigintColumn) new BigintColumn(USER_ID_COLUMN_NAME).setDisplaySize(20).setAutoIncrease(autoIncrease).setAllowNull(allowNull);
     }
 
+    public static BigintColumn newIdColumn(String columnIdName, boolean autoIncrease, boolean allowNull) {
+        return (BigintColumn) new BigintColumn(columnIdName).setDisplaySize(20).setAutoIncrease(autoIncrease).setAllowNull(allowNull);
+    }
+
     public static SmallIntColumn newAppKeyColumn(boolean allowNull) {
         return (SmallIntColumn) new SmallIntColumn(APP_KEY_COLUMN_NAME).setDisplaySize(5).setAllowNull(allowNull);
     }

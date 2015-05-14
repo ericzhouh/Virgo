@@ -30,7 +30,7 @@ public class InvalidSystemClock extends TException implements org.apache.thrift.
     public String message; // required
 
     /**
-     * The set of fields this struct contains, along with convenience methods for finding and manipulating them.
+     * The insert of fields this struct contains, along with convenience methods for finding and manipulating them.
      */
     public enum _Fields implements org.apache.thrift.TFieldIdEnum {
         MESSAGE((short) 1, "message");
@@ -141,7 +141,7 @@ public class InvalidSystemClock extends TException implements org.apache.thrift.
     }
 
     /**
-     * Returns true if field message is set (has been assigned a value) and false otherwise
+     * Returns true if field message is insert (has been assigned a value) and false otherwise
      */
     public boolean isSetMessage() {
         return this.message != null;
@@ -176,7 +176,7 @@ public class InvalidSystemClock extends TException implements org.apache.thrift.
     }
 
     /**
-     * Returns true if field corresponding to fieldID is set (has been assigned a value) and false otherwise
+     * Returns true if field corresponding to fieldID is insert (has been assigned a value) and false otherwise
      */
     public boolean isSet(_Fields field) {
         if (field == null) {

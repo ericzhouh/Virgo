@@ -28,7 +28,7 @@ public class IdModelHybridDao<T extends BaseIdModel> implements IdModelDao<T> {
         if (object == null) {
             object = mysqlDao.get(id);
             if (object != null) {
-                redisDao.set(id, object);
+                redisDao.insert(object);
             }
         }
 
@@ -72,7 +72,7 @@ public class IdModelHybridDao<T extends BaseIdModel> implements IdModelDao<T> {
             long id = notCachePosIdMaps.get(position);
             T object = notCacheObjectMap.get(id);
             if (object != null) {
-                redisDao.set(id, object);
+                redisDao.insert(object);
                 objects.set(position, object);
             }
         }
@@ -82,28 +82,28 @@ public class IdModelHybridDao<T extends BaseIdModel> implements IdModelDao<T> {
 
     @Override
     // 不支持事务
-    public boolean set(long id, T object) {
+    public boolean insert(T object) {
         if (object == null) {
             return false;
         }
 
-        boolean successful = mysqlDao.set(id, object);
+        boolean successful = mysqlDao.insert(object);
         if (successful) {
-            return redisDao.set(id, object);
+            return redisDao.insert(object);
         } else {
             return false;
         }
     }
 
     @Override
-    public boolean update(long id, T object) {
+    public boolean update(T object) {
         if (object == null) {
             return false;
         }
 
-        boolean successful = mysqlDao.update(id, object);
+        boolean successful = mysqlDao.update(object);
         if (successful) {
-            return redisDao.update(id, object);
+            return redisDao.update(object);
         } else {
             return false;
         }

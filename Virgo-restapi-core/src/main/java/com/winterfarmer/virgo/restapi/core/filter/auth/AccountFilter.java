@@ -34,7 +34,7 @@ public abstract class AccountFilter {
         return getAccessTokenAndExplainToHeader(requestContext, accessTokenString);
     }
 
-    // ExplainToHeader: set userId and appKey to header
+    // ExplainToHeader: insert userId and appKey to header
     protected AccessToken getAccessTokenAndExplainToHeader(ContainerRequestContext requestContext, String accessTokenString) {
         if (StringUtils.isBlank(accessTokenString)) {
             throw new VirgoRestException(RestExceptionFactor.MISSING_ACCESS_TOKEN);

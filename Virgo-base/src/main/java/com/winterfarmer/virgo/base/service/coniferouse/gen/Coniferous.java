@@ -641,7 +641,7 @@ public class Coniferous {
 
 
         /**
-         * The set of fields this struct contains, along with convenience methods for finding and manipulating them.
+         * The insert of fields this struct contains, along with convenience methods for finding and manipulating them.
          */
         public enum _Fields implements org.apache.thrift.TFieldIdEnum {
             ;
@@ -735,7 +735,7 @@ public class Coniferous {
         }
 
         /**
-         * Returns true if field corresponding to fieldID is set (has been assigned a value) and false otherwise
+         * Returns true if field corresponding to fieldID is insert (has been assigned a value) and false otherwise
          */
         public boolean isSet(_Fields field) {
             if (field == null) {
@@ -895,7 +895,7 @@ public class Coniferous {
         public long success; // required
 
         /**
-         * The set of fields this struct contains, along with convenience methods for finding and manipulating them.
+         * The insert of fields this struct contains, along with convenience methods for finding and manipulating them.
          */
         public enum _Fields implements org.apache.thrift.TFieldIdEnum {
             SUCCESS((short) 0, "success");
@@ -1010,7 +1010,7 @@ public class Coniferous {
         }
 
         /**
-         * Returns true if field success is set (has been assigned a value) and false otherwise
+         * Returns true if field success is insert (has been assigned a value) and false otherwise
          */
         public boolean isSetSuccess() {
             return EncodingUtils.testBit(__isset_bitfield, __SUCCESS_ISSET_ID);
@@ -1043,7 +1043,7 @@ public class Coniferous {
         }
 
         /**
-         * Returns true if field corresponding to fieldID is set (has been assigned a value) and false otherwise
+         * Returns true if field corresponding to fieldID is insert (has been assigned a value) and false otherwise
          */
         public boolean isSet(_Fields field) {
             if (field == null) {
@@ -1253,7 +1253,7 @@ public class Coniferous {
 
 
         /**
-         * The set of fields this struct contains, along with convenience methods for finding and manipulating them.
+         * The insert of fields this struct contains, along with convenience methods for finding and manipulating them.
          */
         public enum _Fields implements org.apache.thrift.TFieldIdEnum {
             ;
@@ -1347,7 +1347,7 @@ public class Coniferous {
         }
 
         /**
-         * Returns true if field corresponding to fieldID is set (has been assigned a value) and false otherwise
+         * Returns true if field corresponding to fieldID is insert (has been assigned a value) and false otherwise
          */
         public boolean isSet(_Fields field) {
             if (field == null) {
@@ -1507,7 +1507,7 @@ public class Coniferous {
         public long success; // required
 
         /**
-         * The set of fields this struct contains, along with convenience methods for finding and manipulating them.
+         * The insert of fields this struct contains, along with convenience methods for finding and manipulating them.
          */
         public enum _Fields implements org.apache.thrift.TFieldIdEnum {
             SUCCESS((short) 0, "success");
@@ -1622,7 +1622,7 @@ public class Coniferous {
         }
 
         /**
-         * Returns true if field success is set (has been assigned a value) and false otherwise
+         * Returns true if field success is insert (has been assigned a value) and false otherwise
          */
         public boolean isSetSuccess() {
             return EncodingUtils.testBit(__isset_bitfield, __SUCCESS_ISSET_ID);
@@ -1655,7 +1655,7 @@ public class Coniferous {
         }
 
         /**
-         * Returns true if field corresponding to fieldID is set (has been assigned a value) and false otherwise
+         * Returns true if field corresponding to fieldID is insert (has been assigned a value) and false otherwise
          */
         public boolean isSet(_Fields field) {
             if (field == null) {
@@ -1869,7 +1869,7 @@ public class Coniferous {
         public short count; // required
 
         /**
-         * The set of fields this struct contains, along with convenience methods for finding and manipulating them.
+         * The insert of fields this struct contains, along with convenience methods for finding and manipulating them.
          */
         public enum _Fields implements org.apache.thrift.TFieldIdEnum {
             TOKEN((short) 1, "token"),
@@ -1994,7 +1994,7 @@ public class Coniferous {
         }
 
         /**
-         * Returns true if field token is set (has been assigned a value) and false otherwise
+         * Returns true if field token is insert (has been assigned a value) and false otherwise
          */
         public boolean isSetToken() {
             return this.token != null;
@@ -2021,7 +2021,7 @@ public class Coniferous {
         }
 
         /**
-         * Returns true if field count is set (has been assigned a value) and false otherwise
+         * Returns true if field count is insert (has been assigned a value) and false otherwise
          */
         public boolean isSetCount() {
             return EncodingUtils.testBit(__isset_bitfield, __COUNT_ISSET_ID);
@@ -2065,7 +2065,7 @@ public class Coniferous {
         }
 
         /**
-         * Returns true if field corresponding to fieldID is set (has been assigned a value) and false otherwise
+         * Returns true if field corresponding to fieldID is insert (has been assigned a value) and false otherwise
          */
         public boolean isSet(_Fields field) {
             if (field == null) {
@@ -2327,7 +2327,7 @@ public class Coniferous {
         public List<Long> success; // required
 
         /**
-         * The set of fields this struct contains, along with convenience methods for finding and manipulating them.
+         * The insert of fields this struct contains, along with convenience methods for finding and manipulating them.
          */
         public enum _Fields implements org.apache.thrift.TFieldIdEnum {
             SUCCESS((short) 0, "success");
@@ -2455,7 +2455,7 @@ public class Coniferous {
         }
 
         /**
-         * Returns true if field success is set (has been assigned a value) and false otherwise
+         * Returns true if field success is insert (has been assigned a value) and false otherwise
          */
         public boolean isSetSuccess() {
             return this.success != null;
@@ -2490,7 +2490,7 @@ public class Coniferous {
         }
 
         /**
-         * Returns true if field corresponding to fieldID is set (has been assigned a value) and false otherwise
+         * Returns true if field corresponding to fieldID is insert (has been assigned a value) and false otherwise
          */
         public boolean isSet(_Fields field) {
             if (field == null) {
@@ -2730,7 +2730,7 @@ public class Coniferous {
 
 
         /**
-         * The set of fields this struct contains, along with convenience methods for finding and manipulating them.
+         * The insert of fields this struct contains, along with convenience methods for finding and manipulating them.
          */
         public enum _Fields implements org.apache.thrift.TFieldIdEnum {
             ;
@@ -2824,7 +2824,7 @@ public class Coniferous {
         }
 
         /**
-         * Returns true if field corresponding to fieldID is set (has been assigned a value) and false otherwise
+         * Returns true if field corresponding to fieldID is insert (has been assigned a value) and false otherwise
          */
         public boolean isSet(_Fields field) {
             if (field == null) {
@@ -2984,7 +2984,7 @@ public class Coniferous {
         public int success; // required
 
         /**
-         * The set of fields this struct contains, along with convenience methods for finding and manipulating them.
+         * The insert of fields this struct contains, along with convenience methods for finding and manipulating them.
          */
         public enum _Fields implements org.apache.thrift.TFieldIdEnum {
             SUCCESS((short) 0, "success");
@@ -3099,7 +3099,7 @@ public class Coniferous {
         }
 
         /**
-         * Returns true if field success is set (has been assigned a value) and false otherwise
+         * Returns true if field success is insert (has been assigned a value) and false otherwise
          */
         public boolean isSetSuccess() {
             return EncodingUtils.testBit(__isset_bitfield, __SUCCESS_ISSET_ID);
@@ -3132,7 +3132,7 @@ public class Coniferous {
         }
 
         /**
-         * Returns true if field corresponding to fieldID is set (has been assigned a value) and false otherwise
+         * Returns true if field corresponding to fieldID is insert (has been assigned a value) and false otherwise
          */
         public boolean isSet(_Fields field) {
             if (field == null) {

@@ -15,7 +15,7 @@ public interface IdModelDao<T extends BaseIdModel> {
 
     List<T> list(long... ids);
 
-    boolean set(long id, T object);
+    boolean insert(T object);
 
-    boolean update(long id, T object);
+    boolean update(T object);
 }

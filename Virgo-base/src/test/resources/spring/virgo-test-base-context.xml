@@ -8,6 +8,10 @@
        http://www.springframework.org/schema/beans/spring-beans-3.2.xsd
           http://www.springframework.org/schema/context
           http://www.springframework.org/schema/context/spring-context-3.2.xsd">
+    <import resource="classpath*:spring/virgo-database-context.xml"/>
+
+    <!-- 开启ignore-unresolvable＝true是为了防止其他spring配置文件开启了property-placeholder后导致其他的property configurer失效 -->
+    <context:property-placeholder location="classpath:redis.properties" ignore-unresolvable="true"/>
 
     <context:annotation-config/>
     <context:component-scan base-package="com.winterfarmer.virgo.base.*"/>
@@ -20,5 +24,33 @@
           c:maxSize="1048576"
           p:accessLog-ref="accessLog"/>
 
-    <bean id="toyIdModelDao" class="com.winterfarmer.virgo.base.dao.IdModelRedisDao"></bean>
+    <bean class="com.winterfarmer.virgo.redis.VedisFactory"/>
+
+    <!--<context:property-placeholder location="classpath:redis.properties" ignore-unresolvable="true"/>-->
+    <bean id="jedisPoolConfig" class="redis.clients.jedis.JedisPoolConfig"
+          p:maxTotal="${redis.pool.maxTotal}"
+          p:maxIdle="${redis.pool.maxIdle}"
+          p:maxWaitMillis="${redis.pool.maxWaitMillis}"
+          p:testOnBorrow="${redis.pool.testOnBorrow}"/>
+
+    <bean id="testJedisPoolFactory" class="com.winterfarmer.virgo.redis.JedisPoolFactory">
+        <constructor-arg index="0" ref="jedisPoolConfig"/>
+        <constructor-arg index="1" value="${redis.biz.test}"/>
+        <constructor-arg index="2" value="1000"/>
+        <constructor-arg index="3" value=""/>
+    </bean>
+
+    <bean id="testVedisProxy" class="com.winterfarmer.virgo.redis.VedisProxy">
+        <constructor-arg ref="testJedisPoolFactory"/>
+    </bean>
+
+    <bean id="toyidmodelVedis" factory-bean="testVedisProxy" factory-method="newVedis"/>
+
+    <bean id="toyIdModelRedisDao" class="com.winterfarmer.virgo.base.dao.IdModelRedisDao"
+          c:idModelRedisBiz="toy"/>
+    <bean id="toyIdModelMysqlDao" class="com.winterfarmer.virgo.service.ToyIdModelMysqlDao"/>
+    <bean id="hybridToyIdModelDao" class="com.winterfarmer.virgo.base.dao.IdModelHybridDao"
+          c:mysqlDao-ref="toyIdModelMysqlDao"
+          c:redisDao-ref="toyIdModelRedisDao"/>
+
 </beans>

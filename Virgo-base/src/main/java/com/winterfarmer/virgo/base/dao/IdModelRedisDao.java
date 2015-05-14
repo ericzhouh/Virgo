@@ -75,17 +75,17 @@ public class IdModelRedisDao<T extends BaseIdModel> implements IdModelDao<T> {
     }
 
     @Override
-    public boolean set(long id, T object) {
+    public boolean insert(T object) {
         if (object == null) {
             return false;
         }
 
         String value = JSON.toJSONString(object);
-        return StringUtils.equals(vedis.set(getKey(id), value), OK);
+        return StringUtils.equals(vedis.set(getKey(object.getId()), value), OK);
     }
 
     @Override
-    public boolean update(long id, T object) {
-        return set(id, object);
+    public boolean update(T object) {
+        return insert(object);
     }
 }

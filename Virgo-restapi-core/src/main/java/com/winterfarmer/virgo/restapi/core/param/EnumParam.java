@@ -88,7 +88,7 @@ public class EnumParam extends AbstractParamSpec<Integer> {
     }
 
     public EnumParam(int[] enums) {
-        if (enums == null) { // complete set
+        if (enums == null) { // complete insert
             this.specValue = "{U}";
         } else {
             for (int i : enums) {
@@ -118,7 +118,7 @@ public class EnumParam extends AbstractParamSpec<Integer> {
 
     public static String enumerate(int... enums) {
         if (ArrayUtils.isEmpty(enums)) {
-            throw new ParamSpecException("Empty enum set");
+            throw new ParamSpecException("Empty enum insert");
         }
 
         return new EnumParam(enums).toString();

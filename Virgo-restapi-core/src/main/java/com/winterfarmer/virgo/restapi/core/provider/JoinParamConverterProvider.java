@@ -8,7 +8,7 @@ import java.lang.reflect.Type;
 
 /**
  * TODO
- * 因为jersey会对list,set,sortset处理参见 MultivaluedParameterExtractorFactory ,
+ * 因为jersey会对list,insert,sortset处理参见 MultivaluedParameterExtractorFactory ,
  * 而我们这种不标准的用,拼接字符串的方案是一个很山寨的方法,我又不想对jersey的源码进行修改,
  * 所以我们约定,所有使用这种,拼接的方式的接口,
  * 如果要使用range为spec:join_xxx那么在接口里对这个参数的定义就应该定义为Collection<T> 的样式,
