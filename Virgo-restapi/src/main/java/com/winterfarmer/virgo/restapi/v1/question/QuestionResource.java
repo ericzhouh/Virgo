@@ -3,6 +3,8 @@ package com.winterfarmer.virgo.restapi.v1.question;
 import com.winterfarmer.virgo.aggregator.model.ApiQuestion;
 import com.winterfarmer.virgo.aggregator.model.ApiQuestionTag;
 import com.winterfarmer.virgo.aggregator.model.ApiVehicle;
+import com.winterfarmer.virgo.base.model.CommonResult;
+import com.winterfarmer.virgo.base.model.CommonState;
 import com.winterfarmer.virgo.common.util.ArrayUtil;
 import com.winterfarmer.virgo.common.util.StringUtil;
 import com.winterfarmer.virgo.knowledge.model.Question;
@@ -69,6 +71,131 @@ public class QuestionResource extends BaseResource {
         return new ApiQuestion(question, apiQuestionTags);
     }
 
+    @Path("update_question.json")
+    @POST
+    @RestApiInfo(
+            desc = "更新问题",
+            authPolicy = RestApiInfo.AuthPolicy.OAUTH,
+            resultDemo = ApiVehicle.class,
+            errors = {RestExceptionFactor.INVALID_TAG_ID,
+                    RestExceptionFactor.INVALID_QUESTION_CONTENT_ID,
+                    RestExceptionFactor.QUESTION_NOT_EXISTED
+            }
+    )
+    @Produces(MediaType.APPLICATION_JSON)
+    public ApiQuestion updateQuestion(
+            @FormParam("question_id")
+            @ParamSpec(isRequired = true, spec = NORMAL_LONG_ID_SPEC, desc = "问题id")
+            long questionId,
+            @FormParam("subject")
+            @ParamSpec(isRequired = true, spec = SUBJECT_SPEC, desc = "题目")
+            String subject,
+            @FormParam("content")
+            @ParamSpec(isRequired = true, spec = QUESTION_CONTENT_SPEC, desc = "内容")
+            String content,
+            @FormParam("question_tags")
+            @ParamSpec(isRequired = true, spec = "string:1~1000", desc = "tag id, 用逗号分开")
+            String tagsString,
+            @HeaderParam(HEADER_USER_ID)
+            long userId
+    ) {
+        long[] tagIds = checkAndGetTagIds(tagsString);
+        Question question = checkAndGetQuestion(questionId);
+        if (question.getUserId() != userId) {
+            throw new VirgoRestException(RestExceptionFactor.NO_RIGHTS);
+        }
+        Pair<String, List<String>> refinedContentAndImageIds = checkAndGetContentAndImageIds(content);
+        String imageIds = StringUtils.join(refinedContentAndImageIds.getRight(), ",");
+
+        question.setSubject(subject);
+        question.setImageIds(imageIds);
+        question.setContent(refinedContentAndImageIds.getLeft());
+        question.setUpdateAtMs(System.currentTimeMillis());
+
+        question = knowledgeService.updateQuestion(question, tagIds);
+        ApiQuestionTag[] apiQuestionTags = getApiQuestionTags(tagIds);
+        return new ApiQuestion(question, apiQuestionTags);
+    }
+
+    @Path("delete_question.json")
+    @POST
+    @RestApiInfo(
+            desc = "更新问题",
+            authPolicy = RestApiInfo.AuthPolicy.OAUTH,
+            resultDemo = ApiVehicle.class,
+            errors = {RestExceptionFactor.QUESTION_NOT_EXISTED}
+    )
+    @Produces(MediaType.APPLICATION_JSON)
+    public CommonResult deleteQuestion(
+            @FormParam("question_id")
+            @ParamSpec(isRequired = true, spec = NORMAL_LONG_ID_SPEC, desc = "问题id")
+            long questionId,
+            @HeaderParam(HEADER_USER_ID)
+            long userId
+    ) {
+        Question question = checkAndGetQuestion(questionId);
+        if (question.getUserId() != userId) {
+            throw new VirgoRestException(RestExceptionFactor.NO_RIGHTS);
+        }
+
+        knowledgeService.updateQuestionState(question.getId(), CommonState.DELETE);
+        return CommonResult.isSuccessfulCommonResult(true);
+    }
+
+    @Path("agree_question.json")
+    @POST
+    @RestApiInfo(
+            desc = "认为问题有价值",
+            authPolicy = RestApiInfo.AuthPolicy.OAUTH,
+            resultDemo = ApiVehicle.class,
+            errors = {RestExceptionFactor.QUESTION_NOT_EXISTED}
+    )
+    @Produces(MediaType.APPLICATION_JSON)
+    public CommonResult agreeQuestion(
+            @FormParam("question_id")
+            @ParamSpec(isRequired = true, spec = NORMAL_LONG_ID_SPEC, desc = "问题id")
+            long questionId,
+            @FormParam("is_agree")
+            @ParamSpec(isRequired = true, spec = COMMON_STATE_SPEC, desc = "是否agree: 0-not agree, 1-agree")
+            CommonState state,
+            @HeaderParam(HEADER_USER_ID)
+            long userId
+    ) {
+        Question question = checkAndGetQuestion(questionId);
+        boolean result =
+                state == CommonState.NORMAL ?
+                        knowledgeService.agreeQuestion(userId, question.getId()) :
+                        knowledgeService.disagreeQuestion(userId, question.getId());
+        return CommonResult.isSuccessfulCommonResult(result);
+    }
+
+    @Path("follow_question.json")
+    @POST
+    @RestApiInfo(
+            desc = "关注问题",
+            authPolicy = RestApiInfo.AuthPolicy.OAUTH,
+            resultDemo = ApiVehicle.class,
+            errors = {RestExceptionFactor.QUESTION_NOT_EXISTED}
+    )
+    @Produces(MediaType.APPLICATION_JSON)
+    public CommonResult followQuestion(
+            @FormParam("question_id")
+            @ParamSpec(isRequired = true, spec = NORMAL_LONG_ID_SPEC, desc = "问题id")
+            long questionId,
+            @FormParam("is_follow")
+            @ParamSpec(isRequired = true, spec = COMMON_STATE_SPEC, desc = "是否follow: 0-not follow, 1-follow")
+            CommonState state,
+            @HeaderParam(HEADER_USER_ID)
+            long userId
+    ) {
+        Question question = checkAndGetQuestion(questionId);
+        boolean result =
+                state == CommonState.NORMAL ?
+                        knowledgeService.followQuestion(userId, question.getId()) :
+                        knowledgeService.disagreeQuestion(userId, question.getId());
+        return CommonResult.isSuccessfulCommonResult(result);
+    }
+
     @Path("question.json")
     @GET
     @RestApiInfo(
@@ -117,11 +244,10 @@ public class QuestionResource extends BaseResource {
 
     private Question checkAndGetQuestion(long questionId) {
         Question question = knowledgeService.getQuestion(questionId);
-        if (question == null) {
+        if (question == null || question.getCommonState() == CommonState.DELETE) {
             throw new VirgoRestException(RestExceptionFactor.QUESTION_NOT_EXISTED);
         }
 
         return question;
     }
-
 }

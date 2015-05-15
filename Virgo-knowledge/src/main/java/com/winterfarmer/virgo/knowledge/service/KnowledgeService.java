@@ -16,6 +16,8 @@ import java.util.Set;
 public interface KnowledgeService {
     Question newQuestion(long userId, String subject, String content, String imageIds, long[] tagIds);
 
+    Question updateQuestion(Question question, long[] tagIds);
+
     Answer newAnswer(long userId, long questionId, String content, String[] imageIds);
 
     AnswerComment newAnswerComment(long userId, long answerId, String content);
@@ -31,6 +33,8 @@ public interface KnowledgeService {
     boolean disagreeQuestion(long userId, long questionId);
 
     boolean followQuestion(long userId, long questionId);
+
+    boolean disfollowQuestion(long userId, long questionId);
 
     boolean agreeAnswer(long userId, long answerId);
 

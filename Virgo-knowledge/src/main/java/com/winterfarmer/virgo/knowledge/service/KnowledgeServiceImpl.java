@@ -44,6 +44,11 @@ public class KnowledgeServiceImpl implements KnowledgeService {
     }
 
     @Override
+    public Question updateQuestion(Question question, long[] tagIds) {
+        return null;
+    }
+
+    @Override
     public Answer newAnswer(long userId, long questionId, String content, String[] imageIds) {
         return null;
     }
@@ -84,6 +89,11 @@ public class KnowledgeServiceImpl implements KnowledgeService {
     }
 
     @Override
+    public boolean disfollowQuestion(long userId, long questionId) {
+        return false;
+    }
+
+    @Override
     public boolean agreeAnswer(long userId, long answerId) {
         return false;
     }
@@ -96,6 +106,11 @@ public class KnowledgeServiceImpl implements KnowledgeService {
     @Override
     public boolean collectAnswer(long userId, long answerId) {
         return false;
+    }
+
+    @Override
+    public Question getQuestion(long questionId) {
+        return null;
     }
 
     @Override
@@ -154,22 +169,17 @@ public class KnowledgeServiceImpl implements KnowledgeService {
     }
 
     @Override
+    public List<Long> listQuestionTagIdsByQuestionId(long questionId) {
+        return null;
+    }
+
+    @Override
     public boolean isValidTags(long... questionTagId) {
         return false;
     }
 
     @Override
     public Pair<String, List<String>> refineQuestionContent(String questionContent) {
-        return null;
-    }
-
-    @Override
-    public Question getQuestion(long questionId) {
-        return null;
-    }
-
-    @Override
-    public List<Long> listQuestionTagIdsByQuestionId(long questionId) {
         return null;
     }
 }
