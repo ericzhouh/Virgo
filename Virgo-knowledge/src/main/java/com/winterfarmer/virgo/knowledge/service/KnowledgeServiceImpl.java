@@ -162,4 +162,14 @@ public class KnowledgeServiceImpl implements KnowledgeService {
     public Pair<String, List<String>> refineQuestionContent(String questionContent) {
         return null;
     }
+
+    @Override
+    public Question getQuestion(long questionId) {
+        return null;
+    }
+
+    @Override
+    public List<Long> listQuestionTagIdsByQuestionId(long questionId) {
+        return null;
+    }
 }

@@ -38,6 +38,8 @@ public interface KnowledgeService {
 
     boolean collectAnswer(long userId, long answerId);
 
+    Question getQuestion(long questionId);
+
     /**
      * List the last (count number) questions
      *
@@ -115,6 +117,8 @@ public interface KnowledgeService {
     QuestionTag getQuestionTag(long questionTagId);
 
     List<QuestionTag> listQuestionTag(long... questionTagId);
+
+    List<Long> listQuestionTagIdsByQuestionId(long questionId);
 
     boolean isValidTags(long... questionTagId);
 

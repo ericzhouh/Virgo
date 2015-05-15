@@ -44,7 +44,9 @@ public class QuestionResource extends BaseResource {
             desc = "新的问题",
             authPolicy = RestApiInfo.AuthPolicy.OAUTH,
             resultDemo = ApiVehicle.class,
-            errors = {}
+            errors = {RestExceptionFactor.INVALID_TAG_ID,
+                    RestExceptionFactor.INVALID_QUESTION_CONTENT_ID
+            }
     )
     @Produces(MediaType.APPLICATION_JSON)
     public ApiQuestion createQuestion(
@@ -67,22 +69,23 @@ public class QuestionResource extends BaseResource {
         return new ApiQuestion(question, apiQuestionTags);
     }
 
-    @Path("questions.json")
+    @Path("question.json")
     @GET
     @RestApiInfo(
-            desc = "获取用户车辆信息",
-            authPolicy = RestApiInfo.AuthPolicy.OAUTH,
+            desc = "查看问题详情",
+            authPolicy = RestApiInfo.AuthPolicy.PUBLIC,
             resultDemo = ApiVehicle.class,
-            errors = {RestExceptionFactor.VEHICLE_NOT_EXISTED}
+            errors = {RestExceptionFactor.QUESTION_NOT_EXISTED}
     )
     @Produces(MediaType.APPLICATION_JSON)
     public ApiQuestion getUserVehicle(
-            @QueryParam("vehicle_id")
-            @ParamSpec(isRequired = true, spec = NORMAL_LONG_ID_SPEC, desc = "用户汽车id")
-            long vehicleId,
-            @HeaderParam(HEADER_USER_ID)
-            long userId) {
-        throw new VirgoRestException(RestExceptionFactor.VEHICLE_NOT_EXISTED);
+            @QueryParam("question_id")
+            @ParamSpec(isRequired = true, spec = NORMAL_LONG_ID_SPEC, desc = "问题id")
+            long questionId) {
+        Question question = checkAndGetQuestion(questionId);
+        List<Long> tagIdList = knowledgeService.listQuestionTagIdsByQuestionId(question.getId());
+        List<ApiQuestionTag> apiQuestionTagList = getApiQuestionTags(tagIdList);
+        return new ApiQuestion(question, apiQuestionTagList);
     }
 
     private long[] checkAndGetTagIds(String tagsString) {
@@ -98,7 +101,7 @@ public class QuestionResource extends BaseResource {
     private Pair<String, List<String>> checkAndGetContentAndImageIds(String content) {
         Pair<String, List<String>> refinedContentAndImageIds = knowledgeService.refineQuestionContent(content);
         if (refinedContentAndImageIds == null) {
-            throw new VirgoRestException(RestExceptionFactor.INVALID_TAG_ID);
+            throw new VirgoRestException(RestExceptionFactor.INVALID_QUESTION_CONTENT_ID);
         }
 
         return refinedContentAndImageIds;
@@ -107,4 +110,18 @@ public class QuestionResource extends BaseResource {
     private static ApiQuestionTag[] getApiQuestionTags(long[] tagIds) {
         return null;
     }
+
+    private static List<ApiQuestionTag> getApiQuestionTags(List<Long> tagIdList) {
+        return null;
+    }
+
+    private Question checkAndGetQuestion(long questionId) {
+        Question question = knowledgeService.getQuestion(questionId);
+        if (question == null) {
+            throw new VirgoRestException(RestExceptionFactor.QUESTION_NOT_EXISTED);
+        }
+
+        return question;
+    }
+
 }
