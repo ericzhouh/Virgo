@@ -4,7 +4,9 @@ import com.winterfarmer.virgo.base.model.CommonState;
 import com.winterfarmer.virgo.knowledge.model.Answer;
 import com.winterfarmer.virgo.knowledge.model.AnswerComment;
 import com.winterfarmer.virgo.knowledge.model.Question;
+import com.winterfarmer.virgo.knowledge.model.QuestionTag;
 import com.winterfarmer.virgo.storage.graph.dao.GraphDao;
+import org.apache.commons.lang3.tuple.Pair;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
@@ -37,7 +39,7 @@ public class KnowledgeServiceImpl implements KnowledgeService {
     GraphDao questionTagGraphMysqlDao;
 
     @Override
-    public Question newQuestion(long userId, String subject, String content, String[] imageIds, long[] tagIds) {
+    public Question newQuestion(long userId, String subject, String content, String imageIds, long[] tagIds) {
         return null;
     }
 
@@ -133,6 +135,31 @@ public class KnowledgeServiceImpl implements KnowledgeService {
 
     @Override
     public List<Answer> ListUserCollectedAnswers(long userId, int offset, int count) {
+        return null;
+    }
+
+    @Override
+    public List<QuestionTag> listQuestionTag() {
+        return null;
+    }
+
+    @Override
+    public QuestionTag getQuestionTag(long questionTagId) {
+        return null;
+    }
+
+    @Override
+    public List<QuestionTag> listQuestionTag(long... questionTagId) {
+        return null;
+    }
+
+    @Override
+    public boolean isValidTags(long... questionTagId) {
+        return false;
+    }
+
+    @Override
+    public Pair<String, List<String>> refineQuestionContent(String questionContent) {
         return null;
     }
 }

@@ -1,8 +1,10 @@
 package com.winterfarmer.virgo.common.util;
 
 import com.google.common.base.Predicate;
+import com.google.common.collect.Sets;
 
 import javax.annotation.Nullable;
+import java.util.Set;
 
 /**
  * Created by yangtianhang on 15-2-26.
@@ -21,5 +23,27 @@ public class ArrayUtil {
         }
 
         return null;
+    }
+
+    public static long[] deduplicate(long[] numbers) {
+        if (numbers == null) {
+            return null;
+        }
+
+        Set<Long> set = Sets.newTreeSet();
+        for (long number : numbers) {
+            set.add(number);
+        }
+        if (set.size() == numbers.length) {
+            return numbers;
+        }
+
+        long[] deduplicated = new long[set.size()];
+        int i = 0;
+        for (Long number : set) {
+            deduplicated[i++] = number;
+        }
+
+        return deduplicated;
     }
 }

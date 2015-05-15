@@ -40,6 +40,12 @@
 
         <dependency>
             <groupId>com.winterfarmer</groupId>
+            <artifactId>Virgo-knowledge</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.winterfarmer</groupId>
             <artifactId>Virgo-aggregator</artifactId>
             <version>${project.version}</version>
         </dependency>

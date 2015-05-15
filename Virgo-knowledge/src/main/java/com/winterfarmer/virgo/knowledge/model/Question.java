@@ -9,8 +9,7 @@ import com.winterfarmer.virgo.base.model.CommonState;
 public class Question extends BaseIdModel {
     private static final long serialVersionUID = 4035352746273381032L;
 
-    private long questionerId;
-
+    private long userId;
     private String subject;
     private String imageIds; // comma split
     private String content;
@@ -22,12 +21,12 @@ public class Question extends BaseIdModel {
     public Question() {
     }
 
-    public long getQuestionerId() {
-        return questionerId;
+    public long getUserId() {
+        return userId;
     }
 
-    public void setQuestionerId(long questionerId) {
-        this.questionerId = questionerId;
+    public void setUserId(long userId) {
+        this.userId = userId;
     }
 
     public String getSubject() {

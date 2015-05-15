@@ -29,6 +29,11 @@ public enum RestExceptionFactor {
     // Vehicle Exception Factor 404_003
     VEHICLE_NOT_EXISTED(404, 404_003_000, "vehicle not existed"),
 
+    // Knowledge Exception Factor 404_004
+    INVALID_TAG_ID(404, 404_004_000, "invalid tag id"),
+    INVALID_QUESTION_CONTENT_ID(404, 404_004_001, "invalid question content"),
+
+    // 500
     INTERNAL_SERVER_ERROR(500, 500_000_001, "Internal Server Error"),;
 
     private final int httpErrorCode;

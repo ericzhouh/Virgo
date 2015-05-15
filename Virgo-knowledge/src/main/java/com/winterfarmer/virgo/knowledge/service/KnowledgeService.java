@@ -4,14 +4,17 @@ import com.winterfarmer.virgo.base.model.CommonState;
 import com.winterfarmer.virgo.knowledge.model.Answer;
 import com.winterfarmer.virgo.knowledge.model.AnswerComment;
 import com.winterfarmer.virgo.knowledge.model.Question;
+import com.winterfarmer.virgo.knowledge.model.QuestionTag;
+import org.apache.commons.lang3.tuple.Pair;
 
 import java.util.List;
+import java.util.Set;
 
 /**
  * Created by yangtianhang on 15/5/13.
  */
 public interface KnowledgeService {
-    Question newQuestion(long userId, String subject, String content, String[] imageIds, long[] tagIds);
+    Question newQuestion(long userId, String subject, String content, String imageIds, long[] tagIds);
 
     Answer newAnswer(long userId, long questionId, String content, String[] imageIds);
 
@@ -106,4 +109,19 @@ public interface KnowledgeService {
      * @return
      */
     List<Answer> ListUserCollectedAnswers(long userId, int offset, int count);
+
+    List<QuestionTag> listQuestionTag();
+
+    QuestionTag getQuestionTag(long questionTagId);
+
+    List<QuestionTag> listQuestionTag(long... questionTagId);
+
+    boolean isValidTags(long... questionTagId);
+
+    /**
+     * @param questionContent
+     * @return result[0] - refined content,
+     * result[1] - image ids
+     */
+    Pair<String, List<String>> refineQuestionContent(String questionContent);
 }

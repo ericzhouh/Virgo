@@ -1,20 +1,17 @@
 package com.winterfarmer.virgo.knowledge.model;
 
-import com.winterfarmer.virgo.base.model.BaseModel;
 import com.winterfarmer.virgo.base.model.CommonState;
 
 /**
  * Created by yangtianhang on 15/5/11.
  */
-public class Tag extends BaseModel {
-    private static final long serialVersionUID = -782205072012318792L;
-
+public class QuestionTag {
     private long id;
     private String name;
     private int weight;
     private CommonState commonState;
 
-    public Tag() {
+    public QuestionTag() {
     }
 
     public long getId() {
