@@ -1,5 +1,7 @@
 package com.winterfarmer.virgo.restapi.v1.question;
 
+import com.google.common.base.Function;
+import com.google.common.collect.Lists;
 import com.winterfarmer.virgo.aggregator.model.ApiQuestion;
 import com.winterfarmer.virgo.aggregator.model.ApiQuestionTag;
 import com.winterfarmer.virgo.aggregator.model.ApiVehicle;
@@ -39,6 +41,14 @@ public class QuestionResource extends BaseResource {
 
     @Resource(name = "knowledgeService")
     KnowledgeService knowledgeService;
+
+    private static final Function<Question, ApiQuestion> simpleApiQuestionConverter =
+            new Function<Question, ApiQuestion>() {
+                @Override
+                public ApiQuestion apply(Question question) {
+                    return ApiQuestion.forSimpleDisplay(question);
+                }
+            };
 
     @Path("new_question.json")
     @POST
@@ -85,7 +95,7 @@ public class QuestionResource extends BaseResource {
     @Produces(MediaType.APPLICATION_JSON)
     public ApiQuestion updateQuestion(
             @FormParam("question_id")
-            @ParamSpec(isRequired = true, spec = NORMAL_LONG_ID_SPEC, desc = "问题id")
+            @ParamSpec(isRequired = true, spec = POSITIVE_LONG_ID_SPEC, desc = "问题id")
             long questionId,
             @FormParam("subject")
             @ParamSpec(isRequired = true, spec = SUBJECT_SPEC, desc = "题目")
@@ -128,7 +138,7 @@ public class QuestionResource extends BaseResource {
     @Produces(MediaType.APPLICATION_JSON)
     public CommonResult deleteQuestion(
             @FormParam("question_id")
-            @ParamSpec(isRequired = true, spec = NORMAL_LONG_ID_SPEC, desc = "问题id")
+            @ParamSpec(isRequired = true, spec = POSITIVE_LONG_ID_SPEC, desc = "问题id")
             long questionId,
             @HeaderParam(HEADER_USER_ID)
             long userId
@@ -153,7 +163,7 @@ public class QuestionResource extends BaseResource {
     @Produces(MediaType.APPLICATION_JSON)
     public CommonResult agreeQuestion(
             @FormParam("question_id")
-            @ParamSpec(isRequired = true, spec = NORMAL_LONG_ID_SPEC, desc = "问题id")
+            @ParamSpec(isRequired = true, spec = POSITIVE_LONG_ID_SPEC, desc = "问题id")
             long questionId,
             @FormParam("is_agree")
             @ParamSpec(isRequired = true, spec = COMMON_STATE_SPEC, desc = "是否agree: 0-not agree, 1-agree")
@@ -180,7 +190,7 @@ public class QuestionResource extends BaseResource {
     @Produces(MediaType.APPLICATION_JSON)
     public CommonResult followQuestion(
             @FormParam("question_id")
-            @ParamSpec(isRequired = true, spec = NORMAL_LONG_ID_SPEC, desc = "问题id")
+            @ParamSpec(isRequired = true, spec = POSITIVE_LONG_ID_SPEC, desc = "问题id")
             long questionId,
             @FormParam("is_follow")
             @ParamSpec(isRequired = true, spec = COMMON_STATE_SPEC, desc = "是否follow: 0-not follow, 1-follow")
@@ -196,23 +206,98 @@ public class QuestionResource extends BaseResource {
         return CommonResult.isSuccessfulCommonResult(result);
     }
 
-    @Path("question.json")
+    @Path("user_questions.json")
     @GET
     @RestApiInfo(
-            desc = "查看问题详情",
+            desc = "用户提问, 回答或者关注的问题",
+            authPolicy = RestApiInfo.AuthPolicy.OAUTH,
+            resultDemo = ApiVehicle.class,
+            errors = {}
+    )
+    @Produces(MediaType.APPLICATION_JSON)
+    public List<ApiQuestion> getUserQuestions(
+            @QueryParam("type")
+            @ParamSpec(isRequired = true, spec = "int:[0,2]", desc = "筛选类型: 0-我提问的, 1-我回答的, 2-我关注的")
+            int type,
+            @QueryParam("page")
+            @ParamSpec(isRequired = false, spec = NORMAL_PAGE_SPEC, desc = NORMAL_PAGE_DESC)
+            @DefaultValue(NORMAL_DEFAULT_PAGE_NUM)
+            int page,
+            @QueryParam("count")
+            @ParamSpec(isRequired = false, spec = NORMAL_COUNT_SPEC, desc = NORMAL_COUNT_DESC)
+            @DefaultValue(NORMAL_DEFAULT_PAGE_COUNT)
+            int count,
+            @HeaderParam(HEADER_USER_ID)
+            long userId) {
+        List<Question> questionList = queryQuestions(type, userId, page, count);
+        return Lists.transform(questionList, simpleApiQuestionConverter);
+    }
+
+    @Path("list_questions.json")
+    @GET
+    @RestApiInfo(
+            desc = "列出问题",
+            authPolicy = RestApiInfo.AuthPolicy.PUBLIC,
+            resultDemo = ApiVehicle.class,
+            errors = {RestExceptionFactor.INVALID_TAG_ID}
+    )
+    @Produces(MediaType.APPLICATION_JSON)
+    public List<ApiQuestion> listQuestions(
+            @QueryParam("tag_id")
+            @ParamSpec(isRequired = false, spec = NATURAL_LONG_ID_SPEC, desc = "标签id: 0-所有(无视此参数), 其他-tag id")
+            @DefaultValue("0")
+            long tagId,
+            @QueryParam("page")
+            @ParamSpec(isRequired = false, spec = NORMAL_PAGE_SPEC, desc = NORMAL_PAGE_DESC)
+            @DefaultValue(NORMAL_DEFAULT_PAGE_NUM)
+            int page,
+            @QueryParam("count")
+            @ParamSpec(isRequired = false, spec = NORMAL_COUNT_SPEC, desc = NORMAL_COUNT_DESC)
+            @DefaultValue(NORMAL_DEFAULT_PAGE_COUNT)
+            int count) {
+        List<Question> questionList = tagId == 0 ?
+                knowledgeService.listQuestions(page, count) :
+                knowledgeService.listQuestions(tagId, page, count);
+        return Lists.transform(questionList, simpleApiQuestionConverter);
+    }
+
+    @Path("question_detail.json")
+    @GET
+    @RestApiInfo(
+            desc = "问题详情",
             authPolicy = RestApiInfo.AuthPolicy.PUBLIC,
             resultDemo = ApiVehicle.class,
             errors = {RestExceptionFactor.QUESTION_NOT_EXISTED}
     )
     @Produces(MediaType.APPLICATION_JSON)
-    public ApiQuestion getUserVehicle(
+    public ApiQuestion getQuestion(
             @QueryParam("question_id")
-            @ParamSpec(isRequired = true, spec = NORMAL_LONG_ID_SPEC, desc = "问题id")
+            @ParamSpec(isRequired = true, spec = POSITIVE_LONG_ID_SPEC, desc = "问题详情")
             long questionId) {
         Question question = checkAndGetQuestion(questionId);
-        List<Long> tagIdList = knowledgeService.listQuestionTagIdsByQuestionId(question.getId());
-        List<ApiQuestionTag> apiQuestionTagList = getApiQuestionTags(tagIdList);
-        return new ApiQuestion(question, apiQuestionTagList);
+        List<Long> tagIdList = knowledgeService.listQuestionTagIdsByQuestionId(questionId);
+        List<ApiQuestionTag> tagList = getApiQuestionTags(tagIdList);
+        return new ApiQuestion(question, tagList);
+    }
+
+    /**
+     * @param type   0:我提问的;1:我回答的;2:我关注的
+     * @param userId
+     * @param page
+     * @param count
+     * @return
+     */
+    private List<Question> queryQuestions(int type, long userId, int page, int count) {
+        switch (type) {
+            case 0:
+                return knowledgeService.listUserProposedQuestions(userId, page, count);
+            case 1:
+                return knowledgeService.listUserAnsweredQuestions(userId, page, count);
+            case 2:
+                return knowledgeService.listUserFollowedQuestions(userId, page, count);
+            default:
+                return Lists.newArrayList();
+        }
     }
 
     private long[] checkAndGetTagIds(String tagsString) {
@@ -234,11 +319,11 @@ public class QuestionResource extends BaseResource {
         return refinedContentAndImageIds;
     }
 
-    private static ApiQuestionTag[] getApiQuestionTags(long[] tagIds) {
+    private ApiQuestionTag[] getApiQuestionTags(long[] tagIds) {
         return null;
     }
 
-    private static List<ApiQuestionTag> getApiQuestionTags(List<Long> tagIdList) {
+    private List<ApiQuestionTag> getApiQuestionTags(List<Long> tagIdList) {
         return null;
     }
 

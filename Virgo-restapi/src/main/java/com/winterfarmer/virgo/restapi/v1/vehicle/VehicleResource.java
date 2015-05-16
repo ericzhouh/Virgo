@@ -52,7 +52,7 @@ public class VehicleResource extends BaseResource {
     @Produces(MediaType.APPLICATION_JSON)
     public ApiVehicle getUserVehicle(
             @QueryParam("vehicle_id")
-            @ParamSpec(isRequired = true, spec = NORMAL_LONG_ID_SPEC, desc = "用户汽车id")
+            @ParamSpec(isRequired = true, spec = POSITIVE_LONG_ID_SPEC, desc = "用户汽车id")
             long vehicleId,
             @HeaderParam(HEADER_USER_ID)
             long userId) {
@@ -146,7 +146,7 @@ public class VehicleResource extends BaseResource {
     @Produces(MediaType.APPLICATION_JSON)
     public ApiVehicle updateUserVehicle(
             @FormParam("vehicle_id")
-            @ParamSpec(isRequired = true, spec = NORMAL_LONG_ID_SPEC, desc = "用户汽车id")
+            @ParamSpec(isRequired = true, spec = POSITIVE_LONG_ID_SPEC, desc = "用户汽车id")
             long vehicleId,
             @FormParam("license_plate")
             @ParamSpec(isRequired = true, spec = LICENSE_PLATE_SPEC, desc = "车牌号")

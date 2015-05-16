@@ -114,42 +114,37 @@ public class KnowledgeServiceImpl implements KnowledgeService {
     }
 
     @Override
-    public List<Question> listQuestions(int count) {
+    public List<Question> listQuestions(int page, int count) {
         return null;
     }
 
     @Override
-    public List<Question> listQuestions(long questionId, int count) {
+    public List<Question> listQuestions(long tagId, int page, int count) {
         return null;
     }
 
     @Override
-    public List<Question> listQuestions(long questionId, int tagId, int count) {
+    public List<Question> listUserFollowedQuestions(long userId, int page, int count) {
         return null;
     }
 
     @Override
-    public List<Question> listUserFollowedQuestions(long userId, int offset, int count) {
+    public List<Question> listUserProposedQuestions(long userId, int page, int count) {
         return null;
     }
 
     @Override
-    public List<Question> listUserProposedQuestions(long userId, int offset, int count) {
+    public List<Question> listUserAnsweredQuestions(long userId, int page, int count) {
         return null;
     }
 
     @Override
-    public List<Question> listUserAnsweredQuestions(long userId, int offset, int count) {
+    public List<Answer> ListAnswers(long questionId, int page, int count) {
         return null;
     }
 
     @Override
-    public List<Answer> ListAnswers(long questionId, int offset, int count) {
-        return null;
-    }
-
-    @Override
-    public List<Answer> ListUserCollectedAnswers(long userId, int offset, int count) {
+    public List<Answer> ListUserCollectedAnswers(long userId, int page, int count) {
         return null;
     }
 

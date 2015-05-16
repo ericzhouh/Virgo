@@ -45,76 +45,66 @@ public interface KnowledgeService {
     Question getQuestion(long questionId);
 
     /**
-     * List the last (count number) questions
-     *
+     * @param page
      * @param count
      * @return
      */
-    List<Question> listQuestions(int count);
-
-    /**
-     * List the last (count number) questions from questionId
-     *
-     * @param questionId
-     * @param count
-     * @return
-     */
-    List<Question> listQuestions(long questionId, int count);
+    List<Question> listQuestions(int page, int count);
 
     /**
      * List the last (count number) questions of tagId from questionId
      *
-     * @param questionId
      * @param tagId
+     * @param page
      * @param count
      * @return
      */
-    List<Question> listQuestions(long questionId, int tagId, int count);
+    List<Question> listQuestions(long tagId, int page, int count);
 
     /**
-     * List (count number) questions of user followed from offset
+     * List (count number) questions of user followed from page
      *
      * @param userId
      * @param count
      * @return
      */
-    List<Question> listUserFollowedQuestions(long userId, int offset, int count);
+    List<Question> listUserFollowedQuestions(long userId, int page, int count);
 
     /**
      * @param userId
-     * @param offset
+     * @param page
      * @param count
      * @return
      */
-    List<Question> listUserProposedQuestions(long userId, int offset, int count);
+    List<Question> listUserProposedQuestions(long userId, int page, int count);
 
     /**
      * @param userId
-     * @param offset
+     * @param page
      * @param count
      * @return
      */
-    List<Question> listUserAnsweredQuestions(long userId, int offset, int count);
+    List<Question> listUserAnsweredQuestions(long userId, int page, int count);
 
     /**
-     * List (count number) answers of questionId from offset
+     * List (count number) answers of questionId from page
      *
      * @param questionId
-     * @param offset
+     * @param page
      * @param count
      * @return
      */
-    List<Answer> ListAnswers(long questionId, int offset, int count);
+    List<Answer> ListAnswers(long questionId, int page, int count);
 
     /**
-     * List (count number) answers of user collected from offset
+     * List (count number) answers of user collected from page
      *
      * @param userId
-     * @param offset
+     * @param page
      * @param count
      * @return
      */
-    List<Answer> ListUserCollectedAnswers(long userId, int offset, int count);
+    List<Answer> ListUserCollectedAnswers(long userId, int page, int count);
 
     List<QuestionTag> listQuestionTag();
 
