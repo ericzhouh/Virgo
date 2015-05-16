@@ -7,7 +7,6 @@ import com.google.common.util.concurrent.Futures;
 import com.google.common.util.concurrent.ListenableFuture;
 import com.google.common.util.concurrent.ListeningExecutorService;
 import com.google.common.util.concurrent.MoreExecutors;
-import com.sun.jndi.toolkit.ctx.HeadTail;
 import com.winterfarmer.virgo.database.JdbcTemplateFactory;
 import com.winterfarmer.virgo.log.VirgoLogger;
 import com.winterfarmer.virgo.storage.graph.Edge;

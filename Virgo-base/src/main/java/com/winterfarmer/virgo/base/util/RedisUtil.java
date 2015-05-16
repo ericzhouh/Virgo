@@ -1,7 +1,6 @@
 package com.winterfarmer.virgo.base.util;
 
 import com.alibaba.fastjson.JSON;
-import com.google.common.base.Function;
 import com.google.common.collect.Lists;
 import com.winterfarmer.virgo.base.model.BaseModel;
 import com.winterfarmer.virgo.redis.Vedis;

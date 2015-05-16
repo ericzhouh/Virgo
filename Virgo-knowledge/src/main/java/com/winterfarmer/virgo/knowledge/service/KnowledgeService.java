@@ -8,7 +8,6 @@ import com.winterfarmer.virgo.knowledge.model.QuestionTag;
 import org.apache.commons.lang3.tuple.Pair;
 
 import java.util.List;
-import java.util.Set;
 
 /**
  * Created by yangtianhang on 15/5/13.
