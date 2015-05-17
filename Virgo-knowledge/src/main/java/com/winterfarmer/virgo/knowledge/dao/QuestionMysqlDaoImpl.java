@@ -1,6 +1,5 @@
 package com.winterfarmer.virgo.knowledge.dao;
 
-import com.winterfarmer.virgo.storage.id.dao.IdModelMysqlDao;
 import com.winterfarmer.virgo.base.model.CommonState;
 import com.winterfarmer.virgo.database.BaseMysqlDao;
 import com.winterfarmer.virgo.database.helper.IndexType;
@@ -13,6 +12,7 @@ import com.winterfarmer.virgo.database.helper.column.string.TextColumn;
 import com.winterfarmer.virgo.database.helper.column.string.VarcharColumn;
 import com.winterfarmer.virgo.knowledge.model.Question;
 import com.winterfarmer.virgo.log.VirgoLogger;
+import com.winterfarmer.virgo.storage.id.dao.IdModelMysqlDao;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
 

@@ -1,7 +1,7 @@
 package com.winterfarmer.virgo.knowledge.model;
 
-import com.winterfarmer.virgo.storage.id.model.BaseIdModel;
 import com.winterfarmer.virgo.base.model.CommonState;
+import com.winterfarmer.virgo.storage.id.model.BaseIdModel;
 
 /**
  * Created by yangtianhang on 15/5/11.
