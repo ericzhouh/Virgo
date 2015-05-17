@@ -50,4 +50,18 @@
     <bean id="privilegeVedis" factory-bean="privilegeVedisProxy" factory-method="newVedis"/>
     <!--privilegeVedis config end-->
 
+    <!--questionVedis config start-->
+    <bean id="questionJedisPoolFactory" class="com.winterfarmer.virgo.redis.JedisPoolFactory"
+          c:config-ref="jedisPoolConfig"
+          c:connection="${redis.biz.question}"
+          c:timeout="1000"
+          c:password=""/>
+
+    <bean id="questionVedisProxy" class="com.winterfarmer.virgo.redis.VedisProxy">
+        <constructor-arg ref="questionJedisPoolFactory"/>
+    </bean>
+
+    <bean id="questionVedis" factory-bean="questionVedisProxy" factory-method="newVedis"/>
+    <!--questionVedis config end-->
+
 </beans>
