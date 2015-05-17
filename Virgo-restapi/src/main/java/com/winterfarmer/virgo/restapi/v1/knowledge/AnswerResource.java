@@ -1,6 +1,7 @@
 package com.winterfarmer.virgo.restapi.v1.knowledge;
 
 import com.winterfarmer.virgo.aggregator.model.ApiAnswer;
+import com.winterfarmer.virgo.base.model.CommonState;
 import com.winterfarmer.virgo.knowledge.model.Answer;
 import com.winterfarmer.virgo.knowledge.model.Question;
 import com.winterfarmer.virgo.restapi.core.annotation.ParamSpec;
@@ -50,6 +51,39 @@ public class AnswerResource extends KnowledgeResource {
         return new ApiAnswer(answer);
     }
 
+    @Path("update_answer.json")
+    @POST
+    @RestApiInfo(
+            desc = "新的回答",
+            authPolicy = RestApiInfo.AuthPolicy.OAUTH,
+            resultDemo = ApiAnswer.class,
+            errors = {RestExceptionFactor.NO_RIGHTS,
+                    RestExceptionFactor.ANSWER_NOT_EXISTED}
+    )
+    @Produces(MediaType.APPLICATION_JSON)
+    public ApiAnswer updateAnswer(
+            @FormParam("answer_id")
+            @ParamSpec(isRequired = true, spec = POSITIVE_LONG_ID_SPEC, desc = "答案id")
+            long answerId,
+            @FormParam("content")
+            @ParamSpec(isRequired = true, spec = ANSWER_CONTENT_SPEC, desc = "回答的内容")
+            String content,
+            @HeaderParam(HEADER_USER_ID)
+            long userId) {
+        Answer answer = checkAndGetAnswer(answerId);
+        if (answer.getUserId() != userId) {
+            throw new VirgoRestException(RestExceptionFactor.NO_RIGHTS);
+        }
+
+        Pair<String, List<String>> refinedContentAndImageIds = checkAndGetContentAndImageIds(content);
+        String imageIds = StringUtils.join(refinedContentAndImageIds.getRight(), ",");
+        answer.setContent(content);
+        answer.setImageIds(imageIds);
+        answer.setUpdateAtMs(System.currentTimeMillis());
+        answer = knowledgeService.updateAnswer(answer);
+        return new ApiAnswer(answer);
+    }
+
     private Pair<String, List<String>> checkAndGetContentAndImageIds(String content) {
         Pair<String, List<String>> refinedContentAndImageIds = knowledgeService.refineAnswerContent(content);
         if (refinedContentAndImageIds == null) {
@@ -57,5 +91,14 @@ public class AnswerResource extends KnowledgeResource {
         }
 
         return refinedContentAndImageIds;
+    }
+
+    protected Answer checkAndGetAnswer(long answerId) {
+        Answer answer = knowledgeService.getAnswer(answerId);
+        if (answer == null || answer.getCommonState() == CommonState.DELETE) {
+            throw new VirgoRestException(RestExceptionFactor.ANSWER_NOT_EXISTED);
+        }
+
+        return answer;
     }
 }

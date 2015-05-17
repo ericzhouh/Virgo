@@ -87,6 +87,10 @@ public interface KnowledgeService {
 
     Answer newAnswer(long userId, long questionId, String content, String imageIds);
 
+    Answer getAnswer(long answerId);
+
+    Answer updateAnswer(Answer answer);
+
     AnswerComment newAnswerComment(long userId, long answerId, String content);
 
     Answer updateAnswerState(long answerId, CommonState commonState);

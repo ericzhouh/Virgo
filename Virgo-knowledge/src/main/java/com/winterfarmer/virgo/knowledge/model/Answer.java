@@ -9,8 +9,8 @@ import com.winterfarmer.virgo.storage.id.model.BaseIdModel;
 public class Answer extends BaseIdModel {
     private static final long serialVersionUID = -9177417427886797005L;
 
-    private long answererId;
     private long questionId;
+    private long userId;
 
     private String imageIds;
     private String content;
@@ -19,12 +19,12 @@ public class Answer extends BaseIdModel {
     private long createAtMs;
     private long updateAtMs;
 
-    public long getAnswererId() {
-        return answererId;
+    public long getUserId() {
+        return userId;
     }
 
-    public void setAnswererId(long answererId) {
-        this.answererId = answererId;
+    public void setUserId(long userId) {
+        this.userId = userId;
     }
 
     public long getQuestionId() {

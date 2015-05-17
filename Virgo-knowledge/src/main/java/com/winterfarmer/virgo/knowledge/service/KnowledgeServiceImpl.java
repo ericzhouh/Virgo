@@ -213,6 +213,16 @@ public class KnowledgeServiceImpl implements KnowledgeService {
     }
 
     @Override
+    public Answer getAnswer(long answerId) {
+        return null;
+    }
+
+    @Override
+    public Answer updateAnswer(Answer answer) {
+        return null;
+    }
+
+    @Override
     public AnswerComment newAnswerComment(long userId, long answerId, String content) {
         return null;
     }
