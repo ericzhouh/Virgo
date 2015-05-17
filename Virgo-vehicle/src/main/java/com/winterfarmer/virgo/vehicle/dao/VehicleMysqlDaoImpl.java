@@ -121,7 +121,7 @@ public class VehicleMysqlDaoImpl extends BaseMysqlDao implements VehicleDao {
             selectAllSql(VEHICLE_TABLE_NAME) + new WhereClauseBuilder(userId.eqWhich()).and(state.eqWhich()).limitOffset();
 
     @Override
-    public List<Vehicle> retrieveVehicles(long userId, CommonState state, int offset, int limit) {
+    public List<Vehicle> retrieveVehicles(long userId, CommonState state, int limit, int offset) {
         if (state != null) {
             return queryForList(getReadJdbcTemplate(), select_vehicles_by_user_id_sql_depend_on_state, vehicleRowMapper, userId, state.getIndex(), limit, offset);
         } else {
@@ -133,7 +133,7 @@ public class VehicleMysqlDaoImpl extends BaseMysqlDao implements VehicleDao {
             selectAllSql(VEHICLE_TABLE_NAME) + new WhereClauseBuilder().limitOffset();
 
     @Override
-    public List<Vehicle> retrieveVehicles(int offset, int limit) {
+    public List<Vehicle> retrieveVehicles(int limit, int offset) {
         return queryForList(getReadJdbcTemplate(), select_vehicles, vehicleRowMapper, limit, offset);
     }
 

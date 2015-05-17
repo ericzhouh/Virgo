@@ -33,12 +33,12 @@ public class VehicleServiceImpl implements VehicleService {
 
     @Override
     public List<Vehicle> getVehicles(long userId, CommonState state, int page, int count) {
-        return vehicleDao.retrieveVehicles(userId, state, page * count, count);
+        return vehicleDao.retrieveVehicles(userId, state, count, page * count);
     }
 
     @Override
     public List<Vehicle> getVehicles(int page, int count) {
-        return vehicleDao.retrieveVehicles(page * count, count);
+        return vehicleDao.retrieveVehicles(count, page * count);
     }
 
     @Override

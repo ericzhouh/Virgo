@@ -14,7 +14,7 @@ import java.util.List;
 public interface IdModelDao<T extends BaseIdModel> {
     T get(long id);
 
-    List<T> list(long... ids);
+    List<T> listByIds(long... ids);
 
     T insert(T object);
 

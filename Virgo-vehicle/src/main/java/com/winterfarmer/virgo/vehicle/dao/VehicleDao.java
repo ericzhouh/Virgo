@@ -13,9 +13,9 @@ public interface VehicleDao {
 
     boolean updateVehicle(Vehicle vehicle);
 
-    List<Vehicle> retrieveVehicles(long userId, CommonState state, int offset, int limit);
+    List<Vehicle> retrieveVehicles(long userId, CommonState state, int limit, int offset);
 
-    List<Vehicle> retrieveVehicles(int offset, int limit);
+    List<Vehicle> retrieveVehicles(int limit, int offset);
 
     Vehicle retrieveById(long vehicleId);
 }

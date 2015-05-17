@@ -3,6 +3,7 @@ package com.winterfarmer.virgo.database;
 import com.alibaba.fastjson.JSON;
 import com.google.common.base.Charsets;
 import com.google.common.collect.ImmutableList;
+import com.google.common.collect.Lists;
 import com.winterfarmer.virgo.common.util.ConfigUtil;
 import com.winterfarmer.virgo.database.helper.column.Column;
 import com.winterfarmer.virgo.log.VirgoLogger;
@@ -98,7 +99,7 @@ public class BaseMysqlDao {
         }
     }
 
-    protected <T> ImmutableList<T> queryForList(JdbcTemplate jdbcTemplate, String sql, RowMapper<T> rowMapper, Object... args) {
+    protected <T> List<T> queryForList(JdbcTemplate jdbcTemplate, String sql, RowMapper<T> rowMapper, Object... args) {
         if (VirgoLogger.isDebugEnabled()) {
             VirgoLogger.debug("class:{}, queryForList sql:{}, params:{}, rowmapper:{}", this.getClass().getSimpleName(), sql, JSON.toJSONString(args), rowMapper.getClass().getSimpleName());
         }
@@ -106,7 +107,7 @@ public class BaseMysqlDao {
         try {
             List<T> result = jdbcTemplate.query(sql, rowMapper, args);
             if (CollectionUtils.isNotEmpty(result)) {
-                return ImmutableList.copyOf(result);
+                return result;
             }
         } catch (Exception e) {
             if (VirgoLogger.isDebugEnabled()) {
@@ -114,7 +115,7 @@ public class BaseMysqlDao {
             }
         }
 
-        return ImmutableList.of();
+        return Lists.newArrayList();
     }
 
     protected int update(String sql, Object... args) {

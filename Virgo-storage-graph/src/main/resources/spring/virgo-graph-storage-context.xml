@@ -19,11 +19,6 @@
           p:jdbcTemplateFactory-ref="jdbcTemplateFactory"
           p:bizName="user_agree_question"/>
 
-    <bean id="userDisagreeQuestionGraphMysqlDao" class="com.winterfarmer.virgo.storage.graph.dao.MysqlGraphDaoImpl"
-          init-method="init"
-          p:jdbcTemplateFactory-ref="jdbcTemplateFactory"
-          p:bizName="user_disagree_question"/>
-
     <bean id="userFollowQuestionGraphMysqlDao" class="com.winterfarmer.virgo.storage.graph.dao.MysqlGraphDaoImpl"
           init-method="init"
           p:jdbcTemplateFactory-ref="jdbcTemplateFactory"
@@ -33,11 +28,6 @@
           init-method="init"
           p:jdbcTemplateFactory-ref="jdbcTemplateFactory"
           p:bizName="user_agree_answer"/>
-
-    <bean id="userDisagreeAnswerGraphMysqlDao" class="com.winterfarmer.virgo.storage.graph.dao.MysqlGraphDaoImpl"
-          init-method="init"
-          p:jdbcTemplateFactory-ref="jdbcTemplateFactory"
-          p:bizName="user_disagree_answer"/>
 
     <bean id="userCollectAnswerGraphMysqlDao" class="com.winterfarmer.virgo.storage.graph.dao.MysqlGraphDaoImpl"
           init-method="init"

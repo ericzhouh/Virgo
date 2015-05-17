@@ -2,6 +2,8 @@ package com.winterfarmer.virgo.storage.graph;
 
 import com.google.common.base.Charsets;
 
+import java.util.Collection;
+
 /**
  * Created by yangtianhang on 15/5/12.
  */
@@ -19,6 +21,63 @@ public class Edge {
 
     private long accessoryId; // 附带信息id
     private byte[] extInfo; // 扩展信息, 最好是json的格式
+
+    public static Edge[] createEdges(long head, Collection<Long> tails) {
+        return createEdges(head, tails, 1);
+    }
+
+    public static Edge[] createEdges(long head, Collection<Long> tails, int state) {
+        Edge[] edges = new Edge[tails.size()];
+        int i = 0;
+        for (long tail : tails) {
+            edges[i++] = new Edge(head, tail, state);
+        }
+
+        return edges;
+    }
+
+    public static Edge[] createEdges(Collection<Long> heads, long tail) {
+        return createEdges(heads, tail, 1);
+    }
+
+    public static Edge[] createEdges(Collection<Long> heads, long tail, int state) {
+        Edge[] edges = new Edge[heads.size()];
+        int i = 0;
+        for (long head : heads) {
+            edges[i++] = new Edge(head, tail, state);
+        }
+
+        return edges;
+    }
+
+    public static Edge[] createEdges(long head, long[] tails) {
+        return createEdges(head, tails, 1);
+    }
+
+    public static Edge[] createEdges(long head, long[] tails, int state) {
+        Edge[] edges = new Edge[tails.length];
+        int i = 0;
+        for (long tail : tails) {
+            edges[i++] = new Edge(head, tail, state);
+        }
+
+        return edges;
+    }
+
+    public static Edge[] createEdges(long[] heads, long tail, int state) {
+        Edge[] edges = new Edge[heads.length];
+        int i = 0;
+        for (long head : heads) {
+            edges[i++] = new Edge(head, tail, state);
+        }
+
+        return edges;
+    }
+
+    public static Edge[] createEdges(long[] heads, long tail) {
+        return createEdges(heads, tail, 1);
+    }
+
 
     public Edge() {
     }

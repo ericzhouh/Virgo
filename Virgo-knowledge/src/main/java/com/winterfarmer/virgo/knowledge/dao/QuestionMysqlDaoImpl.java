@@ -20,6 +20,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.List;
 
 /**
  * Created by yangtianhang on 15/5/17.
@@ -70,6 +71,20 @@ public class QuestionMysqlDaoImpl extends IdModelMysqlDao<Question> {
 
     public void initTable(boolean dropBeforeCreate) {
         super.initTable(CREATE_DDL, BaseMysqlDao.dropDDL(QUESTION_TABLE_NAME), dropBeforeCreate);
+    }
+
+    private static final String select_questions =
+            selectAllSql(QUESTION_TABLE_NAME) + new WhereClauseBuilder(state.getName() + "=1 ").limitOffset();
+
+    public List<Question> list(int limit, int offset) {
+        return queryForList(getReadJdbcTemplate(), select_questions, rowMapper, limit, offset);
+    }
+
+    private static final String select_questions_by_user =
+            selectAllSql(QUESTION_TABLE_NAME) + new WhereClauseBuilder(userId.eqWhich()).and(state.eq(1)).limitOffset();
+
+    public List<Question> listByUser(long userId, int limit, int offset) {
+        return queryForList(getReadJdbcTemplate(), select_questions, rowMapper, userId, limit, offset);
     }
 
     private static final String INSERT_QUESTION_SQL = insertIntoSQL(QUESTION_TABLE_NAME,

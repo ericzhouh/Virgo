@@ -36,8 +36,8 @@ public class IdModelHybridDao<T extends BaseIdModel> implements IdModelDao<T> {
     }
 
     @Override
-    public List<T> list(long... ids) {
-        List<T> objects = redisDao.list(ids);
+    public List<T> listByIds(long... ids) {
+        List<T> objects = redisDao.listByIds(ids);
 
         List<Integer> notCachePositions = Lists.newArrayList();
         Map<Integer, Long> notCachePosIdMaps = Maps.newHashMap();
@@ -61,7 +61,7 @@ public class IdModelHybridDao<T extends BaseIdModel> implements IdModelDao<T> {
         for (Long id : notCacheIdSet) {
             notCacheIdArray[i++] = id;
         }
-        List<T> notCacheObjects = mysqlDao.list(notCacheIdArray);
+        List<T> notCacheObjects = mysqlDao.listByIds(notCacheIdArray);
 
         Map<Long, T> notCacheObjectMap = Maps.newHashMap();
         for (T notCacheObject : notCacheObjects) {

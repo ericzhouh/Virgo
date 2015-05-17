@@ -58,7 +58,7 @@ public class IdModelRedisDao<T extends BaseIdModel> implements IdModelDao<T> {
     }
 
     @Override
-    public List<T> list(long... ids) {
+    public List<T> listByIds(long... ids) {
         if (ArrayUtils.isEmpty(ids)) {
             return Lists.newArrayList();
         }

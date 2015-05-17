@@ -52,7 +52,7 @@ public class TestIdModelDao {
 
     @Test
     public void testNormal() {
-        for (IdModelRedisBiz.ToyIdModel model : dao.list(id0, id1, id2, id3, id4)) {
+        for (IdModelRedisBiz.ToyIdModel model : dao.listByIds(id0, id1, id2, id3, id4)) {
             Assert.assertNull(model);
         }
 
@@ -69,7 +69,7 @@ public class TestIdModelDao {
         Assert.assertNull(dao.get(id2));
         Assert.assertNull(dao.get(id3));
 
-        List<IdModelRedisBiz.ToyIdModel> modelList = dao.list(id0, id1, id2, id3, id4);
+        List<IdModelRedisBiz.ToyIdModel> modelList = dao.listByIds(id0, id1, id2, id3, id4);
         Assert.assertEquals(model0, modelList.get(0));
         Assert.assertEquals(model1, modelList.get(1));
         Assert.assertEquals(model4, modelList.get(4));
@@ -80,7 +80,7 @@ public class TestIdModelDao {
         Assert.assertNotNull(dao.update(model0));
         Assert.assertEquals(model4, dao.get(id4));
 
-        modelList = dao.list(id0, id1, id2, id3, id4);
+        modelList = dao.listByIds(id0, id1, id2, id3, id4);
         Assert.assertEquals(model0, modelList.get(0));
         Assert.assertEquals(model1, modelList.get(1));
         Assert.assertEquals(model4, modelList.get(4));
@@ -90,7 +90,7 @@ public class TestIdModelDao {
 
     @Test
     public void testSupply() {
-        for (IdModelRedisBiz.ToyIdModel model : dao.list(id0, id1, id2, id3, id4)) {
+        for (IdModelRedisBiz.ToyIdModel model : dao.listByIds(id0, id1, id2, id3, id4)) {
             Assert.assertNull(model);
         }
 
@@ -105,7 +105,7 @@ public class TestIdModelDao {
         Assert.assertNull(dao.get(id2));
         Assert.assertNull(dao.get(id3));
 
-        List<IdModelRedisBiz.ToyIdModel> modelList = dao.list(id0, id1, id2, id3, id4);
+        List<IdModelRedisBiz.ToyIdModel> modelList = dao.listByIds(id0, id1, id2, id3, id4);
         Assert.assertEquals(model0, modelList.get(0));
         Assert.assertEquals(model4, modelList.get(4));
         Assert.assertNull(modelList.get(1));

@@ -148,7 +148,7 @@ public class QuestionResource extends BaseResource {
             throw new VirgoRestException(RestExceptionFactor.NO_RIGHTS);
         }
 
-        knowledgeService.updateQuestionState(question.getId(), CommonState.DELETE);
+        knowledgeService.updateQuestionState(question, CommonState.DELETE);
         return CommonResult.isSuccessfulCommonResult(true);
     }
 

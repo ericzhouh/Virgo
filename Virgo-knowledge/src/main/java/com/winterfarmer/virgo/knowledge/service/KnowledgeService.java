@@ -17,7 +17,7 @@ public interface KnowledgeService {
 
     Question updateQuestion(Question question, long[] tagIds);
 
-    Question updateQuestionState(long questionId, CommonState commonState);
+    Question updateQuestionState(Question question, CommonState commonState);
 
     boolean agreeQuestion(long userId, long questionId);
 
@@ -61,18 +61,8 @@ public interface KnowledgeService {
      */
     List<Question> listUserProposedQuestions(long userId, int page, int count);
 
-    /**
-     * @param userId
-     * @param page
-     * @param count
-     * @return
-     */
-    List<Question> listUserAnsweredQuestions(long userId, int page, int count);
-
-
     List<Long> listQuestionTagIdsByQuestionId(long questionId);
 
-    boolean isValidTags(long... questionTagId);
 
     /**
      * @param questionContent
@@ -84,6 +74,14 @@ public interface KnowledgeService {
     boolean disfollowQuestion(long userId, long questionId);
 
     //------------------------------------------------------------------------------
+
+    /**
+     * @param userId
+     * @param page
+     * @param count
+     * @return
+     */
+    List<Question> listUserAnsweredQuestions(long userId, int page, int count);
 
     Answer newAnswer(long userId, long questionId, String content, String[] imageIds);
 
@@ -119,9 +117,12 @@ public interface KnowledgeService {
      */
     List<Answer> ListUserCollectedAnswers(long userId, int page, int count);
 
-    List<QuestionTag> listQuestionTag();
+    // ========================================================================
+    boolean isValidTags(long... questionTagId);
 
     QuestionTag getQuestionTag(long questionTagId);
 
     List<QuestionTag> listQuestionTag(long... questionTagId);
+
+    List<QuestionTag> listQuestionTag();
 }

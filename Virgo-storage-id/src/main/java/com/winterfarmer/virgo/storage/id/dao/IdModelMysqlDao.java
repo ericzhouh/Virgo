@@ -38,7 +38,7 @@ public abstract class IdModelMysqlDao<T extends BaseIdModel> extends BaseMysqlDa
     }
 
     @Override
-    public List<T> list(long... ids) {
+    public List<T> listByIds(long... ids) {
         MapSqlParameterSource parameters = new MapSqlParameterSource();
         parameters.addValue("ids", ids);
         return queryForList(getReadJdbcTemplate(), selectAllInIdsSql, rowMapper, parameters);

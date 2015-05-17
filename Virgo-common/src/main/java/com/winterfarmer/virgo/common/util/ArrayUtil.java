@@ -4,6 +4,7 @@ import com.google.common.base.Predicate;
 import com.google.common.collect.Sets;
 
 import javax.annotation.Nullable;
+import java.util.Collection;
 import java.util.Set;
 
 /**
@@ -45,5 +46,14 @@ public class ArrayUtil {
         }
 
         return deduplicated;
+    }
+
+    public static long[] toLongArray(Collection<Long> collection) {
+        long[] array = new long[collection.size()];
+        int i = 0;
+        for (long item : collection) {
+            array[i++] = item;
+        }
+        return array;
     }
 }

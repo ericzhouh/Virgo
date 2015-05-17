@@ -2,6 +2,7 @@ package com.winterfarmer.virgo.storage.graph.dao;
 
 import com.alibaba.fastjson.JSON;
 import com.google.common.collect.ImmutableList;
+import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 import com.google.common.util.concurrent.Futures;
 import com.google.common.util.concurrent.ListenableFuture;
@@ -453,7 +454,7 @@ public class MysqlGraphDaoImpl implements GraphDao {
         }
     }
 
-    protected <T> ImmutableList<T> queryForList(JdbcTemplate jdbcTemplate, String sql, RowMapper<T> rowMapper, Object... args) {
+    protected <T> List<T> queryForList(JdbcTemplate jdbcTemplate, String sql, RowMapper<T> rowMapper, Object... args) {
         if (VirgoLogger.isDebugEnabled()) {
             VirgoLogger.debug("class:{}, queryForList sql:{}, params:{}, rowmapper:{}", this.getClass().getSimpleName(), sql, JSON.toJSONString(args), rowMapper.getClass().getSimpleName());
         }
@@ -461,7 +462,7 @@ public class MysqlGraphDaoImpl implements GraphDao {
         try {
             List<T> result = jdbcTemplate.query(sql, rowMapper, args);
             if (CollectionUtils.isNotEmpty(result)) {
-                return ImmutableList.copyOf(result);
+                return result;
             }
         } catch (Exception e) {
             if (VirgoLogger.isDebugEnabled()) {
@@ -469,6 +470,6 @@ public class MysqlGraphDaoImpl implements GraphDao {
             }
         }
 
-        return ImmutableList.of();
+        return Lists.newArrayList();
     }
 }

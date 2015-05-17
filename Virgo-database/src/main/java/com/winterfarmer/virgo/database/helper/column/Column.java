@@ -93,4 +93,8 @@ public abstract class Column {
     public String eqWhich() {
         return getName() + "=? ";
     }
+
+    public String eq(Object value) {
+        return getName() + "=" + value + " ";
+    }
 }
