@@ -2,7 +2,6 @@ package com.winterfarmer.virgo.database;
 
 import com.alibaba.fastjson.JSON;
 import com.google.common.base.Charsets;
-import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
 import com.winterfarmer.virgo.common.util.ConfigUtil;
 import com.winterfarmer.virgo.database.helper.column.Column;

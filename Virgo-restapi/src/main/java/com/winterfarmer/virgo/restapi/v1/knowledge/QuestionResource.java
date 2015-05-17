@@ -1,17 +1,14 @@
-package com.winterfarmer.virgo.restapi.v1.question;
+package com.winterfarmer.virgo.restapi.v1.knowledge;
 
 import com.google.common.base.Function;
 import com.google.common.collect.Lists;
 import com.winterfarmer.virgo.aggregator.model.ApiQuestion;
 import com.winterfarmer.virgo.aggregator.model.ApiQuestionTag;
-import com.winterfarmer.virgo.aggregator.model.ApiVehicle;
 import com.winterfarmer.virgo.base.model.CommonResult;
 import com.winterfarmer.virgo.base.model.CommonState;
 import com.winterfarmer.virgo.common.util.ArrayUtil;
 import com.winterfarmer.virgo.common.util.StringUtil;
 import com.winterfarmer.virgo.knowledge.model.Question;
-import com.winterfarmer.virgo.knowledge.service.KnowledgeService;
-import com.winterfarmer.virgo.restapi.BaseResource;
 import com.winterfarmer.virgo.restapi.core.annotation.ParamSpec;
 import com.winterfarmer.virgo.restapi.core.annotation.ResourceOverview;
 import com.winterfarmer.virgo.restapi.core.annotation.RestApiInfo;
@@ -22,7 +19,6 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.tuple.Pair;
 import org.springframework.stereotype.Component;
 
-import javax.annotation.Resource;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import java.util.List;
@@ -33,14 +29,11 @@ import java.util.List;
 @Path("question")
 @ResourceOverview(desc = "问题接口")
 @Component("questionResource")
-public class QuestionResource extends BaseResource {
+public class QuestionResource extends KnowledgeResource {
     protected static final String SUBJECT_SPEC = "UnicodeString:4~64";
-    protected static final String QUESTION_CONTENT_SPEC = "UnicodeString:1~10240";
+    protected static final String QUESTION_CONTENT_SPEC = "UnicodeString:1~65536";
 
     public static final int MAX_TAG_NUMBER = 3;
-
-    @Resource(name = "knowledgeService")
-    KnowledgeService knowledgeService;
 
     private static final Function<Question, ApiQuestion> simpleApiQuestionConverter =
             new Function<Question, ApiQuestion>() {
@@ -55,9 +48,9 @@ public class QuestionResource extends BaseResource {
     @RestApiInfo(
             desc = "新的问题",
             authPolicy = RestApiInfo.AuthPolicy.OAUTH,
-            resultDemo = ApiVehicle.class,
+            resultDemo = ApiQuestion.class,
             errors = {RestExceptionFactor.INVALID_TAG_ID,
-                    RestExceptionFactor.INVALID_QUESTION_CONTENT_ID
+                    RestExceptionFactor.INVALID_QUESTION_CONTENT
             }
     )
     @Produces(MediaType.APPLICATION_JSON)
@@ -86,9 +79,9 @@ public class QuestionResource extends BaseResource {
     @RestApiInfo(
             desc = "更新问题",
             authPolicy = RestApiInfo.AuthPolicy.OAUTH,
-            resultDemo = ApiVehicle.class,
+            resultDemo = ApiQuestion.class,
             errors = {RestExceptionFactor.INVALID_TAG_ID,
-                    RestExceptionFactor.INVALID_QUESTION_CONTENT_ID,
+                    RestExceptionFactor.INVALID_QUESTION_CONTENT,
                     RestExceptionFactor.QUESTION_NOT_EXISTED
             }
     )
@@ -132,7 +125,7 @@ public class QuestionResource extends BaseResource {
     @RestApiInfo(
             desc = "更新问题",
             authPolicy = RestApiInfo.AuthPolicy.OAUTH,
-            resultDemo = ApiVehicle.class,
+            resultDemo = ApiQuestion.class,
             errors = {RestExceptionFactor.QUESTION_NOT_EXISTED}
     )
     @Produces(MediaType.APPLICATION_JSON)
@@ -157,7 +150,7 @@ public class QuestionResource extends BaseResource {
     @RestApiInfo(
             desc = "认为问题有价值",
             authPolicy = RestApiInfo.AuthPolicy.OAUTH,
-            resultDemo = ApiVehicle.class,
+            resultDemo = ApiQuestion.class,
             errors = {RestExceptionFactor.QUESTION_NOT_EXISTED}
     )
     @Produces(MediaType.APPLICATION_JSON)
@@ -184,7 +177,7 @@ public class QuestionResource extends BaseResource {
     @RestApiInfo(
             desc = "关注问题",
             authPolicy = RestApiInfo.AuthPolicy.OAUTH,
-            resultDemo = ApiVehicle.class,
+            resultDemo = ApiQuestion.class,
             errors = {RestExceptionFactor.QUESTION_NOT_EXISTED}
     )
     @Produces(MediaType.APPLICATION_JSON)
@@ -211,7 +204,7 @@ public class QuestionResource extends BaseResource {
     @RestApiInfo(
             desc = "用户提问, 回答或者关注的问题",
             authPolicy = RestApiInfo.AuthPolicy.OAUTH,
-            resultDemo = ApiVehicle.class,
+            resultDemo = ApiQuestion.class,
             errors = {}
     )
     @Produces(MediaType.APPLICATION_JSON)
@@ -238,7 +231,7 @@ public class QuestionResource extends BaseResource {
     @RestApiInfo(
             desc = "列出问题",
             authPolicy = RestApiInfo.AuthPolicy.PUBLIC,
-            resultDemo = ApiVehicle.class,
+            resultDemo = ApiQuestion.class,
             errors = {RestExceptionFactor.INVALID_TAG_ID}
     )
     @Produces(MediaType.APPLICATION_JSON)
@@ -266,7 +259,7 @@ public class QuestionResource extends BaseResource {
     @RestApiInfo(
             desc = "问题详情",
             authPolicy = RestApiInfo.AuthPolicy.PUBLIC,
-            resultDemo = ApiVehicle.class,
+            resultDemo = ApiQuestion.class,
             errors = {RestExceptionFactor.QUESTION_NOT_EXISTED}
     )
     @Produces(MediaType.APPLICATION_JSON)
@@ -313,7 +306,7 @@ public class QuestionResource extends BaseResource {
     private Pair<String, List<String>> checkAndGetContentAndImageIds(String content) {
         Pair<String, List<String>> refinedContentAndImageIds = knowledgeService.refineQuestionContent(content);
         if (refinedContentAndImageIds == null) {
-            throw new VirgoRestException(RestExceptionFactor.INVALID_QUESTION_CONTENT_ID);
+            throw new VirgoRestException(RestExceptionFactor.INVALID_QUESTION_CONTENT);
         }
 
         return refinedContentAndImageIds;
@@ -325,14 +318,5 @@ public class QuestionResource extends BaseResource {
 
     private List<ApiQuestionTag> getApiQuestionTags(List<Long> tagIdList) {
         return null;
-    }
-
-    private Question checkAndGetQuestion(long questionId) {
-        Question question = knowledgeService.getQuestion(questionId);
-        if (question == null || question.getCommonState() == CommonState.DELETE) {
-            throw new VirgoRestException(RestExceptionFactor.QUESTION_NOT_EXISTED);
-        }
-
-        return question;
     }
 }

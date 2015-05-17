@@ -71,6 +71,8 @@ public interface KnowledgeService {
      */
     Pair<String, List<String>> refineQuestionContent(String questionContent);
 
+    Pair<String, List<String>> refineAnswerContent(String answerContent);
+
     boolean disfollowQuestion(long userId, long questionId);
 
     //------------------------------------------------------------------------------
@@ -83,7 +85,7 @@ public interface KnowledgeService {
      */
     List<Question> listUserAnsweredQuestions(long userId, int page, int count);
 
-    Answer newAnswer(long userId, long questionId, String content, String[] imageIds);
+    Answer newAnswer(long userId, long questionId, String content, String imageIds);
 
     AnswerComment newAnswerComment(long userId, long answerId, String content);
 

@@ -190,6 +190,12 @@ public class KnowledgeServiceImpl implements KnowledgeService {
     }
 
     @Override
+    public Pair<String, List<String>> refineAnswerContent(String answerContent) {
+        List<String> images = Lists.newArrayList();
+        return Pair.of(answerContent, images);
+    }
+
+    @Override
     public boolean disfollowQuestion(long userId, long questionId) {
         return userFollowQuestionGraphDao.insertOrUpdateEdges(new Edge(userId, questionId, 0)) > 0;
     }
@@ -202,7 +208,7 @@ public class KnowledgeServiceImpl implements KnowledgeService {
     }
 
     @Override
-    public Answer newAnswer(long userId, long questionId, String content, String[] imageIds) {
+    public Answer newAnswer(long userId, long questionId, String content, String imageIds) {
         return null;
     }
 
