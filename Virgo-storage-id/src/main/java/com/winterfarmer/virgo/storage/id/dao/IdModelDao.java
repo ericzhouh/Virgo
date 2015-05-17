@@ -1,6 +1,7 @@
-package com.winterfarmer.virgo.base.dao;
+package com.winterfarmer.virgo.storage.id.dao;
 
-import com.winterfarmer.virgo.base.model.BaseIdModel;
+
+import com.winterfarmer.virgo.storage.id.model.BaseIdModel;
 
 import java.util.List;
 
@@ -15,7 +16,7 @@ public interface IdModelDao<T extends BaseIdModel> {
 
     List<T> list(long... ids);
 
-    boolean insert(T object);
+    T insert(T object);
 
-    boolean update(T object);
+    T update(T object);
 }

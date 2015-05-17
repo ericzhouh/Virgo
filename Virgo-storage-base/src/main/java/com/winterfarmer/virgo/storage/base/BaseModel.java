@@ -1,9 +1,8 @@
-package com.winterfarmer.virgo.base.model;
+package com.winterfarmer.virgo.storage.base;
 
 import com.alibaba.fastjson.JSON;
 import com.google.common.base.Charsets;
 import com.google.common.collect.Maps;
-import org.apache.http.annotation.NotThreadSafe;
 
 import java.io.Serializable;
 import java.util.Map;
@@ -11,7 +10,6 @@ import java.util.Map;
 /**
  * Created by yangtianhang on 15-2-14.
  */
-@NotThreadSafe
 abstract public class BaseModel implements Serializable {
     private static final long serialVersionUID = -2411840775944740500L;
 

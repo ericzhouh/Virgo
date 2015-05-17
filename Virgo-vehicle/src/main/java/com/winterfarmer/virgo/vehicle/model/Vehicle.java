@@ -1,6 +1,6 @@
 package com.winterfarmer.virgo.vehicle.model;
 
-import com.winterfarmer.virgo.base.model.BaseModel;
+import com.winterfarmer.virgo.storage.base.BaseModel;
 import com.winterfarmer.virgo.base.model.CommonState;
 
 /**

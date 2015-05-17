@@ -17,29 +17,13 @@ public interface KnowledgeService {
 
     Question updateQuestion(Question question, long[] tagIds);
 
-    Answer newAnswer(long userId, long questionId, String content, String[] imageIds);
-
-    AnswerComment newAnswerComment(long userId, long answerId, String content);
-
     Question updateQuestionState(long questionId, CommonState commonState);
-
-    Answer updateAnswerState(long answerId, CommonState commonState);
-
-    AnswerComment updateAnswerCommentState(long answerCommentId, CommonState commonState);
 
     boolean agreeQuestion(long userId, long questionId);
 
     boolean disagreeQuestion(long userId, long questionId);
 
     boolean followQuestion(long userId, long questionId);
-
-    boolean disfollowQuestion(long userId, long questionId);
-
-    boolean agreeAnswer(long userId, long answerId);
-
-    boolean disagreeAnswer(long userId, long answerId);
-
-    boolean collectAnswer(long userId, long answerId);
 
     Question getQuestion(long questionId);
 
@@ -85,6 +69,36 @@ public interface KnowledgeService {
      */
     List<Question> listUserAnsweredQuestions(long userId, int page, int count);
 
+
+    List<Long> listQuestionTagIdsByQuestionId(long questionId);
+
+    boolean isValidTags(long... questionTagId);
+
+    /**
+     * @param questionContent
+     * @return result[0] - refined content,
+     * result[1] - image ids
+     */
+    Pair<String, List<String>> refineQuestionContent(String questionContent);
+
+    boolean disfollowQuestion(long userId, long questionId);
+
+    //------------------------------------------------------------------------------
+
+    Answer newAnswer(long userId, long questionId, String content, String[] imageIds);
+
+    AnswerComment newAnswerComment(long userId, long answerId, String content);
+
+    Answer updateAnswerState(long answerId, CommonState commonState);
+
+    AnswerComment updateAnswerCommentState(long answerCommentId, CommonState commonState);
+
+    boolean agreeAnswer(long userId, long answerId);
+
+    boolean disagreeAnswer(long userId, long answerId);
+
+    boolean collectAnswer(long userId, long answerId);
+
     /**
      * List (count number) answers of questionId from page
      *
@@ -110,15 +124,4 @@ public interface KnowledgeService {
     QuestionTag getQuestionTag(long questionTagId);
 
     List<QuestionTag> listQuestionTag(long... questionTagId);
-
-    List<Long> listQuestionTagIdsByQuestionId(long questionId);
-
-    boolean isValidTags(long... questionTagId);
-
-    /**
-     * @param questionContent
-     * @return result[0] - refined content,
-     * result[1] - image ids
-     */
-    Pair<String, List<String>> refineQuestionContent(String questionContent);
 }

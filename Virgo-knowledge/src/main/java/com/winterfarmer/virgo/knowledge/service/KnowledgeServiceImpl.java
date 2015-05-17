@@ -40,6 +40,7 @@ public class KnowledgeServiceImpl implements KnowledgeService {
 
     @Override
     public Question newQuestion(long userId, String subject, String content, String imageIds, long[] tagIds) {
+
         return null;
     }
 
@@ -49,27 +50,7 @@ public class KnowledgeServiceImpl implements KnowledgeService {
     }
 
     @Override
-    public Answer newAnswer(long userId, long questionId, String content, String[] imageIds) {
-        return null;
-    }
-
-    @Override
-    public AnswerComment newAnswerComment(long userId, long answerId, String content) {
-        return null;
-    }
-
-    @Override
     public Question updateQuestionState(long questionId, CommonState commonState) {
-        return null;
-    }
-
-    @Override
-    public Answer updateAnswerState(long answerId, CommonState commonState) {
-        return null;
-    }
-
-    @Override
-    public AnswerComment updateAnswerCommentState(long answerCommentId, CommonState commonState) {
         return null;
     }
 
@@ -85,26 +66,6 @@ public class KnowledgeServiceImpl implements KnowledgeService {
 
     @Override
     public boolean followQuestion(long userId, long questionId) {
-        return false;
-    }
-
-    @Override
-    public boolean disfollowQuestion(long userId, long questionId) {
-        return false;
-    }
-
-    @Override
-    public boolean agreeAnswer(long userId, long answerId) {
-        return false;
-    }
-
-    @Override
-    public boolean disagreeAnswer(long userId, long answerId) {
-        return false;
-    }
-
-    @Override
-    public boolean collectAnswer(long userId, long answerId) {
         return false;
     }
 
@@ -139,6 +100,61 @@ public class KnowledgeServiceImpl implements KnowledgeService {
     }
 
     @Override
+    public List<Long> listQuestionTagIdsByQuestionId(long questionId) {
+        return null;
+    }
+
+    @Override
+    public boolean isValidTags(long... questionTagId) {
+        return false;
+    }
+
+    @Override
+    public Pair<String, List<String>> refineQuestionContent(String questionContent) {
+        return null;
+    }
+
+    @Override
+    public Answer newAnswer(long userId, long questionId, String content, String[] imageIds) {
+        return null;
+    }
+
+    @Override
+    public AnswerComment newAnswerComment(long userId, long answerId, String content) {
+        return null;
+    }
+
+    @Override
+    public Answer updateAnswerState(long answerId, CommonState commonState) {
+        return null;
+    }
+
+    @Override
+    public AnswerComment updateAnswerCommentState(long answerCommentId, CommonState commonState) {
+        return null;
+    }
+
+    @Override
+    public boolean disfollowQuestion(long userId, long questionId) {
+        return false;
+    }
+
+    @Override
+    public boolean agreeAnswer(long userId, long answerId) {
+        return false;
+    }
+
+    @Override
+    public boolean disagreeAnswer(long userId, long answerId) {
+        return false;
+    }
+
+    @Override
+    public boolean collectAnswer(long userId, long answerId) {
+        return false;
+    }
+
+    @Override
     public List<Answer> ListAnswers(long questionId, int page, int count) {
         return null;
     }
@@ -160,21 +176,6 @@ public class KnowledgeServiceImpl implements KnowledgeService {
 
     @Override
     public List<QuestionTag> listQuestionTag(long... questionTagId) {
-        return null;
-    }
-
-    @Override
-    public List<Long> listQuestionTagIdsByQuestionId(long questionId) {
-        return null;
-    }
-
-    @Override
-    public boolean isValidTags(long... questionTagId) {
-        return false;
-    }
-
-    @Override
-    public Pair<String, List<String>> refineQuestionContent(String questionContent) {
         return null;
     }
 }

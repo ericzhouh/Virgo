@@ -57,12 +57,12 @@ public class OpenPlatformAccountMysqlDaoImpl extends BaseMysqlDao implements Ope
         }
     };
 
-    private static final String insert_open_platform_account_sql =
+    private static final String INSERT_OPEN_PLATFORM_ACCOUNT_SQL =
             insertIntoSQL(OPEN_PLATFORM_ACCOUNT_TABLE_NAME, userId, platform, openId, openToken, state, extInfo);
 
     @Override
     public boolean createOpenPlatformAccount(OpenPlatformAccount openPlatformAccount) {
-        return update(insert_open_platform_account_sql,
+        return update(INSERT_OPEN_PLATFORM_ACCOUNT_SQL,
                 openPlatformAccount.getUserId(), openPlatformAccount.getPlatformType().getIndex(), openPlatformAccount.getOpenId(),
                 openPlatformAccount.getOpenToken(), openPlatformAccount.getCommonState().getIndex(), ExtInfoColumn.toBytes(openPlatformAccount.getProperties())) > 0;
     }

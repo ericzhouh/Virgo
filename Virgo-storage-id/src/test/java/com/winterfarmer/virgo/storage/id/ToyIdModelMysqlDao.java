@@ -1,15 +1,16 @@
-package com.winterfarmer.virgo.service;
+package com.winterfarmer.virgo.storage.id;
 
-import com.winterfarmer.virgo.base.bizconfig.IdModelRedisBiz;
-import com.winterfarmer.virgo.base.dao.IdModelMysqlDao;
-import com.winterfarmer.virgo.database.BaseMysqlDao;
 import com.winterfarmer.virgo.database.helper.MysqlDDLBuilder;
 import com.winterfarmer.virgo.database.helper.column.Columns;
 import com.winterfarmer.virgo.database.helper.column.numeric.BigintColumn;
 import com.winterfarmer.virgo.database.helper.column.string.VarcharColumn;
+import com.winterfarmer.virgo.storage.id.bizconfig.IdModelRedisBiz;
+import com.winterfarmer.virgo.storage.id.dao.IdModelMysqlDao;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
 
+import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
@@ -41,21 +42,21 @@ public class ToyIdModelMysqlDao extends IdModelMysqlDao<IdModelRedisBiz.ToyIdMod
     }
 
     public void initTable(boolean dropBeforeCreate) {
-        super.initTable(createDDL, BaseMysqlDao.dropDDL(TOY_TABLE_NAME), dropBeforeCreate);
+        super.initTable(createDDL, dropDDL(TOY_TABLE_NAME), dropBeforeCreate);
     }
 
     private static final String insert_toy_sql = insertIntoSQL(TOY_TABLE_NAME, id, name);
-
-    @Override
-    public boolean insert(IdModelRedisBiz.ToyIdModel object) {
-        return update(insert_toy_sql, object.getId(), object.getName()) > 0;
-    }
 
     private static final String update_toy_sql = updateSql(TOY_TABLE_NAME, name)
             + new WhereClauseBuilder(id.eqWhich()).build();
 
     @Override
-    public boolean update(IdModelRedisBiz.ToyIdModel object) {
-        return update(update_toy_sql, object.getName(), object.getId()) > 0;
+    protected PreparedStatement createInsertPreparedStatement(Connection connection, IdModelRedisBiz.ToyIdModel object) throws SQLException {
+        return null;
+    }
+
+    @Override
+    protected int doUpdate(IdModelRedisBiz.ToyIdModel object) {
+        return 0;
     }
 }

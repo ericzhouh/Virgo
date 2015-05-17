@@ -1,9 +1,9 @@
-package com.winterfarmer.virgo.service;
+package com.winterfarmer.virgo.storage.id;
 
-import com.winterfarmer.virgo.base.bizconfig.IdModelRedisBiz;
-import com.winterfarmer.virgo.base.dao.IdModelDao;
-import com.winterfarmer.virgo.base.dao.IdModelRedisDao;
 import com.winterfarmer.virgo.redis.Vedis;
+import com.winterfarmer.virgo.storage.id.bizconfig.IdModelRedisBiz;
+import com.winterfarmer.virgo.storage.id.dao.IdModelDao;
+import com.winterfarmer.virgo.storage.id.dao.IdModelRedisDao;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.FixMethodOrder;
@@ -59,9 +59,9 @@ public class TestIdModelDao {
         IdModelRedisBiz.ToyIdModel model0 = new IdModelRedisBiz.ToyIdModel(id0, "id0");
         IdModelRedisBiz.ToyIdModel model1 = new IdModelRedisBiz.ToyIdModel(id1, "id1");
         IdModelRedisBiz.ToyIdModel model4 = new IdModelRedisBiz.ToyIdModel(id4, "id4");
-        Assert.assertTrue(dao.insert(model0));
-        Assert.assertTrue(dao.insert(model1));
-        Assert.assertTrue(dao.insert(model4));
+        Assert.assertNotNull(dao.insert(model0));
+        Assert.assertNotNull(dao.insert(model1));
+        Assert.assertNotNull(dao.insert(model4));
 
         Assert.assertEquals(model0, dao.get(id0));
         Assert.assertEquals(model1, dao.get(id1));
@@ -77,7 +77,7 @@ public class TestIdModelDao {
         Assert.assertNull(modelList.get(3));
 
         model0 = new IdModelRedisBiz.ToyIdModel(id0, "id0000");
-        Assert.assertTrue(dao.update(model0));
+        Assert.assertNotNull(dao.update(model0));
         Assert.assertEquals(model4, dao.get(id4));
 
         modelList = dao.list(id0, id1, id2, id3, id4);
@@ -96,8 +96,8 @@ public class TestIdModelDao {
 
         IdModelRedisBiz.ToyIdModel model0 = new IdModelRedisBiz.ToyIdModel(id0, "id0");
         IdModelRedisBiz.ToyIdModel model4 = new IdModelRedisBiz.ToyIdModel(id4, "id4");
-        Assert.assertTrue(mysql.insert(model0));
-        Assert.assertTrue(mysql.insert(model4));
+        Assert.assertNotNull(mysql.insert(model0));
+        Assert.assertNotNull(mysql.insert(model4));
 
         Assert.assertEquals(model0, dao.get(id0));
         Assert.assertEquals(model4, dao.get(id4));

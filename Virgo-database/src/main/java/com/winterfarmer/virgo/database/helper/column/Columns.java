@@ -32,6 +32,10 @@ public class Columns {
         return (BigintColumn) new BigintColumn(columnIdName).setDisplaySize(20).setAutoIncrease(autoIncrease).setAllowNull(allowNull);
     }
 
+    public static BigintColumn newLongColumn(String columnIdName, boolean allowNull) {
+        return (BigintColumn) new BigintColumn(columnIdName).setDisplaySize(20).setAllowNull(allowNull);
+    }
+
     public static SmallIntColumn newAppKeyColumn(boolean allowNull) {
         return (SmallIntColumn) new SmallIntColumn(APP_KEY_COLUMN_NAME).setDisplaySize(5).setAllowNull(allowNull);
     }

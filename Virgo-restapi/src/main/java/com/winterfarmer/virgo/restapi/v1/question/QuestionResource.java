@@ -202,7 +202,7 @@ public class QuestionResource extends BaseResource {
         boolean result =
                 state == CommonState.NORMAL ?
                         knowledgeService.followQuestion(userId, question.getId()) :
-                        knowledgeService.disagreeQuestion(userId, question.getId());
+                        knowledgeService.disfollowQuestion(userId, question.getId());
         return CommonResult.isSuccessfulCommonResult(result);
     }
 

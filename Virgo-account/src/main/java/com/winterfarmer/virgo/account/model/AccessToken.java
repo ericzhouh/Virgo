@@ -2,7 +2,7 @@ package com.winterfarmer.virgo.account.model;
 
 import com.alibaba.fastjson.annotation.JSONField;
 import com.alibaba.fastjson.annotation.JSONType;
-import com.winterfarmer.virgo.base.model.BaseModel;
+import com.winterfarmer.virgo.storage.base.BaseModel;
 
 /**
  * Created by yangtianhang on 15-3-4.

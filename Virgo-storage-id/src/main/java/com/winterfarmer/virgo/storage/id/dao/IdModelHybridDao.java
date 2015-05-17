@@ -1,9 +1,9 @@
-package com.winterfarmer.virgo.base.dao;
+package com.winterfarmer.virgo.storage.id.dao;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
-import com.winterfarmer.virgo.base.model.BaseIdModel;
+import com.winterfarmer.virgo.storage.id.model.BaseIdModel;
 
 import java.util.List;
 import java.util.Map;
@@ -82,30 +82,30 @@ public class IdModelHybridDao<T extends BaseIdModel> implements IdModelDao<T> {
 
     @Override
     // 不支持事务
-    public boolean insert(T object) {
+    public T insert(T object) {
         if (object == null) {
-            return false;
+            return null;
         }
 
-        boolean successful = mysqlDao.insert(object);
-        if (successful) {
+        object = mysqlDao.insert(object);
+        if (object != null) {
             return redisDao.insert(object);
         } else {
-            return false;
+            return null;
         }
     }
 
     @Override
-    public boolean update(T object) {
+    public T update(T object) {
         if (object == null) {
-            return false;
+            return null;
         }
 
-        boolean successful = mysqlDao.update(object);
-        if (successful) {
+        object = mysqlDao.update(object);
+        if (object != null) {
             return redisDao.update(object);
         } else {
-            return false;
+            return null;
         }
     }
 }

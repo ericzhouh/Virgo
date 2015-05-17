@@ -9,28 +9,19 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>Virgo-knowledge</artifactId>
+    <artifactId>Virgo-graph-storage</artifactId>
 
     <dependencies>
         <dependency>
             <groupId>com.winterfarmer</groupId>
-            <artifactId>Virgo-base</artifactId>
-            <version>${project.parent.version}</version>
+            <artifactId>Virgo-database</artifactId>
         </dependency>
         <dependency>
             <groupId>com.winterfarmer</groupId>
-            <artifactId>Virgo-graph-storage</artifactId>
-            <version>${project.parent.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>com.winterfarmer</groupId>
-            <artifactId>Virgo-id-storage</artifactId>
-            <version>1.0-SNAPSHOT</version>
-        </dependency>
-        <dependency>
-            <groupId>com.winterfarmer</groupId>
-            <artifactId>Virgo-graph-storage</artifactId>
+            <artifactId>Virgo-storage-base</artifactId>
             <version>1.0-SNAPSHOT</version>
         </dependency>
     </dependencies>
+
+
 </project>

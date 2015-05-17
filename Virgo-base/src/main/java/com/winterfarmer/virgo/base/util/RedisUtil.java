@@ -2,8 +2,8 @@ package com.winterfarmer.virgo.base.util;
 
 import com.alibaba.fastjson.JSON;
 import com.google.common.collect.Lists;
-import com.winterfarmer.virgo.base.model.BaseModel;
 import com.winterfarmer.virgo.redis.Vedis;
+import com.winterfarmer.virgo.storage.base.BaseModel;
 import org.apache.commons.collections4.CollectionUtils;
 
 import java.util.List;

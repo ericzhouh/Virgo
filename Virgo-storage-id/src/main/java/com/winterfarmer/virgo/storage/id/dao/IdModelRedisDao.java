@@ -1,13 +1,13 @@
-package com.winterfarmer.virgo.base.dao;
+package com.winterfarmer.virgo.storage.id.dao;
 
 import com.alibaba.druid.util.StringUtils;
 import com.alibaba.fastjson.JSON;
 import com.google.common.base.Function;
 import com.google.common.collect.Lists;
-import com.winterfarmer.virgo.base.bizconfig.IdModelRedisBiz;
-import com.winterfarmer.virgo.base.model.BaseIdModel;
 import com.winterfarmer.virgo.redis.Vedis;
 import com.winterfarmer.virgo.redis.VedisFactory;
+import com.winterfarmer.virgo.storage.id.bizconfig.IdModelRedisBiz;
+import com.winterfarmer.virgo.storage.id.model.BaseIdModel;
 import org.apache.commons.lang3.ArrayUtils;
 
 import java.util.List;
@@ -75,17 +75,18 @@ public class IdModelRedisDao<T extends BaseIdModel> implements IdModelDao<T> {
     }
 
     @Override
-    public boolean insert(T object) {
+    public T insert(T object) {
         if (object == null) {
-            return false;
+            return null;
         }
 
         String value = JSON.toJSONString(object);
-        return StringUtils.equals(vedis.set(getKey(object.getId()), value), OK);
+        return StringUtils.equals(vedis.set(getKey(object.getId()), value), OK) ?
+                object : null;
     }
 
     @Override
-    public boolean update(T object) {
+    public T update(T object) {
         return insert(object);
     }
 }

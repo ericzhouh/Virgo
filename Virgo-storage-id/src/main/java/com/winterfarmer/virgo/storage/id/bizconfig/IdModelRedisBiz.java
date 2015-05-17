@@ -1,6 +1,7 @@
-package com.winterfarmer.virgo.base.bizconfig;
+package com.winterfarmer.virgo.storage.id.bizconfig;
 
-import com.winterfarmer.virgo.base.model.BaseIdModel;
+
+import com.winterfarmer.virgo.storage.id.model.BaseIdModel;
 
 /**
  * Created by yangtianhang on 15/5/14.

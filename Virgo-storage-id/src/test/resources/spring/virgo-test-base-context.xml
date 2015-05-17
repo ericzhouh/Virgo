@@ -44,13 +44,13 @@
         <constructor-arg ref="testJedisPoolFactory"/>
     </bean>
 
-    <!--<bean id="toyidmodelVedis" factory-bean="testVedisProxy" factory-method="newVedis"/>-->
+    <bean id="toyidmodelVedis" factory-bean="testVedisProxy" factory-method="newVedis"/>
 
-    <!--<bean id="toyIdModelRedisDao" class="com.winterfarmer.virgo.storage.id.dao.IdModelRedisDao"-->
-          <!--c:idModelRedisBiz="toy"/>-->
-    <!--<bean id="toyIdModelMysqlDao" class="com.winterfarmer.virgo.storage.id.ToyIdModelMysqlDao"/>-->
-    <!--<bean id="hybridToyIdModelDao" class="com.winterfarmer.virgo.storage.id.dao.IdModelHybridDao"-->
-          <!--c:mysqlDao-ref="toyIdModelMysqlDao"-->
-          <!--c:redisDao-ref="toyIdModelRedisDao"/>-->
+    <bean id="toyIdModelRedisDao" class="com.winterfarmer.virgo.storage.id.dao.IdModelRedisDao"
+          c:idModelRedisBiz="toy"/>
+    <bean id="toyIdModelMysqlDao" class="com.winterfarmer.virgo.storage.id.ToyIdModelMysqlDao"/>
+    <bean id="hybridToyIdModelDao" class="com.winterfarmer.virgo.storage.id.dao.IdModelHybridDao"
+          c:mysqlDao-ref="toyIdModelMysqlDao"
+          c:redisDao-ref="toyIdModelRedisDao"/>
 
 </beans>
