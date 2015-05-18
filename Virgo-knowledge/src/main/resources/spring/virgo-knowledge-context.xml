@@ -23,4 +23,12 @@
           c:mysqlDao-ref="questionMysqlDao"
           c:redisDao-ref="questionRedisDao"/>
 
+    <bean id="answerRedisDao" class="com.winterfarmer.virgo.storage.id.dao.IdModelRedisDao"
+          c:redisBiz="Answer"
+          c:clazz="com.winterfarmer.virgo.knowledge.model.Answer"/>
+    <bean id="answerMysqlDao" class="com.winterfarmer.virgo.knowledge.dao.AnswerMysqlDaoImpl"/>
+    <bean id="hybridAnswerDao" class="com.winterfarmer.virgo.storage.id.dao.IdModelHybridDao"
+          c:mysqlDao-ref="answerMysqlDao"
+          c:redisDao-ref="answerRedisDao"/>
+
 </beans>

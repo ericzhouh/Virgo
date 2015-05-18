@@ -30,6 +30,7 @@ public class QuestionMysqlDaoImpl extends IdModelMysqlDao<Question> {
     public static final String QUESTION_TABLE_NAME = "question";
 
     private static final BigintColumn questionId = Columns.newIdColumn("question_id", true, false);
+
     private static final BigintColumn userId = Columns.newUserIdColumn(false, false);
     private static final VarcharColumn subject = (VarcharColumn) new VarcharColumn("subject", 128).
             setAllowNull(false).setComment("问题题目").setUnique(false);
@@ -65,30 +66,30 @@ public class QuestionMysqlDaoImpl extends IdModelMysqlDao<Question> {
 
     public static final String CREATE_DDL = new MysqlDDLBuilder(QUESTION_TABLE_NAME).
             addColumn(questionId).addColumn(userId).addColumn(subject).
-            addColumn(imageIds).addColumn(content).addColumn(createAtMs).
-            addColumn(updateAtMs).addColumn(extInfo).
+            addColumn(imageIds).addColumn(content).addColumn(state).
+            addColumn(createAtMs).addColumn(updateAtMs).addColumn(extInfo).
             setPrimaryKey(IndexType.btree, questionId).addIndex(userId).addIndex(IndexType.btree, createAtMs).setAutoIncrement(6800).buildCreateDDL();
 
     public void initTable(boolean dropBeforeCreate) {
         super.initTable(CREATE_DDL, BaseMysqlDao.dropDDL(QUESTION_TABLE_NAME), dropBeforeCreate);
     }
 
-    private static final String select_questions =
+    private static final String SELECT_QUESTIONS =
             selectAllSql(QUESTION_TABLE_NAME) + new WhereClauseBuilder(state.getName() + "=1 ").limitOffset();
 
     public List<Question> list(int limit, int offset) {
-        return queryForList(getReadJdbcTemplate(), select_questions, rowMapper, limit, offset);
+        return queryForList(getReadJdbcTemplate(), SELECT_QUESTIONS, rowMapper, limit, offset);
     }
 
-    private static final String select_questions_by_user =
+    private static final String SELECT_QUESTIONS_BY_USER =
             selectAllSql(QUESTION_TABLE_NAME) + new WhereClauseBuilder(userId.eqWhich()).and(state.eq(1)).limitOffset();
 
     public List<Question> listByUser(long userId, int limit, int offset) {
-        return queryForList(getReadJdbcTemplate(), select_questions, rowMapper, userId, limit, offset);
+        return queryForList(getReadJdbcTemplate(), SELECT_QUESTIONS_BY_USER, rowMapper, userId, limit, offset);
     }
 
     private static final String INSERT_QUESTION_SQL = insertIntoSQL(QUESTION_TABLE_NAME,
-            userId, subject, imageIds, content, createAtMs, updateAtMs, extInfo);
+            userId, subject, imageIds, content, state, createAtMs, updateAtMs, extInfo);
 
     @Override
     protected PreparedStatement createInsertPreparedStatement(Connection connection, Question question) throws SQLException {
@@ -100,21 +101,26 @@ public class QuestionMysqlDaoImpl extends IdModelMysqlDao<Question> {
         ps.setString(2, question.getSubject());
         ps.setString(3, question.getImageIds());
         ps.setString(4, question.getContent());
-        ps.setLong(5, question.getCreateAtMs());
-        ps.setLong(6, question.getUpdateAtMs());
-        setExtForPreparedStatement(ps, 7, question.getProperties());
+        ps.setInt(5, question.getCommonState().getIndex());
+        ps.setLong(6, question.getCreateAtMs());
+        ps.setLong(7, question.getUpdateAtMs());
+        setExtForPreparedStatement(ps, 8, question.getProperties());
 
         return ps;
     }
 
     private static final String UPDATE_QUESTION_SQL =
-            updateSql(QUESTION_TABLE_NAME, userId, subject, imageIds, content, createAtMs, updateAtMs, extInfo) +
+            updateSql(QUESTION_TABLE_NAME,
+                    userId, subject, imageIds, content,
+                    state, createAtMs, updateAtMs,
+                    extInfo) +
                     new WhereClauseBuilder(questionId.eqWhich()).build();
 
     @Override
     public int doUpdate(Question question) {
         return update(UPDATE_QUESTION_SQL,
-                question.getUserId(), question.getSubject(), question.getImageIds(), question.getContent(), question.getCreateAtMs(),
-                question.getUpdateAtMs(), ExtInfoColumn.toBytes(question.getProperties()), question.getId());
+                question.getUserId(), question.getSubject(), question.getImageIds(), question.getContent(),
+                question.getCommonState().getIndex(), question.getCreateAtMs(), question.getUpdateAtMs(),
+                ExtInfoColumn.toBytes(question.getProperties()), question.getId());
     }
 }

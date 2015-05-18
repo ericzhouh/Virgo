@@ -9,4 +9,5 @@ public enum RedisBiz {
     Account,
     Privilege,
     Question,
+    Answer,
 }
