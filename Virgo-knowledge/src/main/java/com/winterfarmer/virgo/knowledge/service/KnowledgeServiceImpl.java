@@ -228,7 +228,7 @@ public class KnowledgeServiceImpl implements KnowledgeService {
     }
 
     @Override
-    public Answer updateAnswerState(long answerId, CommonState commonState) {
+    public Answer updateAnswerState(Answer answer, CommonState commonState) {
         return null;
     }
 
@@ -253,14 +253,25 @@ public class KnowledgeServiceImpl implements KnowledgeService {
     }
 
     @Override
-    public List<Answer> ListAnswers(long questionId, int page, int count) {
+    public boolean discollectAnswer(long userId, long answerId) {
+        return false;
+    }
+
+    @Override
+    public List<Answer> listAnswers(long questionId, int page, int count) {
         return null;
     }
 
     @Override
-    public List<Answer> ListUserCollectedAnswers(long userId, int page, int count) {
+    public List<Answer> listUserAnswers(long userId, int page, int count) {
         return null;
     }
+
+    @Override
+    public List<Answer> listUserCollectedAnswers(long userId, int page, int count) {
+        return null;
+    }
+
 
     // ======================================================================
 

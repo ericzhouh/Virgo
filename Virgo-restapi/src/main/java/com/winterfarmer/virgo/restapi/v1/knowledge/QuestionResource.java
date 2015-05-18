@@ -34,14 +34,14 @@ public class QuestionResource extends KnowledgeResource {
     protected static final String QUESTION_CONTENT_SPEC = "UnicodeString:1~65536";
 
     public static final int MAX_TAG_NUMBER = 3;
-
-    private static final Function<Question, ApiQuestion> simpleApiQuestionConverter =
+    private static final Function<Question, ApiQuestion> apiQuestionListConverter =
             new Function<Question, ApiQuestion>() {
                 @Override
                 public ApiQuestion apply(Question question) {
                     return ApiQuestion.forSimpleDisplay(question);
                 }
             };
+
 
     @Path("new_question.json")
     @POST
@@ -87,7 +87,7 @@ public class QuestionResource extends KnowledgeResource {
     )
     @Produces(MediaType.APPLICATION_JSON)
     public ApiQuestion updateQuestion(
-            @FormParam("question_id")
+            @FormParam(QUESTION_ID_DESC)
             @ParamSpec(isRequired = true, spec = POSITIVE_LONG_ID_SPEC, desc = "问题id")
             long questionId,
             @FormParam("subject")
@@ -123,14 +123,15 @@ public class QuestionResource extends KnowledgeResource {
     @Path("delete_question.json")
     @POST
     @RestApiInfo(
-            desc = "更新问题",
+            desc = "删除问题",
             authPolicy = RestApiInfo.AuthPolicy.OAUTH,
             resultDemo = ApiQuestion.class,
-            errors = {RestExceptionFactor.QUESTION_NOT_EXISTED}
+            errors = {RestExceptionFactor.QUESTION_NOT_EXISTED,
+                    RestExceptionFactor.NO_RIGHTS}
     )
     @Produces(MediaType.APPLICATION_JSON)
     public CommonResult deleteQuestion(
-            @FormParam("question_id")
+            @FormParam(QUESTION_ID_DESC)
             @ParamSpec(isRequired = true, spec = POSITIVE_LONG_ID_SPEC, desc = "问题id")
             long questionId,
             @HeaderParam(HEADER_USER_ID)
@@ -155,10 +156,10 @@ public class QuestionResource extends KnowledgeResource {
     )
     @Produces(MediaType.APPLICATION_JSON)
     public CommonResult agreeQuestion(
-            @FormParam("question_id")
+            @FormParam(QUESTION_ID_DESC)
             @ParamSpec(isRequired = true, spec = POSITIVE_LONG_ID_SPEC, desc = "问题id")
             long questionId,
-            @FormParam("is_agree")
+            @FormParam("state")
             @ParamSpec(isRequired = true, spec = COMMON_STATE_SPEC, desc = "是否agree: 0-not agree, 1-agree")
             CommonState state,
             @HeaderParam(HEADER_USER_ID)
@@ -182,10 +183,10 @@ public class QuestionResource extends KnowledgeResource {
     )
     @Produces(MediaType.APPLICATION_JSON)
     public CommonResult followQuestion(
-            @FormParam("question_id")
+            @FormParam(QUESTION_ID_DESC)
             @ParamSpec(isRequired = true, spec = POSITIVE_LONG_ID_SPEC, desc = "问题id")
             long questionId,
-            @FormParam("is_follow")
+            @FormParam("state")
             @ParamSpec(isRequired = true, spec = COMMON_STATE_SPEC, desc = "是否follow: 0-not follow, 1-follow")
             CommonState state,
             @HeaderParam(HEADER_USER_ID)
@@ -208,22 +209,22 @@ public class QuestionResource extends KnowledgeResource {
             errors = {}
     )
     @Produces(MediaType.APPLICATION_JSON)
-    public List<ApiQuestion> getUserQuestions(
+    public List<ApiQuestion> listUserQuestions(
             @QueryParam("type")
             @ParamSpec(isRequired = true, spec = "int:[0,2]", desc = "筛选类型: 0-我提问的, 1-我回答的, 2-我关注的")
             int type,
-            @QueryParam("page")
+            @QueryParam(PAGE_PARAM_NAME)
             @ParamSpec(isRequired = false, spec = NORMAL_PAGE_SPEC, desc = NORMAL_PAGE_DESC)
             @DefaultValue(NORMAL_DEFAULT_PAGE_NUM)
             int page,
-            @QueryParam("count")
+            @QueryParam(COUNT_PARAM_NAME)
             @ParamSpec(isRequired = false, spec = NORMAL_COUNT_SPEC, desc = NORMAL_COUNT_DESC)
             @DefaultValue(NORMAL_DEFAULT_PAGE_COUNT)
             int count,
             @HeaderParam(HEADER_USER_ID)
             long userId) {
         List<Question> questionList = queryQuestions(type, userId, page, count);
-        return Lists.transform(questionList, simpleApiQuestionConverter);
+        return Lists.transform(questionList, apiQuestionListConverter);
     }
 
     @Path("list_questions.json")
@@ -240,18 +241,18 @@ public class QuestionResource extends KnowledgeResource {
             @ParamSpec(isRequired = false, spec = NATURAL_LONG_ID_SPEC, desc = "标签id: 0-所有(无视此参数), 其他-tag id")
             @DefaultValue("0")
             long tagId,
-            @QueryParam("page")
+            @QueryParam(PAGE_PARAM_NAME)
             @ParamSpec(isRequired = false, spec = NORMAL_PAGE_SPEC, desc = NORMAL_PAGE_DESC)
             @DefaultValue(NORMAL_DEFAULT_PAGE_NUM)
             int page,
-            @QueryParam("count")
+            @QueryParam(COUNT_PARAM_NAME)
             @ParamSpec(isRequired = false, spec = NORMAL_COUNT_SPEC, desc = NORMAL_COUNT_DESC)
             @DefaultValue(NORMAL_DEFAULT_PAGE_COUNT)
             int count) {
         List<Question> questionList = tagId == 0 ?
                 knowledgeService.listQuestions(page, count) :
                 knowledgeService.listQuestions(tagId, page, count);
-        return Lists.transform(questionList, simpleApiQuestionConverter);
+        return Lists.transform(questionList, apiQuestionListConverter);
     }
 
     @Path("question_detail.json")
@@ -264,7 +265,7 @@ public class QuestionResource extends KnowledgeResource {
     )
     @Produces(MediaType.APPLICATION_JSON)
     public ApiQuestion getQuestion(
-            @QueryParam("question_id")
+            @QueryParam(QUESTION_ID_DESC)
             @ParamSpec(isRequired = true, spec = POSITIVE_LONG_ID_SPEC, desc = "问题详情")
             long questionId) {
         Question question = checkAndGetQuestion(questionId);
@@ -289,7 +290,7 @@ public class QuestionResource extends KnowledgeResource {
             case 2:
                 return knowledgeService.listUserFollowedQuestions(userId, page, count);
             default:
-                return Lists.newArrayList();
+                throw new VirgoRestException(RestExceptionFactor.INVALID_PARAM);
         }
     }
 

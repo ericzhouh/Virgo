@@ -93,7 +93,7 @@ public interface KnowledgeService {
 
     AnswerComment newAnswerComment(long userId, long answerId, String content);
 
-    Answer updateAnswerState(long answerId, CommonState commonState);
+    Answer updateAnswerState(Answer answer, CommonState commonState);
 
     AnswerComment updateAnswerCommentState(long answerCommentId, CommonState commonState);
 
@@ -103,6 +103,8 @@ public interface KnowledgeService {
 
     boolean collectAnswer(long userId, long answerId);
 
+    boolean discollectAnswer(long userId, long answerId);
+
     /**
      * List (count number) answers of questionId from page
      *
@@ -111,7 +113,17 @@ public interface KnowledgeService {
      * @param count
      * @return
      */
-    List<Answer> ListAnswers(long questionId, int page, int count);
+    List<Answer> listAnswers(long questionId, int page, int count);
+
+    /**
+     * List (count number) answers of user answerd from page
+     *
+     * @param userId
+     * @param page
+     * @param count
+     * @return
+     */
+    List<Answer> listUserAnswers(long userId, int page, int count);
 
     /**
      * List (count number) answers of user collected from page
@@ -121,7 +133,7 @@ public interface KnowledgeService {
      * @param count
      * @return
      */
-    List<Answer> ListUserCollectedAnswers(long userId, int page, int count);
+    List<Answer> listUserCollectedAnswers(long userId, int page, int count);
 
     // ========================================================================
     boolean isValidTags(long... questionTagId);

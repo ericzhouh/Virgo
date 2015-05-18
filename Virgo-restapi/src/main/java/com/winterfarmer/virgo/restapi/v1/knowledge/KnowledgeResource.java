@@ -16,6 +16,12 @@ public abstract class KnowledgeResource extends BaseResource {
     @Resource(name = "knowledgeService")
     KnowledgeService knowledgeService;
 
+    protected static final String ANSWER_ID_DESC = "答案id";
+    protected static final String QUESTION_ID_DESC = "问题id";
+
+    protected static final String ANSWER_ID_PARAM_NAME = "answer_id";
+    protected static final String QUESTION_ID_PARAM_NAME = "question_id";
+
     protected Question checkAndGetQuestion(long questionId) {
         Question question = knowledgeService.getQuestion(questionId);
         if (question == null || question.getCommonState() == CommonState.DELETE) {

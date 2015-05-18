@@ -42,6 +42,9 @@ public abstract class BaseResource {
     protected static final String PRIVILEGE_BITS_SPEC = "int:[0,1024]";
     protected static final String PRIVILEGE_BITS_DESC = "权限bit位组";
 
+    protected static final String PAGE_PARAM_NAME = "page";
+    protected static final String COUNT_PARAM_NAME = "count";
+
     protected static void setProperties(BaseModel model, String extension) {
         if (extension != null) {
             model.setProperties(JSON.parseObject(extension));

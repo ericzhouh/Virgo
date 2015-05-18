@@ -56,11 +56,11 @@ public class AdminResource extends BaseResource {
             @QueryParam("group")
             @ParamSpec(isRequired = false, spec = ENUM_COMPLETE_SPEC, desc = "权限组")
             GroupType groupType,
-            @QueryParam("page")
+            @QueryParam(PAGE_PARAM_NAME)
             @ParamSpec(isRequired = false, spec = NORMAL_PAGE_SPEC, desc = NORMAL_PAGE_DESC)
             @DefaultValue(NORMAL_DEFAULT_PAGE_NUM)
             int page,
-            @QueryParam("count")
+            @QueryParam(COUNT_PARAM_NAME)
             @ParamSpec(isRequired = false, spec = NORMAL_COUNT_SPEC, desc = NORMAL_COUNT_DESC)
             @DefaultValue(NORMAL_DEFAULT_PAGE_COUNT)
             int count) {
