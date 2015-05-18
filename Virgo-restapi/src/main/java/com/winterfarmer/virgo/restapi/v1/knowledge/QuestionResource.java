@@ -9,6 +9,7 @@ import com.winterfarmer.virgo.base.model.CommonState;
 import com.winterfarmer.virgo.common.util.ArrayUtil;
 import com.winterfarmer.virgo.common.util.StringUtil;
 import com.winterfarmer.virgo.knowledge.model.Question;
+import com.winterfarmer.virgo.knowledge.model.QuestionTag;
 import com.winterfarmer.virgo.restapi.core.annotation.ParamSpec;
 import com.winterfarmer.virgo.restapi.core.annotation.ResourceOverview;
 import com.winterfarmer.virgo.restapi.core.annotation.RestApiInfo;
@@ -274,6 +275,31 @@ public class QuestionResource extends KnowledgeResource {
         return new ApiQuestion(question, tagList);
     }
 
+    private List<ApiQuestionTag> apiQuestionTagList;
+
+    @Path("list_tags.json")
+    @GET
+    @RestApiInfo(
+            desc = "列出标签",
+            authPolicy = RestApiInfo.AuthPolicy.PUBLIC,
+            resultDemo = ApiQuestion.class,
+            errors = {}
+    )
+    @Produces(MediaType.APPLICATION_JSON)
+    public List<ApiQuestionTag> listQuestionTags() {
+        // TODO: lazy load, 可能加载多次，不过没什么问题
+        if (apiQuestionTagList == null) {
+            apiQuestionTagList = Lists.transform(knowledgeService.listQuestionTag(), new Function<QuestionTag, ApiQuestionTag>() {
+                @Override
+                public ApiQuestionTag apply(QuestionTag questionTag) {
+                    return new ApiQuestionTag(questionTag);
+                }
+            });
+        }
+
+        return apiQuestionTagList;
+    }
+
     /**
      * @param type   0:我提问的;1:我回答的;2:我关注的
      * @param userId
@@ -314,10 +340,19 @@ public class QuestionResource extends KnowledgeResource {
     }
 
     private ApiQuestionTag[] getApiQuestionTags(long[] tagIds) {
-        return null;
+        QuestionTag[] tags = knowledgeService.listQuestionTag(tagIds);
+        ApiQuestionTag[] apiQuestionTags = new ApiQuestionTag[tags.length];
+
+        int i = 0;
+        for (QuestionTag tag : tags) {
+            apiQuestionTags[i++] = new ApiQuestionTag(tag);
+        }
+
+        return apiQuestionTags;
     }
 
     private List<ApiQuestionTag> getApiQuestionTags(List<Long> tagIdList) {
-        return null;
+        ApiQuestionTag[] apiQuestionTags = getApiQuestionTags(ArrayUtil.toLongArray(tagIdList));
+        return Lists.newArrayList(apiQuestionTags);
     }
 }

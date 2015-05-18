@@ -8,7 +8,7 @@ import com.winterfarmer.virgo.knowledge.model.QuestionTag;
  */
 @ApiMode(desc = "问题标签")
 public class ApiQuestionTag {
-    ApiQuestionTag(QuestionTag questionTag) {
-        
+    public ApiQuestionTag(QuestionTag questionTag) {
+
     }
 }

@@ -11,6 +11,13 @@ public class QuestionTag {
     private int weight;
     private CommonState commonState;
 
+    public QuestionTag(long id, String name) {
+        this.id = id;
+        this.name = name;
+        this.weight = 0;
+        this.commonState = CommonState.NORMAL;
+    }
+
     public QuestionTag() {
     }
 

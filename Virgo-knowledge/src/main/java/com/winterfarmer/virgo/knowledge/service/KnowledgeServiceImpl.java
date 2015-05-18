@@ -2,6 +2,7 @@ package com.winterfarmer.virgo.knowledge.service;
 
 import com.google.common.base.Function;
 import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 import com.winterfarmer.virgo.base.model.CommonState;
 import com.winterfarmer.virgo.common.util.ArrayUtil;
@@ -22,7 +23,9 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 /**
@@ -284,25 +287,54 @@ public class KnowledgeServiceImpl implements KnowledgeService {
     }
 
     // ======================================================================
+    // 目前所有的tag都是写死在程序里
+    private static final Map<Long, QuestionTag> tagMap = Maps.newHashMap();
+    private static final List<QuestionTag> tagList = Lists.newArrayList();
+
+
+    static {
+        QuestionTag[] questionTags = new QuestionTag[]{new QuestionTag(1000, ""),
+                new QuestionTag(1001, ""),
+                new QuestionTag(1002, ""),
+                new QuestionTag(1003, ""),
+                new QuestionTag(1004, "")};
+
+        for (QuestionTag questionTag : questionTags) {
+            tagMap.put(questionTag.getId(), questionTag);
+            tagList.add(questionTag);
+        }
+    }
 
     @Override
-    public boolean isValidTags(long... questionTagId) {
-        return false;
+    public boolean isValidTags(long... questionTagIds) {
+        for (long questionTagId : questionTagIds) {
+            if (!tagMap.containsKey(questionTagId)) {
+                return false;
+            }
+        }
+
+        return true;
     }
 
     @Override
     public QuestionTag getQuestionTag(long questionTagId) {
-        return null;
+        return tagMap.get(questionTagId);
     }
 
     @Override
-    public List<QuestionTag> listQuestionTag(long... questionTagId) {
-        return null;
+    public QuestionTag[] listQuestionTag(long... questionTagIds) {
+        QuestionTag[] questionTags = new QuestionTag[questionTagIds.length];
+        int i = 0;
+        for (long questionTagId : questionTagIds) {
+            questionTags[i++] = getQuestionTag(questionTagId);
+        }
+
+        return questionTags;
     }
 
     @Override
     public List<QuestionTag> listQuestionTag() {
-        return null;
+        return tagList;
     }
 
     // ======================================================================

@@ -136,7 +136,7 @@ public interface KnowledgeService {
 
     QuestionTag getQuestionTag(long questionTagId);
 
-    List<QuestionTag> listQuestionTag(long... questionTagId);
+    QuestionTag[] listQuestionTag(long... questionTagId);
 
     List<QuestionTag> listQuestionTag();
 
