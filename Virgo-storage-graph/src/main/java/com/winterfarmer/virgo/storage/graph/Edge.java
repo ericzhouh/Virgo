@@ -1,8 +1,11 @@
 package com.winterfarmer.virgo.storage.graph;
 
 import com.google.common.base.Charsets;
+import com.google.common.base.Function;
+import com.google.common.collect.Lists;
 
 import java.util.Collection;
+import java.util.List;
 
 /**
  * Created by yangtianhang on 15/5/12.
@@ -22,8 +25,26 @@ public class Edge {
     private long accessoryId; // 附带信息id
     private byte[] extInfo; // 扩展信息, 最好是json的格式
 
+    public static List<Long> listTails(List<Edge> edgeList) {
+        return Lists.transform(edgeList, new Function<Edge, Long>() {
+            @Override
+            public Long apply(Edge edge) {
+                return edge.getTail();
+            }
+        });
+    }
+
+    public static List<Long> listHeads(List<Edge> edgeList) {
+        return Lists.transform(edgeList, new Function<Edge, Long>() {
+            @Override
+            public Long apply(Edge edge) {
+                return edge.getHead();
+            }
+        });
+    }
+
     public static Edge[] createEdges(long head, Collection<Long> tails) {
-        return createEdges(head, tails, 1);
+        return createEdges(head, tails, Edge.NORMAL_EDGE);
     }
 
     public static Edge[] createEdges(long head, Collection<Long> tails, int state) {
@@ -37,7 +58,7 @@ public class Edge {
     }
 
     public static Edge[] createEdges(Collection<Long> heads, long tail) {
-        return createEdges(heads, tail, 1);
+        return createEdges(heads, tail, Edge.NORMAL_EDGE);
     }
 
     public static Edge[] createEdges(Collection<Long> heads, long tail, int state) {
@@ -51,7 +72,7 @@ public class Edge {
     }
 
     public static Edge[] createEdges(long head, long[] tails) {
-        return createEdges(head, tails, 1);
+        return createEdges(head, tails, Edge.NORMAL_EDGE);
     }
 
     public static Edge[] createEdges(long head, long[] tails, int state) {
@@ -75,7 +96,7 @@ public class Edge {
     }
 
     public static Edge[] createEdges(long[] heads, long tail) {
-        return createEdges(heads, tail, 1);
+        return createEdges(heads, tail, Edge.NORMAL_EDGE);
     }
 
 
@@ -83,7 +104,7 @@ public class Edge {
     }
 
     public Edge(long head, long tail) {
-        this(head, tail, 1);
+        this(head, tail, Edge.NORMAL_EDGE);
     }
 
     public Edge(long head, long tail, int state) {

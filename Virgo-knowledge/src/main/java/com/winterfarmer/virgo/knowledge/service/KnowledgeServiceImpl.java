@@ -5,6 +5,7 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 import com.winterfarmer.virgo.base.model.CommonState;
 import com.winterfarmer.virgo.common.util.ArrayUtil;
+import com.winterfarmer.virgo.knowledge.dao.AnswerMysqlDaoImpl;
 import com.winterfarmer.virgo.knowledge.dao.QuestionMysqlDaoImpl;
 import com.winterfarmer.virgo.knowledge.model.Answer;
 import com.winterfarmer.virgo.knowledge.model.AnswerComment;
@@ -34,6 +35,12 @@ public class KnowledgeServiceImpl implements KnowledgeService {
 
     @Resource(name = "questionMysqlDao")
     QuestionMysqlDaoImpl questionMysqlDao;
+
+    @Resource(name = "hybridAnswerDao")
+    IdModelDao<Answer> answerDao;
+
+    @Resource(name = "answerMysqlDao")
+    AnswerMysqlDaoImpl answerMysqlDao;
 
     @Resource(name = "questionTagGraphMysqlDao")
     GraphDao questionTagGraphDao;
@@ -137,7 +144,7 @@ public class KnowledgeServiceImpl implements KnowledgeService {
 
     @Override
     public boolean disagreeQuestion(long userId, long questionId) {
-        return userAgreeQuestionGraphDao.insertOrUpdateEdges(new Edge(userId, questionId, 0)) > 0;
+        return userAgreeQuestionGraphDao.insertOrUpdateEdges(new Edge(userId, questionId, Edge.DELETED_EDGE)) > 0;
     }
 
     @Override
@@ -197,7 +204,7 @@ public class KnowledgeServiceImpl implements KnowledgeService {
 
     @Override
     public boolean disfollowQuestion(long userId, long questionId) {
-        return userFollowQuestionGraphDao.insertOrUpdateEdges(new Edge(userId, questionId, 0)) > 0;
+        return userFollowQuestionGraphDao.insertOrUpdateEdges(new Edge(userId, questionId, Edge.DELETED_EDGE)) > 0;
     }
 
     // ========================================================================
@@ -209,69 +216,72 @@ public class KnowledgeServiceImpl implements KnowledgeService {
 
     @Override
     public Answer newAnswer(long userId, long questionId, String content, String imageIds) {
-        return null;
+        Answer answer = new Answer();
+        answer.setUserId(userId);
+        answer.setQuestionId(questionId);
+        answer.setContent(content);
+        answer.setImageIds(imageIds);
+        answer.setCommonState(CommonState.NORMAL);
+        long current = System.currentTimeMillis();
+        answer.setCreateAtMs(current);
+        answer.setUpdateAtMs(current);
+
+        return answerDao.insert(answer);
     }
 
     @Override
     public Answer getAnswer(long answerId) {
-        return null;
+        return answerDao.get(answerId);
     }
 
     @Override
     public Answer updateAnswer(Answer answer) {
-        return null;
-    }
-
-    @Override
-    public AnswerComment newAnswerComment(long userId, long answerId, String content) {
-        return null;
+        answer.setUpdateAtMs(System.currentTimeMillis());
+        return answerDao.update(answer);
     }
 
     @Override
     public Answer updateAnswerState(Answer answer, CommonState commonState) {
-        return null;
-    }
-
-    @Override
-    public AnswerComment updateAnswerCommentState(long answerCommentId, CommonState commonState) {
-        return null;
+        answer.setUpdateAtMs(System.currentTimeMillis());
+        answer.setCommonState(commonState);
+        return answerDao.update(answer);
     }
 
     @Override
     public boolean agreeAnswer(long userId, long answerId) {
-        return false;
+        return userAgreeAnswerGraphDao.insertOrUpdateEdges(new Edge(userId, answerId, Edge.NORMAL_EDGE)) > 0;
     }
 
     @Override
     public boolean disagreeAnswer(long userId, long answerId) {
-        return false;
+        return userAgreeAnswerGraphDao.insertOrUpdateEdges(new Edge(userId, answerId, Edge.DELETED_EDGE)) > 0;
     }
 
     @Override
     public boolean collectAnswer(long userId, long answerId) {
-        return false;
+        return userCollectAnswerGraphDao.insertOrUpdateEdges(new Edge(userId, answerId, Edge.NORMAL_EDGE)) > 0;
     }
 
     @Override
     public boolean discollectAnswer(long userId, long answerId) {
-        return false;
+        return userCollectAnswerGraphDao.insertOrUpdateEdges(new Edge(userId, answerId, Edge.DELETED_EDGE)) > 0;
     }
 
     @Override
     public List<Answer> listAnswers(long questionId, int page, int count) {
-        return null;
+        return answerMysqlDao.listByQuestionId(questionId, count, page * count);
     }
 
     @Override
     public List<Answer> listUserAnswers(long userId, int page, int count) {
-        return null;
+        return answerMysqlDao.listByUserId(userId, count, page * count);
     }
 
     @Override
     public List<Answer> listUserCollectedAnswers(long userId, int page, int count) {
-        return null;
+        List<Edge> edgeList = userCollectAnswerGraphDao.queryEdgesByHead(userId, count, page * count);
+        return listAnswersAsTail(edgeList);
     }
-
 
     // ======================================================================
 
@@ -295,27 +305,33 @@ public class KnowledgeServiceImpl implements KnowledgeService {
         return null;
     }
 
-    private List<Question> listQuestionsAsHead(List<Edge> edgeList) {
-        List<Long> idList = Lists.transform(edgeList, new Function<Edge, Long>() {
-            @Override
-            public Long apply(Edge edge) {
-                return edge.getHead();
-            }
-        });
+    // ======================================================================
+    @Override
+    public AnswerComment newAnswerComment(long userId, long answerId, String content) {
+        return null;
+    }
 
+    @Override
+    public AnswerComment updateAnswerCommentState(long answerCommentId, CommonState commonState) {
+        return null;
+    }
+    // ======================================================================
+
+    private List<Question> listQuestionsAsHead(List<Edge> edgeList) {
+        List<Long> idList = Edge.listHeads(edgeList);
         long[] ids = ArrayUtil.toLongArray(idList);
         return questionDao.listByIds(ids);
     }
 
     private List<Question> listQuestionsAsTail(List<Edge> edgeList) {
-        List<Long> idList = Lists.transform(edgeList, new Function<Edge, Long>() {
-            @Override
-            public Long apply(Edge edge) {
-                return edge.getTail();
-            }
-        });
-
+        List<Long> idList = Edge.listTails(edgeList);
         long[] ids = ArrayUtil.toLongArray(idList);
         return questionDao.listByIds(ids);
+    }
+
+    private List<Answer> listAnswersAsTail(List<Edge> edgeList) {
+        List<Long> idList = Edge.listTails(edgeList);
+        long[] ids = ArrayUtil.toLongArray(idList);
+        return answerDao.listByIds(ids);
     }
 }

@@ -91,11 +91,7 @@ public interface KnowledgeService {
 
     Answer updateAnswer(Answer answer);
 
-    AnswerComment newAnswerComment(long userId, long answerId, String content);
-
     Answer updateAnswerState(Answer answer, CommonState commonState);
-
-    AnswerComment updateAnswerCommentState(long answerCommentId, CommonState commonState);
 
     boolean agreeAnswer(long userId, long answerId);
 
@@ -143,4 +139,9 @@ public interface KnowledgeService {
     List<QuestionTag> listQuestionTag(long... questionTagId);
 
     List<QuestionTag> listQuestionTag();
+
+    // ========================================================================
+    AnswerComment newAnswerComment(long userId, long answerId, String content);
+
+    AnswerComment updateAnswerCommentState(long answerCommentId, CommonState commonState);
 }

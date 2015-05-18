@@ -20,6 +20,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.List;
 
 /**
  * Created by yangtianhang on 15/5/18.
@@ -107,5 +108,19 @@ public class AnswerMysqlDaoImpl extends IdModelMysqlDao<Answer> {
                 answer.getQuestionId(), answer.getUserId(), answer.getImageIds(), answer.getContent(),
                 answer.getCommonState().getIndex(), answer.getCreateAtMs(), answer.getUpdateAtMs(),
                 ExtInfoColumn.toBytes(answer.getProperties()), answer.getId());
+    }
+
+    private static final String SELECT_ANSWERS_BY_QUESTION_ID =
+            selectAllSql(ANSWER_TABLE_NAME) + new WhereClauseBuilder(questionId.eqWhich()).and(state.eq(1)).limitOffset();
+
+    public List<Answer> listByQuestionId(long questionId, int limit, int offset) {
+        return queryForList(getReadJdbcTemplate(), SELECT_ANSWERS_BY_QUESTION_ID, rowMapper, questionId, limit, offset);
+    }
+
+    private static final String SELECT_ANSWERS_BY_USER_ID =
+            selectAllSql(ANSWER_TABLE_NAME) + new WhereClauseBuilder(userId.eqWhich()).and(state.eq(1)).limitOffset();
+
+    public List<Answer> listByUserId(long userId, int limit, int offset) {
+        return queryForList(getReadJdbcTemplate(), SELECT_ANSWERS_BY_USER_ID, rowMapper, userId, limit, offset);
     }
 }
