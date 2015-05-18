@@ -1,6 +1,5 @@
 package com.winterfarmer.virgo.storage.id;
 
-import com.winterfarmer.virgo.storage.id.dao.IdModelMysqlDao;
 import org.springframework.stereotype.Repository;
 
 /**

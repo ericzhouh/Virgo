@@ -1,5 +1,6 @@
 package com.winterfarmer.virgo.knowledge;
 
+import com.winterfarmer.virgo.knowledge.dao.AnswerMysqlDaoImpl;
 import com.winterfarmer.virgo.knowledge.dao.QuestionMysqlDaoImpl;
 import org.junit.FixMethodOrder;
 import org.junit.Test;
@@ -20,8 +21,13 @@ public class TestKnowledgeDao {
     @Resource(name = "questionMysqlDao")
     QuestionMysqlDaoImpl questionMysqlDao;
 
+    @Resource(name = "answerMysqlDao")
+    AnswerMysqlDaoImpl answerMysqlDao;
+
+
     @Test
     public void initDao() {
         questionMysqlDao.initTable(true);
+        answerMysqlDao.initTable(true);
     }
 }

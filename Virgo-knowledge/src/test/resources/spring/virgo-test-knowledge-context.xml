@@ -2,6 +2,7 @@
 <beans xmlns="http://www.springframework.org/schema/beans"
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
        xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:c="http://www.springframework.org/schema/c"
        xsi:schemaLocation="http://www.springframework.org/schema/beans
         http://www.springframework.org/schema/beans/spring-beans.xsd
         http://www.springframework.org/schema/context
@@ -13,5 +14,19 @@
     <context:annotation-config/>
     <context:component-scan base-package="com.winterfarmer.virgo.knowledge.*"/>
 
+    <bean id="questionRedisDao" class="com.winterfarmer.virgo.storage.id.dao.IdModelRedisDao"
+          c:redisBiz="Question"
+          c:clazz="com.winterfarmer.virgo.knowledge.model.Question"/>
+    <bean id="questionMysqlDao" class="com.winterfarmer.virgo.knowledge.dao.QuestionMysqlDaoImpl"/>
+    <bean id="hybridQuestionDao" class="com.winterfarmer.virgo.storage.id.dao.IdModelHybridDao"
+          c:mysqlDao-ref="questionMysqlDao"
+          c:redisDao-ref="questionRedisDao"/>
 
+    <bean id="answerRedisDao" class="com.winterfarmer.virgo.storage.id.dao.IdModelRedisDao"
+          c:redisBiz="Answer"
+          c:clazz="com.winterfarmer.virgo.knowledge.model.Answer"/>
+    <bean id="answerMysqlDao" class="com.winterfarmer.virgo.knowledge.dao.AnswerMysqlDaoImpl"/>
+    <bean id="hybridAnswerDao" class="com.winterfarmer.virgo.storage.id.dao.IdModelHybridDao"
+          c:mysqlDao-ref="answerMysqlDao"
+          c:redisDao-ref="answerRedisDao"/>
 </beans>

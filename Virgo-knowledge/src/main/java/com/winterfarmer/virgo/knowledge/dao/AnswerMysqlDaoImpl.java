@@ -1,6 +1,9 @@
 package com.winterfarmer.virgo.knowledge.dao;
 
 import com.winterfarmer.virgo.base.model.CommonState;
+import com.winterfarmer.virgo.database.BaseMysqlDao;
+import com.winterfarmer.virgo.database.helper.IndexType;
+import com.winterfarmer.virgo.database.helper.MysqlDDLBuilder;
 import com.winterfarmer.virgo.database.helper.column.Columns;
 import com.winterfarmer.virgo.database.helper.column.binary.ExtInfoColumn;
 import com.winterfarmer.virgo.database.helper.column.numeric.BigintColumn;
@@ -27,7 +30,7 @@ public class AnswerMysqlDaoImpl extends IdModelMysqlDao<Answer> {
 
     private static final BigintColumn answerId = Columns.newIdColumn("answer_id", true, false);
 
-    private static final BigintColumn questionId = Columns.newIdColumn("question_id", true, false);
+    private static final BigintColumn questionId = Columns.newLongColumn("question_id", false);
     private static final BigintColumn userId = Columns.newUserIdColumn(false, false);
     private static final VarcharColumn imageIds = (VarcharColumn) new VarcharColumn("image_ids", 256).
             setAllowNull(false).setComment("逗号分隔的image id").setUnique(false);
@@ -58,6 +61,17 @@ public class AnswerMysqlDaoImpl extends IdModelMysqlDao<Answer> {
             return answer;
         }
     };
+
+    public static final String CREATE_DDL = new MysqlDDLBuilder(ANSWER_TABLE_NAME).
+            addColumn(answerId).addColumn(questionId).addColumn(userId).
+            addColumn(imageIds).addColumn(content).addColumn(state).
+            addColumn(createAtMs).addColumn(updateAtMs).addColumn(extInfo).
+            setPrimaryKey(IndexType.btree, answerId).addIndex(questionId).addIndex(userId).
+            addIndex(IndexType.btree, createAtMs).setAutoIncrement(6800).buildCreateDDL();
+
+    public void initTable(boolean dropBeforeCreate) {
+        super.initTable(CREATE_DDL, BaseMysqlDao.dropDDL(ANSWER_TABLE_NAME), dropBeforeCreate);
+    }
 
     private static final String INSERT_ANSWER_SQL = insertIntoSQL(ANSWER_TABLE_NAME,
             questionId, userId, imageIds, content, state, createAtMs, updateAtMs, extInfo);
