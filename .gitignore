@@ -22,4 +22,5 @@ target
 Apollo-commons/guid
 nohup.out
 kill_tomcat.sh
+dump_table_desc.sql
 
