@@ -18,7 +18,7 @@ public class StringUtil {
             int i = 0;
             for (String splitString : splitStrings) {
                 try {
-                    longNums[++i] = Long.parseLong(splitString);
+                    longNums[i++] = Long.parseLong(splitString);
                 } catch (NumberFormatException e) {
                     return null;
                 }

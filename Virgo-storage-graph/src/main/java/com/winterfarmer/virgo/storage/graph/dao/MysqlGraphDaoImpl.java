@@ -108,6 +108,12 @@ public class MysqlGraphDaoImpl implements GraphDao {
     public void init() {
     }
 
+    public void initGraphTables(boolean dropBeforeCreate) {
+        initiateEdgeTable(dropBeforeCreate);
+        initiateHeadVertexTable(dropBeforeCreate);
+        initiateTailVertexTable(dropBeforeCreate);
+    }
+
     public void initiateEdgeTable(boolean dropBeforeCreate) {
         if (dropBeforeCreate) {
             String drop = String.format(EDGE_DROP, getGraphEdgeTable());
@@ -465,7 +471,8 @@ public class MysqlGraphDaoImpl implements GraphDao {
             }
         } catch (Exception e) {
             if (VirgoLogger.isDebugEnabled()) {
-                VirgoLogger.debug("class:{}, queryForList sql:{}, params:{}, rowmapper:{}, exception:{}, no_result", this.getClass().getSimpleName(), sql, JSON.toJSONString(args), rowMapper.getClass().getSimpleName(), e.getMessage());
+                VirgoLogger.debug("class:{}, queryForList sql:{}, params:{}, rowmapper:{}, exception:{}, no_result",
+                        this.getClass().getSimpleName(), sql, JSON.toJSONString(args), rowMapper.getClass().getSimpleName(), e.getMessage());
             }
         }
 

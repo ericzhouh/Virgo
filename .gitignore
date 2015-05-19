@@ -21,4 +21,5 @@ target
 /filters/nbproject/private/
 Apollo-commons/guid
 nohup.out
+kill_tomcat.sh
 

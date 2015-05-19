@@ -88,8 +88,8 @@ public class QuestionResource extends KnowledgeResource {
     )
     @Produces(MediaType.APPLICATION_JSON)
     public ApiQuestion updateQuestion(
-            @FormParam(QUESTION_ID_DESC)
-            @ParamSpec(isRequired = true, spec = POSITIVE_LONG_ID_SPEC, desc = "问题id")
+            @FormParam(QUESTION_ID_PARAM_NAME)
+            @ParamSpec(isRequired = true, spec = POSITIVE_LONG_ID_SPEC, desc = QUESTION_ID_DESC)
             long questionId,
             @FormParam("subject")
             @ParamSpec(isRequired = true, spec = SUBJECT_SPEC, desc = "题目")
@@ -132,8 +132,8 @@ public class QuestionResource extends KnowledgeResource {
     )
     @Produces(MediaType.APPLICATION_JSON)
     public CommonResult deleteQuestion(
-            @FormParam(QUESTION_ID_DESC)
-            @ParamSpec(isRequired = true, spec = POSITIVE_LONG_ID_SPEC, desc = "问题id")
+            @FormParam(QUESTION_ID_PARAM_NAME)
+            @ParamSpec(isRequired = true, spec = POSITIVE_LONG_ID_SPEC, desc = QUESTION_ID_DESC)
             long questionId,
             @HeaderParam(HEADER_USER_ID)
             long userId
@@ -157,8 +157,8 @@ public class QuestionResource extends KnowledgeResource {
     )
     @Produces(MediaType.APPLICATION_JSON)
     public CommonResult agreeQuestion(
-            @FormParam(QUESTION_ID_DESC)
-            @ParamSpec(isRequired = true, spec = POSITIVE_LONG_ID_SPEC, desc = "问题id")
+            @FormParam(QUESTION_ID_PARAM_NAME)
+            @ParamSpec(isRequired = true, spec = POSITIVE_LONG_ID_SPEC, desc = QUESTION_ID_DESC)
             long questionId,
             @FormParam("state")
             @ParamSpec(isRequired = true, spec = COMMON_STATE_SPEC, desc = "是否agree: 0-not agree, 1-agree")
@@ -184,8 +184,8 @@ public class QuestionResource extends KnowledgeResource {
     )
     @Produces(MediaType.APPLICATION_JSON)
     public CommonResult followQuestion(
-            @FormParam(QUESTION_ID_DESC)
-            @ParamSpec(isRequired = true, spec = POSITIVE_LONG_ID_SPEC, desc = "问题id")
+            @FormParam(QUESTION_ID_PARAM_NAME)
+            @ParamSpec(isRequired = true, spec = POSITIVE_LONG_ID_SPEC, desc = QUESTION_ID_DESC)
             long questionId,
             @FormParam("state")
             @ParamSpec(isRequired = true, spec = COMMON_STATE_SPEC, desc = "是否follow: 0-not follow, 1-follow")
@@ -266,8 +266,8 @@ public class QuestionResource extends KnowledgeResource {
     )
     @Produces(MediaType.APPLICATION_JSON)
     public ApiQuestion getQuestion(
-            @QueryParam(QUESTION_ID_DESC)
-            @ParamSpec(isRequired = true, spec = POSITIVE_LONG_ID_SPEC, desc = "问题详情")
+            @QueryParam(QUESTION_ID_PARAM_NAME)
+            @ParamSpec(isRequired = true, spec = POSITIVE_LONG_ID_SPEC, desc = QUESTION_ID_DESC)
             long questionId) {
         Question question = checkAndGetQuestion(questionId);
         List<Long> tagIdList = knowledgeService.listQuestionTagIdsByQuestionId(questionId);
@@ -323,7 +323,7 @@ public class QuestionResource extends KnowledgeResource {
     private long[] checkAndGetTagIds(String tagsString) {
         long[] tagIds = StringUtil.splitLongCommaString(tagsString);
         tagIds = ArrayUtil.deduplicate(tagIds);
-        if (ArrayUtils.isEmpty(tagIds) || tagIds.length > MAX_TAG_NUMBER || knowledgeService.isValidTags(tagIds)) {
+        if (ArrayUtils.isEmpty(tagIds) || tagIds.length > MAX_TAG_NUMBER || !knowledgeService.isValidTags(tagIds)) {
             throw new VirgoRestException(RestExceptionFactor.INVALID_TAG_ID);
         }
 

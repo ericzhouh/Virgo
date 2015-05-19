@@ -54,7 +54,6 @@ public class KnowledgeServiceImpl implements KnowledgeService {
     @Resource(name = "userFollowQuestionGraphMysqlDao")
     GraphDao userFollowQuestionGraphDao;
 
-    // ----------------------------------------------------------------------
     @Resource(name = "userAgreeAnswerGraphMysqlDao")
     GraphDao userAgreeAnswerGraphDao;
 
@@ -293,11 +292,12 @@ public class KnowledgeServiceImpl implements KnowledgeService {
 
 
     static {
-        QuestionTag[] questionTags = new QuestionTag[]{new QuestionTag(1000, ""),
-                new QuestionTag(1001, ""),
-                new QuestionTag(1002, ""),
-                new QuestionTag(1003, ""),
-                new QuestionTag(1004, "")};
+        QuestionTag[] questionTags = new QuestionTag[]{
+                new QuestionTag(1000, "标签0"),
+                new QuestionTag(1001, "标签1"),
+                new QuestionTag(1002, "标签2"),
+                new QuestionTag(1003, "标签3"),
+                new QuestionTag(1004, "标签4")};
 
         for (QuestionTag questionTag : questionTags) {
             tagMap.put(questionTag.getId(), questionTag);

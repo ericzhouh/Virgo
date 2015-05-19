@@ -17,6 +17,7 @@ import java.util.List;
  */
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
 @RunWith(SpringJUnit4ClassRunner.class)
+//@ContextConfiguration(locations = {"classpath:spring/virgo-graph-storage-context.xml"})
 @ContextConfiguration(locations = {"classpath:spring/virgo-test-storage-graph-context.xml"})
 public class TestMysqlGraphDaoImpl {
     private long p0 = 1000;
@@ -27,6 +28,32 @@ public class TestMysqlGraphDaoImpl {
 
     @Resource(name = "testGraphDBMysqlDao")
     private GraphDao dao;
+
+//    @Resource(name = "questionTagGraphMysqlDao")
+//    MysqlGraphDaoImpl questionTagGraphDao;
+//
+//    @Resource(name = "userAgreeQuestionGraphMysqlDao")
+//    MysqlGraphDaoImpl userAgreeQuestionGraphDao;
+//
+//    @Resource(name = "userFollowQuestionGraphMysqlDao")
+//    MysqlGraphDaoImpl userFollowQuestionGraphDao;
+//
+//    // ----------------------------------------------------------------------
+//    @Resource(name = "userAgreeAnswerGraphMysqlDao")
+//    MysqlGraphDaoImpl userAgreeAnswerGraphDao;
+//
+//    @Resource(name = "userCollectAnswerGraphMysqlDao")
+//    MysqlGraphDaoImpl userCollectAnswerGraphDao;
+//
+//    @Test
+//    public void initAllDao() {
+//        questionTagGraphDao.initGraphTables(true);
+//        userAgreeQuestionGraphDao.initGraphTables(true);
+//        userFollowQuestionGraphDao.initGraphTables(true);
+//        userAgreeAnswerGraphDao.initGraphTables(true);
+//        userCollectAnswerGraphDao.initGraphTables(true);
+//    }
+
 
     @Before
     public void rebuildTables() {
