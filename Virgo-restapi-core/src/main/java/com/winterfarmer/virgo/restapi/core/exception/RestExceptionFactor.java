@@ -36,6 +36,9 @@ public enum RestExceptionFactor {
     QUESTION_NOT_EXISTED(404, 404_004_003, "question not existed"),
     ANSWER_NOT_EXISTED(404, 404_004_004, "answer not existed"),
 
+    CANNOT_DO_THIS_TO_QUESTION(404, 404_004_005, "cannot do this to question"),
+    CANNOT_DO_THIS_TO_ANSWER(404, 404_004_006, "cannot do this to answer"),
+
     // 500
     INTERNAL_SERVER_ERROR(500, 500_000_001, "Internal Server Error"),;
 

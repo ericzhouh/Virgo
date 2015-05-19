@@ -153,7 +153,8 @@ public class QuestionResource extends KnowledgeResource {
             desc = "认为问题有价值",
             authPolicy = RestApiInfo.AuthPolicy.OAUTH,
             resultDemo = ApiQuestion.class,
-            errors = {RestExceptionFactor.QUESTION_NOT_EXISTED}
+            errors = {RestExceptionFactor.QUESTION_NOT_EXISTED,
+                    RestExceptionFactor.CANNOT_DO_THIS_TO_QUESTION}
     )
     @Produces(MediaType.APPLICATION_JSON)
     public CommonResult agreeQuestion(
@@ -167,6 +168,9 @@ public class QuestionResource extends KnowledgeResource {
             long userId
     ) {
         Question question = checkAndGetQuestion(questionId);
+        if (question.getUserId() == userId) {
+            throw new VirgoRestException(RestExceptionFactor.CANNOT_DO_THIS_TO_QUESTION);
+        }
         boolean result =
                 state == CommonState.NORMAL ?
                         knowledgeService.agreeQuestion(userId, question.getId()) :

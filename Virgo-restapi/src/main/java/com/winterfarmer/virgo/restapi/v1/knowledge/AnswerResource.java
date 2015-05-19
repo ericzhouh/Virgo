@@ -7,6 +7,7 @@ import com.winterfarmer.virgo.aggregator.model.ApiQuestion;
 import com.winterfarmer.virgo.base.model.CommonResult;
 import com.winterfarmer.virgo.base.model.CommonState;
 import com.winterfarmer.virgo.knowledge.model.Answer;
+import com.winterfarmer.virgo.knowledge.model.Question;
 import com.winterfarmer.virgo.restapi.core.annotation.ParamSpec;
 import com.winterfarmer.virgo.restapi.core.annotation.ResourceOverview;
 import com.winterfarmer.virgo.restapi.core.annotation.RestApiInfo;
@@ -43,7 +44,8 @@ public class AnswerResource extends KnowledgeResource {
             desc = "新的回答",
             authPolicy = RestApiInfo.AuthPolicy.OAUTH,
             resultDemo = ApiAnswer.class,
-            errors = {RestExceptionFactor.QUESTION_NOT_EXISTED}
+            errors = {RestExceptionFactor.QUESTION_NOT_EXISTED,
+                    RestExceptionFactor.CANNOT_DO_THIS_TO_QUESTION}
     )
     @Produces(MediaType.APPLICATION_JSON)
     public ApiAnswer createAnswer(
@@ -55,7 +57,11 @@ public class AnswerResource extends KnowledgeResource {
             String content,
             @HeaderParam(HEADER_USER_ID)
             long userId) {
-        checkAndGetQuestion(questionId);
+        Question question = checkAndGetQuestion(questionId);
+        if (question.getUserId() == userId) {
+            throw new VirgoRestException(RestExceptionFactor.CANNOT_DO_THIS_TO_QUESTION);
+        }
+
         Pair<String, List<String>> refinedContentAndImageIds = checkAndGetContentAndImageIds(content);
         String imageIds = StringUtils.join(refinedContentAndImageIds.getRight(), ",");
         Answer answer = knowledgeService.newAnswer(userId, questionId, content, imageIds);
@@ -141,6 +147,9 @@ public class AnswerResource extends KnowledgeResource {
             long userId
     ) {
         Answer answer = checkAndGetAnswer(answerId);
+        if (answer.getUserId() == userId) {
+            throw new VirgoRestException(RestExceptionFactor.CANNOT_DO_THIS_TO_ANSWER);
+        }
         boolean result =
                 state == CommonState.NORMAL ?
                         knowledgeService.agreeAnswer(userId, answer.getId()) :
@@ -240,7 +249,7 @@ public class AnswerResource extends KnowledgeResource {
             @QueryParam(ANSWER_ID_PARAM_NAME)
             @ParamSpec(isRequired = true, spec = POSITIVE_LONG_ID_SPEC, desc = ANSWER_ID_DESC)
             long answerId) {
-        Answer answer = knowledgeService.getAnswer(answerId);
+        Answer answer = checkAndGetAnswer(answerId);
         return new ApiAnswer(answer);
     }
 

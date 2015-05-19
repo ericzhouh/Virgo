@@ -51,7 +51,7 @@ public class AnswerMysqlDaoImpl extends IdModelMysqlDao<Answer> {
         public Answer mapRow(ResultSet rs, int rowNum) throws SQLException {
             Answer answer = new Answer();
             answer.setId(answerId.getValue(rs));
-            answer.setId(questionId.getValue(rs));
+            answer.setQuestionId(questionId.getValue(rs));
             answer.setUserId(userId.getValue(rs));
             answer.setImageIds(imageIds.getValue(rs));
             answer.setContent(content.getValue(rs));
@@ -95,16 +95,16 @@ public class AnswerMysqlDaoImpl extends IdModelMysqlDao<Answer> {
         return ps;
     }
 
-    private static final String UPDATE_QUESTION_SQL =
+    private static final String UPDATE_ANSWER_SQL =
             updateSql(ANSWER_TABLE_NAME,
                     questionId, userId, imageIds, content,
                     state, createAtMs, updateAtMs,
                     extInfo) +
-                    new WhereClauseBuilder(questionId.eqWhich()).build();
+                    new WhereClauseBuilder(answerId.eqWhich()).build();
 
     @Override
     protected int doUpdate(Answer answer) {
-        return update(UPDATE_QUESTION_SQL,
+        return update(UPDATE_ANSWER_SQL,
                 answer.getQuestionId(), answer.getUserId(), answer.getImageIds(), answer.getContent(),
                 answer.getCommonState().getIndex(), answer.getCreateAtMs(), answer.getUpdateAtMs(),
                 ExtInfoColumn.toBytes(answer.getProperties()), answer.getId());

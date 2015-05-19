@@ -11,7 +11,7 @@ import com.winterfarmer.virgo.knowledge.model.Answer;
 @ApiMode(desc = "回答")
 public class ApiAnswer {
     public static ApiAnswer forSimpleDisplay(Answer answer) {
-        return null;
+        return new ApiAnswer(answer);
     }
 
     @JSONField(name = "answer_id")
