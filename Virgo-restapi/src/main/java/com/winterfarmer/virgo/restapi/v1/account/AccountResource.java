@@ -72,6 +72,27 @@ public class AccountResource extends BaseResource {
         return CommonResult.oneResultCommonResult("existed", false);
     }
 
+    @Path("mobile_existed.json")
+    @GET
+    @RestApiInfo(
+            desc = "昵称是否存在",
+            authPolicy = RestApiInfo.AuthPolicy.PUBLIC,
+            resultDemo = CommonResult.class,
+            errors = {RestExceptionFactor.INVALID_MOBILE_NUMBER}
+    )
+    @Produces(MediaType.APPLICATION_JSON)
+    public CommonResult isMobileExisted(
+            @QueryParam("mobile_number")
+            @ParamSpec(isRequired = true, spec = MOBILE_SPEC, desc = "")
+            String mobileNumber) {
+        try {
+            boolean isExisted = accountService.isMobileExisted(mobileNumber);
+            return CommonResult.oneResultCommonResult("existed", isExisted);
+        } catch (MobileNumberException e) {
+            throw new VirgoRestException(RestExceptionFactor.INVALID_MOBILE_NUMBER);
+        }
+    }
+
     @Path("mobile_verification_code.json")
     @GET
     @RestApiInfo(

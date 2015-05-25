@@ -19,6 +19,8 @@ public interface AccountService {
 
     boolean isNickNameExisted(String nickName);
 
+    boolean isMobileExisted(String mobile) throws MobileNumberException;
+
     String getHashedPassword(String password, String salt);
 
     AccessToken signUpByMobile(String mobileNumber, String password, String nickName,

@@ -84,6 +84,17 @@ public class AccountServiceImpl implements AccountService {
     }
 
     @Override
+    public boolean isMobileExisted(String mobileNumber) throws MobileNumberException {
+        String formattedMobileNumber = AccountUtil.formatMobile(mobileNumber);
+        if (formattedMobileNumber == null) {
+            throw new MobileNumberException("Invalid mobile number: " + mobileNumber);
+        }
+
+        OpenPlatformAccount account = openPlatformAccountDao.retrieveOpenPlatformAccount(formattedMobileNumber, PlatformType.MOBILE);
+        return account != null;
+    }
+
+    @Override
     public String getHashedPassword(String password, String salt) {
         return shaPassword(password, salt);
     }
