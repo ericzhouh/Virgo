@@ -102,4 +102,12 @@ public class UserMysqlDaoImpl extends BaseMysqlDao implements UserDao {
     public boolean updatePassword(long userId, String password) {
         return update(update_password, password, userId) > 0;
     }
+
+    private static final String retrieve_user_by_nick_name_sql =
+            "select * from " + USER_TABLE_NAME + " where " + nickName.eqWhich() + ";";
+
+    @Override
+    public User retrieveUserByNickName(String nickName) {
+        return queryForObject(getReadJdbcTemplate(), retrieve_user_sql, userRowMapper, nickName);
+    }
 }

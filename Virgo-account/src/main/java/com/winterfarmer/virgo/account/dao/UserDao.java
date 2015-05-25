@@ -16,4 +16,6 @@ public interface UserDao {
     boolean updateUser(User user);
 
     boolean updatePassword(long userId, String password);
+
+    User retrieveUserByNickName(String nickName);
 }

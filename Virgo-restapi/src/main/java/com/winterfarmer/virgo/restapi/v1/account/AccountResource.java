@@ -17,11 +17,14 @@ import com.winterfarmer.virgo.restapi.core.annotation.ResourceOverview;
 import com.winterfarmer.virgo.restapi.core.annotation.RestApiInfo;
 import com.winterfarmer.virgo.restapi.core.exception.RestExceptionFactor;
 import com.winterfarmer.virgo.restapi.core.exception.VirgoRestException;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * Created by yangtianhang on 15-3-30.
@@ -45,6 +48,24 @@ public class AccountResource extends BaseResource {
         VirgoLogger.warn("this is warn");
         VirgoLogger.error("this is error");
         return "yes";
+    }
+
+    @Path("nick_name_existed.json")
+    @GET
+    @RestApiInfo(
+            desc = "昵称是否存在",
+            authPolicy = RestApiInfo.AuthPolicy.PUBLIC,
+            resultDemo = CommonResult.class,
+            errors = {RestExceptionFactor.INVALID_NICK_NAME,
+                    RestExceptionFactor.NICK_NAME_EXISTED}
+    )
+    @Produces(MediaType.APPLICATION_JSON)
+    public CommonResult isNickNameExisted(
+            @QueryParam("nick_name")
+            @ParamSpec(isRequired = true, spec = "UnicodeString:2~10", desc = "昵称")
+            String nickName) {
+        checkAndPurifyNickName(nickName);
+        return CommonResult.oneResultCommonResult("existed", false);
     }
 
     @Path("mobile_verification_code.json")
@@ -84,7 +105,9 @@ public class AccountResource extends BaseResource {
             resultDemo = AccessToken.class,
             errors = {RestExceptionFactor.INVALID_MOBILE_NUMBER,
                     RestExceptionFactor.INVALID_MOBILE_VERIFICATION_CODE,
-                    RestExceptionFactor.MOBILE_NUMBER_HAS_BEEN_REGISTERED}
+                    RestExceptionFactor.MOBILE_NUMBER_HAS_BEEN_REGISTERED,
+                    RestExceptionFactor.INVALID_NICK_NAME,
+                    RestExceptionFactor.NICK_NAME_EXISTED}
     )
     @Produces(MediaType.APPLICATION_JSON)
     public AccessToken signUpByMobile(
@@ -113,6 +136,7 @@ public class AccountResource extends BaseResource {
             throw new VirgoRestException(RestExceptionFactor.MOBILE_NUMBER_HAS_BEEN_REGISTERED);
         }
 
+        nickName = checkAndPurifyNickName(nickName);
         try {
             return accountService.signUpByMobile(mobileNumber, password, nickName,
                     openToken, appKey);
@@ -233,5 +257,31 @@ public class AccountResource extends BaseResource {
         }
 
         return user;
+    }
+
+
+    private static String regex = "^[a-zA-Z0-9\u4E00-\u9FA5-_]+$";
+    private Pattern pattern = Pattern.compile(regex);
+
+    private static String allNumberRegex = "^\\d+$";
+    private Pattern allNumberPattern = Pattern.compile(allNumberRegex);
+
+    private String checkAndPurifyNickName(String nickName) {
+        nickName = StringUtils.trim(nickName);
+        if (StringUtils.length(nickName) < 2) {
+            throw new VirgoRestException(RestExceptionFactor.INVALID_NICK_NAME);
+        }
+        Matcher matcher = pattern.matcher(nickName);
+        Matcher allNumberMatcher = allNumberPattern.matcher(nickName);
+
+        if (matcher.matches() && !allNumberMatcher.matches()) {
+            if (accountService.isNickNameExisted(nickName)) {
+                throw new VirgoRestException(RestExceptionFactor.NICK_NAME_EXISTED);
+            } else {
+                return nickName;
+            }
+        } else {
+            throw new VirgoRestException(RestExceptionFactor.INVALID_NICK_NAME);
+        }
     }
 }

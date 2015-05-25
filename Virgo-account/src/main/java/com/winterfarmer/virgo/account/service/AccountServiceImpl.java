@@ -78,6 +78,12 @@ public class AccountServiceImpl implements AccountService {
     }
 
     @Override
+    public boolean isNickNameExisted(String nickName) {
+        User user = userDao.retrieveUserByNickName(nickName);
+        return user != null;
+    }
+
+    @Override
     public String getHashedPassword(String password, String salt) {
         return shaPassword(password, salt);
     }

@@ -25,6 +25,8 @@ public enum RestExceptionFactor {
     INVALID_ID_OR_PASSWORD(404, 404_002_003, "invalid id or password"),
     RESET_PASSWORD_FAILED(404, 404_002_004, "reset password failed"),
     MOBILE_NUMBER_HAS_BEEN_REGISTERED(404, 404_002_005, "mobile number has been registered"),
+    NICK_NAME_EXISTED(404, 404_002_006, "nick name existed"),
+    INVALID_NICK_NAME(404, 404_002_007, "invalid nick name"),
 
     // Vehicle Exception Factor 404_003
     VEHICLE_NOT_EXISTED(404, 404_003_000, "vehicle not existed"),
