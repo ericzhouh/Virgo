@@ -75,6 +75,8 @@ public interface KnowledgeService {
 
     boolean disfollowQuestion(long userId, long questionId);
 
+    List<Question> searchQuestion(String keywords, int page, int count);
+
     //------------------------------------------------------------------------------
 
     /**

@@ -17,6 +17,7 @@ import com.winterfarmer.virgo.storage.graph.dao.GraphDao;
 import com.winterfarmer.virgo.storage.id.dao.IdModelDao;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.collections4.SetUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.tuple.Pair;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
@@ -207,6 +208,16 @@ public class KnowledgeServiceImpl implements KnowledgeService {
     @Override
     public boolean disfollowQuestion(long userId, long questionId) {
         return userFollowQuestionGraphDao.insertOrUpdateEdges(new Edge(userId, questionId, Edge.DELETED_EDGE)) > 0;
+    }
+
+    @Override
+    public List<Question> searchQuestion(String keywords, int page, int count) {
+        keywords = StringUtils.trim(keywords);
+        if (StringUtils.length(keywords) < 2) {
+            return Lists.newArrayList();
+        }
+
+        return questionMysqlDao.searchBySubject(keywords, count, page * count);
     }
 
     // ========================================================================

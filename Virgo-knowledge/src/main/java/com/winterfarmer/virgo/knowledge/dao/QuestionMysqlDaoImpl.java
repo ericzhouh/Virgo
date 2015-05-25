@@ -13,6 +13,7 @@ import com.winterfarmer.virgo.database.helper.column.string.VarcharColumn;
 import com.winterfarmer.virgo.knowledge.model.Question;
 import com.winterfarmer.virgo.log.VirgoLogger;
 import com.winterfarmer.virgo.storage.id.dao.IdModelMysqlDao;
+import org.apache.commons.lang3.StringEscapeUtils;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
 
@@ -86,6 +87,13 @@ public class QuestionMysqlDaoImpl extends IdModelMysqlDao<Question> {
 
     public List<Question> listByUser(long userId, int limit, int offset) {
         return queryForList(getReadJdbcTemplate(), SELECT_QUESTIONS_BY_USER, rowMapper, userId, limit, offset);
+    }
+
+    private static final String SELECT_QUESTIONS_BY_SUBJECT =
+            selectAllSql(QUESTION_TABLE_NAME) + new WhereClauseBuilder(subject.likeWhich()).and(state.eq(1)).limitOffset();
+
+    public List<Question> searchBySubject(String keywords, int limit, int offset) {
+        return queryForList(getReadJdbcTemplate(), SELECT_QUESTIONS_BY_SUBJECT, rowMapper, "%" + keywords + "%", limit, offset);
     }
 
     private static final String INSERT_QUESTION_SQL = insertIntoSQL(QUESTION_TABLE_NAME,

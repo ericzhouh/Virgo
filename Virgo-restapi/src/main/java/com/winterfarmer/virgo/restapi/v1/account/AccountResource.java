@@ -39,6 +39,10 @@ public class AccountResource extends BaseResource {
     @Resource(name = "smsService")
     SmsService smsService;
 
+    private static final String NICK_NAME_SPEC = "UnicodeString:2~10";
+    private static final String NICK_NAME_DESC = "昵称:只能是英文,中文,数字以及-和_,并且不能全是数字";
+
+
     @Path("test.json")
     @GET
     @Produces(MediaType.TEXT_PLAIN)
@@ -62,7 +66,7 @@ public class AccountResource extends BaseResource {
     @Produces(MediaType.APPLICATION_JSON)
     public CommonResult isNickNameExisted(
             @QueryParam("nick_name")
-            @ParamSpec(isRequired = true, spec = "UnicodeString:2~10", desc = "昵称")
+            @ParamSpec(isRequired = true, spec = NICK_NAME_SPEC, desc = NICK_NAME_DESC)
             String nickName) {
         checkAndPurifyNickName(nickName);
         return CommonResult.oneResultCommonResult("existed", false);
@@ -112,22 +116,22 @@ public class AccountResource extends BaseResource {
     @Produces(MediaType.APPLICATION_JSON)
     public AccessToken signUpByMobile(
             @FormParam("mobile_number")
-            @ParamSpec(isRequired = true, spec = MOBILE_SPEC, desc = "")
+            @ParamSpec(isRequired = true, spec = MOBILE_SPEC, desc = "电话号码")
             String mobileNumber,
             @FormParam("password")
-            @ParamSpec(isRequired = true, spec = PASSWORD_SPEC, desc = "")
+            @ParamSpec(isRequired = true, spec = PASSWORD_SPEC, desc = "密码6~24位")
             String password,
             @FormParam("nick_name")
-            @ParamSpec(isRequired = true, spec = "UnicodeString:2~10", desc = "")
+            @ParamSpec(isRequired = true, spec = NICK_NAME_SPEC, desc = NICK_NAME_DESC)
             String nickName,
             @FormParam("open_token")
-            @ParamSpec(isRequired = true, spec = "UnicodeString:2~10", desc = "")
+            @ParamSpec(isRequired = true, spec = "UnicodeString:2~10", desc = "第三方token")
             String openToken,
             @FormParam("app_key")
-            @ParamSpec(isRequired = true, spec = APP_KEY_SPEC, desc = "")
+            @ParamSpec(isRequired = true, spec = APP_KEY_SPEC, desc = "web:1005")
             int appKey,
             @FormParam("verification_code")
-            @ParamSpec(isRequired = true, spec = VERIFICATION_CODE_SPEC, desc = "")
+            @ParamSpec(isRequired = true, spec = VERIFICATION_CODE_SPEC, desc = "短信验证码")
             int verificationCode) {
         mobileNumber = checkAndStandardizeMobileNumber(mobileNumber);
         checkMobileVerificationCode(mobileNumber, verificationCode);

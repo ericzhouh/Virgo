@@ -94,6 +94,10 @@ public abstract class Column {
         return getName() + "=? ";
     }
 
+    public String likeWhich() {
+        return getName() + " like ? ";
+    }
+
     public String eq(Object value) {
         return getName() + "=" + value + " ";
     }

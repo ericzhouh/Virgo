@@ -304,6 +304,31 @@ public class QuestionResource extends KnowledgeResource {
         return apiQuestionTagList;
     }
 
+    @Path("search.json")
+    @GET
+    @RestApiInfo(
+            desc = "搜索",
+            authPolicy = RestApiInfo.AuthPolicy.PUBLIC,
+            resultDemo = ApiQuestion.class,
+            cautions = "目前只能从数据库里简单搜索题目,需要有专门的服务做搜索的事情",
+            errors = {}
+    )
+    @Produces(MediaType.APPLICATION_JSON)
+    public List<ApiQuestion> search(
+            @QueryParam("key_words")
+            @ParamSpec(isRequired = true, spec = "UnicodeString:2~64", desc = "搜查关键字")
+            String keywords,
+            @QueryParam(PAGE_PARAM_NAME)
+            @ParamSpec(isRequired = false, spec = NORMAL_PAGE_SPEC, desc = NORMAL_PAGE_DESC)
+            @DefaultValue(NORMAL_DEFAULT_PAGE_NUM)
+            int page,
+            @QueryParam(COUNT_PARAM_NAME)
+            @ParamSpec(isRequired = false, spec = NORMAL_COUNT_SPEC, desc = NORMAL_COUNT_DESC)
+            @DefaultValue(NORMAL_DEFAULT_PAGE_COUNT)
+            int count) {
+        return Lists.transform(knowledgeService.searchQuestion(keywords, page, count), apiQuestionListConverter);
+    }
+
     /**
      * @param type   0:我提问的;1:我回答的;2:我关注的
      * @param userId

@@ -2,6 +2,7 @@ package com.winterfarmer.virgo.knowledge;
 
 import com.winterfarmer.virgo.knowledge.dao.AnswerMysqlDaoImpl;
 import com.winterfarmer.virgo.knowledge.dao.QuestionMysqlDaoImpl;
+import com.winterfarmer.virgo.knowledge.model.Question;
 import org.junit.FixMethodOrder;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -10,6 +11,7 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import javax.annotation.Resource;
+import java.util.List;
 
 /**
  * Created by yangtianhang on 15/5/17.
@@ -25,9 +27,17 @@ public class TestKnowledgeDao {
     AnswerMysqlDaoImpl answerMysqlDao;
 
 
+    //    @Test
+//    public void initDao() {
+//        questionMysqlDao.initTable(false);
+//        answerMysqlDao.initTable(false);
+//    }
     @Test
-    public void initDao() {
-        questionMysqlDao.initTable(true);
-        answerMysqlDao.initTable(true);
+    public void testSearch() {
+        List<Question> list = questionMysqlDao.searchBySubject("test", 10, 0);
+        System.out.println(list.size());
+        for (Question q : list) {
+            System.out.println(q);
+        }
     }
 }
