@@ -42,9 +42,9 @@ public class VedisProxy implements InvocationHandler {
             throw new NoSuchMethodException("no jedis pool factory for vedis method [" + method.getName() + "]");
         }
         JedisPool jedisPool = poolMethod.getRight().getJedisPool();
-        Jedis jedis = jedisPool.getResource();
-
+        Jedis jedis = null;
         try {
+            jedis = jedisPool.getResource();
             Method jedisMethod = poolMethod.getLeft();
             result = jedisMethod.invoke(jedis, args);
         } catch (Exception e) {
@@ -52,7 +52,9 @@ public class VedisProxy implements InvocationHandler {
             jedisPool.returnBrokenResource(jedis);
         } finally {
             try {
-                jedisPool.returnResource(jedis);
+                if (jedis != null) {
+                    jedisPool.returnResource(jedis);
+                }
             } catch (Exception e) {
                 VirgoLogger.error("Jedis returnResource exception", e);
             }

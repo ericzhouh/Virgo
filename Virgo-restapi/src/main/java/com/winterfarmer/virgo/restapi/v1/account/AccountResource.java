@@ -107,28 +107,17 @@ public class AccountResource extends BaseResource {
             @QueryParam("mobile_number")
             @ParamSpec(isRequired = true, spec = MOBILE_SPEC, desc = "")
             String mobileNumber) {
-        VirgoLogger.info("getMobileVerificationCode 0: {}", mobileNumber);
-        try {
-            mobileNumber = checkAndStandardizeMobileNumber(mobileNumber);
-            VirgoLogger.info("getMobileVerificationCode 1: {}", mobileNumber);
+        mobileNumber = checkAndStandardizeMobileNumber(mobileNumber);
 
-            if (accountService.isRequestSignUpMobileVerificationCodeTooFrequently(mobileNumber)) {
-                throw new VirgoRestException(RestExceptionFactor.REQUEST_SIGN_UP_MOBILE_VERIFICATION_CODE_TOO_FREQUENTLY);
-            }
-            VirgoLogger.info("getMobileVerificationCode 2: {}", mobileNumber);
-
-            if (!smsService.sendSignUpMobileVerificationCode(mobileNumber, AccountUtil.generateMobileCode(mobileNumber))) {
-                return CommonResult.isSuccessfulCommonResult(false);
-            }
-
-            VirgoLogger.info("getMobileVerificationCode 3: {}", mobileNumber);
-
-            accountService.cacheSentSignUpMobileVerificationCode(mobileNumber);
-            VirgoLogger.info("getMobileVerificationCode 4: {}", mobileNumber);
-        } catch (Exception e) {
-            VirgoLogger.info("getMobileVerificationCode error: {}", e.getMessage());
-            VirgoLogger.error("getMobileVerificationCode error", e);
+        if (accountService.isRequestSignUpMobileVerificationCodeTooFrequently(mobileNumber)) {
+            throw new VirgoRestException(RestExceptionFactor.REQUEST_SIGN_UP_MOBILE_VERIFICATION_CODE_TOO_FREQUENTLY);
         }
+
+        if (!smsService.sendSignUpMobileVerificationCode(mobileNumber, AccountUtil.generateMobileCode(mobileNumber))) {
+            return CommonResult.isSuccessfulCommonResult(false);
+        }
+
+        accountService.cacheSentSignUpMobileVerificationCode(mobileNumber);
 
         return CommonResult.isSuccessfulCommonResult(true);
     }
