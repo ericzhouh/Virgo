@@ -14,7 +14,7 @@ echo "tomcat bin path: ${TOMCAT_BIN_PATH}"
 echo "virgo code root: ${VIRGO_CODE_ROOT}"
 
 echo "shutdown tomcat..."
-${TOMCAT_BIN_PATH}/shutdown.sh
+${TOMCAT_BIN_PATH}/shutdown.sh > shutdown.txt
 echo "shutdown tomcat complete"
 
 echo "mv package..."
@@ -22,6 +22,6 @@ cp ${VIRGO_CODE_ROOT}/Virgo-restapi/target/Virgo-restapi.war ${DEPLOY_PATH}
 echo "mv package complete"
 
 echo "start tomcat..."
-${TOMCAT_BIN_PATH}/startup.sh
+${TOMCAT_BIN_PATH}/startup.sh > startup.txt
 echo "start tomcat complete"
 
