@@ -122,6 +122,24 @@ public class AccountResource extends BaseResource {
         return CommonResult.isSuccessfulCommonResult(true);
     }
 
+    @Path("test_jedis.json")
+    @GET
+    @RestApiInfo(
+            desc = "测试jedis",
+            authPolicy = RestApiInfo.AuthPolicy.PUBLIC,
+            resultDemo = CommonResult.class,
+            errors = {RestExceptionFactor.INVALID_MOBILE_NUMBER}
+    )
+    @Produces(MediaType.APPLICATION_JSON)
+    public CommonResult testJedis(
+            @QueryParam("number")
+            @ParamSpec(isRequired = true, spec = "int:[0,10000]", desc = "")
+            String mobileNumber
+    ) {
+        accountService.cacheSentSignUpMobileVerificationCode(mobileNumber);
+        return CommonResult.isSuccessfulCommonResult(true);
+    }
+
     @Path("mobile_access_token.json")
     @POST
     @RestApiInfo(
