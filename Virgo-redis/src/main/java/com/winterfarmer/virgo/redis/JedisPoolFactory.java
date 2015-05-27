@@ -27,6 +27,8 @@ public class JedisPoolFactory {
     // ip:port|ip:port;ip:port
     // master|slave0;slave1
     public JedisPoolFactory(JedisPoolConfig config, String connection, int timeout, String password) {
+        VirgoLogger.info("JedisPoolConfig: getMaxTotal: " + config.getMaxTotal() + " getMaxTotal: "
+                + config.getMaxIdle());
         List<Pair<String, Integer>> conns = checkAndConvertConnection(connection);
         List<Pair<String, Integer>> readPoolConns = conns.subList(1, conns.size());
         if (StringUtils.isBlank(password)) {
