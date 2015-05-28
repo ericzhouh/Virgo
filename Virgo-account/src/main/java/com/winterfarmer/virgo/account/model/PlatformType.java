@@ -16,7 +16,7 @@ public enum PlatformType {
     private final String name;
     private final int index;
 
-    private PlatformType(String name, int index) {
+    PlatformType(String name, int index) {
         this.name = name;
         this.index = index;
     }

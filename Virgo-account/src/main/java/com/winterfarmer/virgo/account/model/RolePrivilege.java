@@ -15,7 +15,7 @@ public enum RolePrivilege {
     private final int index;
     private final int bit;
 
-    private RolePrivilege(String name, int index, int bit) {
+    RolePrivilege(String name, int index, int bit) {
         this.name = name;
         this.index = index;
         this.bit = bit;

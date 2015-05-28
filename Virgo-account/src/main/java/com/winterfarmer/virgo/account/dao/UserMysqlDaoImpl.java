@@ -2,6 +2,7 @@ package com.winterfarmer.virgo.account.dao;
 
 import com.winterfarmer.virgo.account.model.AccountVersion;
 import com.winterfarmer.virgo.account.model.User;
+import com.winterfarmer.virgo.account.model.UserType;
 import com.winterfarmer.virgo.common.util.ParamChecker;
 import com.winterfarmer.virgo.database.BaseMysqlDao;
 import com.winterfarmer.virgo.database.helper.MysqlDDLBuilder;
@@ -29,6 +30,8 @@ public class UserMysqlDaoImpl extends BaseMysqlDao implements UserDao {
     private static final TimeStampColumn createAt = Columns.newCreateAtColumn();
     private static final VarcharColumn nickName = (VarcharColumn) new VarcharColumn("nick_name", 128).
             setAllowNull(false).setComment("昵称").setUnique(true);
+    private static final TinyIntColumn userType = (TinyIntColumn) new TinyIntColumn("user_type").
+            setAllowNull(false).setDefaultValue("0").setComment("用户业务类型");
     private static final VarcharColumn salt = (VarcharColumn) new VarcharColumn("salt", 256).
             setAllowNull(false).setComment("盐").setUnique(true);
     private static final VarcharColumn hashedPassword = (VarcharColumn) new VarcharColumn("hashed_password", 256).
@@ -39,8 +42,8 @@ public class UserMysqlDaoImpl extends BaseMysqlDao implements UserDao {
 
     public static final String createDDL = new MysqlDDLBuilder(USER_TABLE_NAME).
             addColumn(userId).addColumn(createAt).addColumn(nickName).
-            addColumn(salt).addColumn(hashedPassword).addColumn(version).
-            addColumn(extInfo).
+            addColumn(userType).addColumn(salt).addColumn(hashedPassword).
+            addColumn(version).addColumn(extInfo).
             setPrimaryKey(userId).addIndex(nickName).buildCreateDDL();
 
     public static final RowMapper<User> userRowMapper = new RowMapper<User>() {
@@ -50,6 +53,7 @@ public class UserMysqlDaoImpl extends BaseMysqlDao implements UserDao {
 
             user.setUserId(userId.getValue(rs));
             user.setNickName(nickName.getValue(rs));
+            user.setUserType(UserType.valueByIndex(userType.getValue(rs)));
             user.setCreateAtMs(createAt.getValue(rs));
             user.setSalt(salt.getValue(rs));
             user.setHashedPassword(hashedPassword.getValue(rs));
@@ -76,15 +80,16 @@ public class UserMysqlDaoImpl extends BaseMysqlDao implements UserDao {
     }
 
     private static final String insert_user_sql =
-            insertIntoSQL(USER_TABLE_NAME, userId, nickName, hashedPassword, salt, version, extInfo);
+            insertIntoSQL(USER_TABLE_NAME, userId, nickName, userType, hashedPassword, salt, version, extInfo);
 
     @Override
-    public boolean createUser(long userId, String nickName, String hashedPassword, String salt, AccountVersion version, Map<String, Object> extInfo) {
-        return update(insert_user_sql, userId, nickName, hashedPassword, salt, version.getIndex(), ExtInfoColumn.toBytes(extInfo)) > 0;
+    public boolean createUser(long userId, String nickName, UserType userType, String hashedPassword, String salt, AccountVersion version, Map<String, Object> extInfo) {
+        return update(insert_user_sql, userId, nickName, userType, hashedPassword, salt, version.getIndex(), ExtInfoColumn.toBytes(extInfo)) > 0;
     }
 
     private static final String update_user_sql = "update " + USER_TABLE_NAME + " insert " +
             nickName.eqWhich() + ", " +
+            userType.eqWhich() + ", " +
             extInfo.eqWhich() +
             " where " + userId.eqWhich() + ";";
 
@@ -92,7 +97,7 @@ public class UserMysqlDaoImpl extends BaseMysqlDao implements UserDao {
     public boolean updateUser(User user) {
         ParamChecker.notNull(user, "user");
         return update(update_user_sql,
-                user.getNickName(), ExtInfoColumn.toBytes(user.getProperties()), user.getUserId()) > 0;
+                user.getNickName(), user.getUserType().getIndex(), ExtInfoColumn.toBytes(user.getProperties()), user.getUserId()) > 0;
     }
 
     private static final String update_password = updateSql(USER_TABLE_NAME, hashedPassword) +
@@ -108,6 +113,6 @@ public class UserMysqlDaoImpl extends BaseMysqlDao implements UserDao {
 
     @Override
     public User retrieveUserByNickName(String nickName) {
-        return queryForObject(getReadJdbcTemplate(), retrieve_user_sql, userRowMapper, nickName);
+        return queryForObject(getReadJdbcTemplate(), retrieve_user_by_nick_name_sql, userRowMapper, nickName);
     }
 }

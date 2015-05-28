@@ -262,7 +262,7 @@ public class AccountServiceImpl implements AccountService {
         String salt = generateSalt();
         String hashedPassword = getHashedPassword(password, salt);
 
-        if (userDao.createUser(userId, nickName, hashedPassword, salt, AccountVersion.SALT_SHA256, null)) {
+        if (userDao.createUser(userId, nickName, UserType.NORMAL, hashedPassword, salt, AccountVersion.SALT_SHA256, null)) {
             return userId;
         } else {
             VirgoLogger.error("Create new user into db failed!");

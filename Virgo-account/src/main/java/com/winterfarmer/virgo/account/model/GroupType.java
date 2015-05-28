@@ -13,7 +13,7 @@ public enum GroupType {
     private final String name;
     private final int index;
 
-    private GroupType(String name, int index) {
+    GroupType(String name, int index) {
         this.name = name;
         this.index = index;
     }
