@@ -5,7 +5,6 @@ import com.winterfarmer.virgo.database.BaseMysqlDao;
 import com.winterfarmer.virgo.database.helper.IndexType;
 import com.winterfarmer.virgo.database.helper.MysqlDDLBuilder;
 import com.winterfarmer.virgo.database.helper.column.Columns;
-import com.winterfarmer.virgo.database.helper.column.binary.ExtInfoColumn;
 import com.winterfarmer.virgo.database.helper.column.numeric.BigintColumn;
 import com.winterfarmer.virgo.database.helper.column.numeric.TinyIntColumn;
 import com.winterfarmer.virgo.database.helper.column.string.VarcharColumn;

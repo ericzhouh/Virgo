@@ -4,7 +4,6 @@ import com.alibaba.fastjson.annotation.JSONField;
 import com.google.common.collect.Lists;
 import com.winterfarmer.virgo.base.annotation.ApiField;
 import com.winterfarmer.virgo.base.annotation.ApiMode;
-import com.winterfarmer.virgo.base.model.CommonState;
 import com.winterfarmer.virgo.knowledge.model.Question;
 
 import java.util.List;

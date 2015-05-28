@@ -3,7 +3,6 @@ package com.winterfarmer.virgo.common.util;
 import com.google.common.base.MoreObjects;
 import com.google.common.collect.Maps;
 
-import java.lang.reflect.Type;
 import java.util.Map;
 
 /**
