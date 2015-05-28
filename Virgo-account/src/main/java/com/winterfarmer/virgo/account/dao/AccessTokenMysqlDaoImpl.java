@@ -24,7 +24,7 @@ import java.sql.Timestamp;
 public class AccessTokenMysqlDaoImpl extends BaseMysqlDao implements AccessTokenDao {
     public static final String ACCESS_TOKEN_TABLE_NAME = "access_token";
 
-    private static final BigintColumn userId = Columns.newUserIdColumn(false, false);
+    private static final BigintColumn userId = Columns.newUserIdColumn();
     private static final SmallIntColumn appKey = Columns.newAppKeyColumn(false);
     private static final VarcharColumn token = (VarcharColumn) new VarcharColumn("token", 128).
             setComment("token").setAllowNull(false);

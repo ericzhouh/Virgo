@@ -32,7 +32,7 @@ public class QuestionMysqlDaoImpl extends IdModelMysqlDao<Question> {
 
     private static final BigintColumn questionId = Columns.newIdColumn("question_id", true, false);
 
-    private static final BigintColumn userId = Columns.newUserIdColumn(false, false);
+    private static final BigintColumn userId = Columns.newUserIdColumn();
     private static final VarcharColumn subject = (VarcharColumn) new VarcharColumn("subject", 128).
             setAllowNull(false).setComment("问题题目").setUnique(false);
     private static final VarcharColumn imageIds = (VarcharColumn) new VarcharColumn("image_ids", 256).

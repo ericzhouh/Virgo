@@ -19,7 +19,7 @@ public class OAuth2MysqlDaoImpl extends BaseMysqlDao implements OAuth2Dao {
     // oauth2_access_token 表定义
     public static final String OAUTH2_ACCESS_TOKEN_TABLE_NAME = "oauth2_access_token";
 
-    private static final BigintColumn userId = Columns.newUserIdColumn(false, false);
+    private static final BigintColumn userId = Columns.newUserIdColumn();
     private static final DatetimeColumn expireAt = Columns.newExpireAtColumn(false);
     private static final TimeStampColumn createAt = Columns.newCreateAtColumn();
     private static final SmallIntColumn appKey = Columns.newAppKeyColumn(false);

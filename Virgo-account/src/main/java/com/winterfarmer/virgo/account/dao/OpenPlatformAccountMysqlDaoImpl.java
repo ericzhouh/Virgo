@@ -26,7 +26,7 @@ public class OpenPlatformAccountMysqlDaoImpl extends BaseMysqlDao implements Ope
 
     private static final VarcharColumn openId = (VarcharColumn) new VarcharColumn("open_id", 128).setAllowNull(false).setComment("第三方id");
     private static final TinyIntColumn platform = (TinyIntColumn) new TinyIntColumn("platform").setAllowNull(false).setComment("平台id");
-    private static final BigintColumn userId = Columns.newUserIdColumn(false, false);
+    private static final BigintColumn userId = Columns.newUserIdColumn();
     private static final VarcharColumn openToken = (VarcharColumn) new VarcharColumn("open_token", 128).setAllowNull(false).setComment("第三方平台token");
     private static final TinyIntColumn state = Columns.newStateColumn(false);
     private static final TimeStampColumn createAt = Columns.newCreateAtColumn();

@@ -24,8 +24,8 @@ public class Columns {
         return (DatetimeColumn) new DatetimeColumn(EXPIRE_AT_COLUMN_NAME).setComment("过期时间").setAllowNull(allowNull);
     }
 
-    public static BigintColumn newUserIdColumn(boolean autoIncrease, boolean allowNull) {
-        return (BigintColumn) new BigintColumn(USER_ID_COLUMN_NAME).setDisplaySize(20).setAutoIncrease(autoIncrease).setAllowNull(allowNull);
+    public static BigintColumn newUserIdColumn() {
+        return (BigintColumn) new BigintColumn(USER_ID_COLUMN_NAME).setDisplaySize(20).setAutoIncrease(false).setAllowNull(false);
     }
 
     public static BigintColumn newIdColumn(String columnIdName, boolean autoIncrease, boolean allowNull) {

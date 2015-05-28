@@ -22,7 +22,7 @@ import java.util.List;
 public class PrivilegeMysqlDaoImpl extends BaseMysqlDao implements PrivilegeDao {
     public static final String PRIVILEGE_TABLE_NAME = "privilege";
 
-    private static final BigintColumn userId = Columns.newUserIdColumn(true, false);
+    private static final BigintColumn userId = Columns.newUserIdColumn();
     private static final SmallIntColumn group = (SmallIntColumn) new SmallIntColumn("group").
             setAllowNull(false).setDefaultValue("0").setComment("组");
     private static final TinyIntColumn privileges = (TinyIntColumn) new TinyIntColumn("privileges").

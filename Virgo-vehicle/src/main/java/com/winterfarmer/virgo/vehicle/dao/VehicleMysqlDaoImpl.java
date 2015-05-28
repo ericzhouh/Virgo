@@ -32,7 +32,7 @@ public class VehicleMysqlDaoImpl extends BaseMysqlDao implements VehicleDao {
 
     private static final BigintColumn vehicleId = (BigintColumn) new BigintColumn("vehicle_id").
             setDisplaySize(20).setAutoIncrease(true).setAllowNull(false);
-    private static final BigintColumn userId = Columns.newUserIdColumn(false, false);
+    private static final BigintColumn userId = Columns.newUserIdColumn();
     private static final VarcharColumn licensePlate = (VarcharColumn) new VarcharColumn("license_plate", 16).
             setAllowNull(true).setComment("车牌号");
     private static final VarcharColumn vehicleIdNo = (VarcharColumn) new VarcharColumn("vehicle_id_no", 32).

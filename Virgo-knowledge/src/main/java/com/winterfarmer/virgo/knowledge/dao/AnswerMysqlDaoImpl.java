@@ -32,7 +32,7 @@ public class AnswerMysqlDaoImpl extends IdModelMysqlDao<Answer> {
     private static final BigintColumn answerId = Columns.newIdColumn("answer_id", true, false);
 
     private static final BigintColumn questionId = Columns.newLongColumn("question_id", false);
-    private static final BigintColumn userId = Columns.newUserIdColumn(false, false);
+    private static final BigintColumn userId = Columns.newUserIdColumn();
     private static final VarcharColumn imageIds = (VarcharColumn) new VarcharColumn("image_ids", 256).
             setAllowNull(false).setComment("逗号分隔的image id").setUnique(false);
     private static final TextColumn content = (TextColumn) new TextColumn("content").

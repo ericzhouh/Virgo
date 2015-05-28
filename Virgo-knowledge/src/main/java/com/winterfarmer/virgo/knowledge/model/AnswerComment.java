@@ -11,6 +11,7 @@ public class AnswerComment extends BaseIdModel {
 
     private long answerId;
     private long userId;
+    private long toUserId;
     private CommonState state;
     private String content;
     private long createAtMs;
@@ -30,6 +31,14 @@ public class AnswerComment extends BaseIdModel {
 
     public void setUserId(long userId) {
         this.userId = userId;
+    }
+
+    public long getToUserId() {
+        return toUserId;
+    }
+
+    public void setToUserId(long toUserId) {
+        this.toUserId = toUserId;
     }
 
     public CommonState getState() {
