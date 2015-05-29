@@ -48,8 +48,7 @@ public class LogHelper {
         // TODO: use StringBuilder???
         // [log message] - [log meta data]
         // [formatter] - [ClassName->Method():line number, event id, trace id]
-        String s = String.format("[%s] [%s %s:%d, %s, %s]",
-                formatter, className, methodName, lineNumber, org.apache.log4j.MDC.get(EVENT_ID), org.apache.log4j.MDC.get(TRACE_ID));
+        String s = String.format("[%s %s:%d] [%s]", className, methodName, lineNumber, formatter);
         return s;
     }
 
