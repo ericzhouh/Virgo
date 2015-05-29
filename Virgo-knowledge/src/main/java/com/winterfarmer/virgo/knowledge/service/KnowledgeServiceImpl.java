@@ -6,6 +6,7 @@ import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 import com.winterfarmer.virgo.base.model.CommonState;
 import com.winterfarmer.virgo.common.util.ArrayUtil;
+import com.winterfarmer.virgo.knowledge.dao.AnswerCommentMysqlDaoImpl;
 import com.winterfarmer.virgo.knowledge.dao.AnswerMysqlDaoImpl;
 import com.winterfarmer.virgo.knowledge.dao.QuestionMysqlDaoImpl;
 import com.winterfarmer.virgo.knowledge.model.Answer;
@@ -44,6 +45,12 @@ public class KnowledgeServiceImpl implements KnowledgeService {
 
     @Resource(name = "answerMysqlDao")
     AnswerMysqlDaoImpl answerMysqlDao;
+
+    @Resource(name = "hybridAnswerCommentDao")
+    IdModelDao<AnswerComment> answerCommentDao;
+
+    @Resource(name = "answerCommentMysqlDao")
+    AnswerCommentMysqlDaoImpl answerCommentMysqlDao;
 
     @Resource(name = "questionTagGraphMysqlDao")
     GraphDao questionTagGraphDao;
@@ -348,15 +355,39 @@ public class KnowledgeServiceImpl implements KnowledgeService {
     }
 
     // ======================================================================
+
     @Override
-    public AnswerComment newAnswerComment(long userId, long answerId, String content) {
-        return null;
+    public AnswerComment newAnswerComment(long userId, long toUserId, long answerId, String content) {
+        AnswerComment answerComment = new AnswerComment();
+        answerComment.setAnswerId(answerId);
+        answerComment.setUserId(userId);
+        answerComment.setToUserId(toUserId);
+        answerComment.setContent(content);
+        long time = System.currentTimeMillis();
+        answerComment.setCreateAtMs(time);
+        answerComment.setUpdateAtMs(time);
+        answerComment.setState(CommonState.NORMAL);
+
+        return answerCommentDao.insert(answerComment);
     }
 
     @Override
-    public AnswerComment updateAnswerCommentState(long answerCommentId, CommonState commonState) {
-        return null;
+    public AnswerComment getAnswerComment(long answerCommentId) {
+        return answerCommentDao.get(answerCommentId);
     }
+
+    @Override
+    public AnswerComment updateAnswerCommentState(AnswerComment answerComment, CommonState commonState) {
+        answerComment.setState(commonState);
+        answerComment.setUpdateAtMs(System.currentTimeMillis());
+        return answerCommentDao.update(answerComment);
+    }
+
+    @Override
+    public List<AnswerComment> listAnswerComments(long answerId, int page, int count) {
+        return answerCommentMysqlDao.listAnswerComment(answerId, count, page * count);
+    }
+
     // ======================================================================
 
     private List<Question> listQuestionsAsHead(List<Edge> edgeList) {

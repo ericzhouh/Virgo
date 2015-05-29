@@ -39,8 +39,8 @@ public class AccountResource extends BaseResource {
     @Resource(name = "smsService")
     SmsService smsService;
 
-    private static final String NICK_NAME_SPEC = "UnicodeString:2~10";
-    private static final String NICK_NAME_DESC = "昵称:只能是英文,中文,数字以及-和_,并且不能全是数字";
+    private static final String NICK_NAME_SPEC = "UnicodeString:2~15";
+    private static final String NICK_NAME_DESC = "昵称:只能是英文,中文,数字以及-和_,并且不能全是数字2~15个字符";
 
 
     @Path("test.json")

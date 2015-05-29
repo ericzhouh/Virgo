@@ -143,7 +143,11 @@ public interface KnowledgeService {
     List<QuestionTag> listQuestionTag();
 
     // ========================================================================
-    AnswerComment newAnswerComment(long userId, long answerId, String content);
+    AnswerComment newAnswerComment(long userId, long toUserId, long answerId, String content);
 
-    AnswerComment updateAnswerCommentState(long answerCommentId, CommonState commonState);
+    AnswerComment getAnswerComment(long answerCommentId);
+
+    AnswerComment updateAnswerCommentState(AnswerComment answerComment, CommonState commonState);
+
+    List<AnswerComment> listAnswerComments(long answerId, int page, int count);
 }

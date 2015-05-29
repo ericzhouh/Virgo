@@ -78,5 +78,18 @@
     <bean id="answerVedis" factory-bean="answerVedisProxy" factory-method="newVedis"/>
     <!--questionVedis config end-->
 
+    <!--questionVedis config start-->
+    <bean id="answerCommentJedisPoolFactory" class="com.winterfarmer.virgo.redis.JedisPoolFactory"
+          c:config-ref="jedisPoolConfig"
+          c:connection="${redis.biz.answerComment}"
+          c:timeout="1000"
+          c:password=""/>
+
+    <bean id="answerCommentVedisProxy" class="com.winterfarmer.virgo.redis.VedisProxy">
+        <constructor-arg ref="answerCommentJedisPoolFactory"/>
+    </bean>
+
+    <bean id="answerCommentVedis" factory-bean="answerCommentVedisProxy" factory-method="newVedis"/>
+    <!--questionVedis config end-->
 
 </beans>

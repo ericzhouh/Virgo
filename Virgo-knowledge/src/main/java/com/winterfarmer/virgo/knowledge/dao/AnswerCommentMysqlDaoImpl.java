@@ -18,6 +18,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.List;
 
 /**
  * Created by yangtianhang on 15/5/28.
@@ -38,8 +39,8 @@ public class AnswerCommentMysqlDaoImpl extends IdModelMysqlDao<AnswerComment> {
     private static final BigintColumn createAtMs = Columns.newLongColumn("create_at_ms", false);
     private static final BigintColumn updateAtMs = Columns.newLongColumn("update_at_ms", false);
 
-    public AnswerCommentMysqlDaoImpl(String tableName, BigintColumn idColumn, RowMapper<AnswerComment> rowMapper) {
-        super(tableName, idColumn, rowMapper);
+    public AnswerCommentMysqlDaoImpl() {
+        super(ANSWER_COMMENT_TABLE_NAME, answerCommentId, rowMapper);
     }
 
     private static final RowMapper<AnswerComment> rowMapper = new RowMapper<AnswerComment>() {
@@ -106,5 +107,12 @@ public class AnswerCommentMysqlDaoImpl extends IdModelMysqlDao<AnswerComment> {
                 answerComment.getCreateAtMs(),
                 answerComment.getUpdateAtMs(),
                 answerComment.getId());
+    }
+
+    private static final String SELECT_ANSWER_COMMENTS_BY_ANSWER_ID =
+            selectAllSql(ANSWER_COMMENT_TABLE_NAME) + new WhereClauseBuilder(answerId.eqWhich()).and(state.eq(1)).limitOffset();
+
+    public List<AnswerComment> listAnswerComment(long answerId, int limit, int offset) {
+        return queryForList(getReadJdbcTemplate(), SELECT_ANSWER_COMMENTS_BY_ANSWER_ID, rowMapper, answerId, limit, offset);
     }
 }

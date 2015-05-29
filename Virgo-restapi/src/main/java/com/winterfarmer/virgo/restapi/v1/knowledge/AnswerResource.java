@@ -279,13 +279,4 @@ public class AnswerResource extends KnowledgeResource {
 
         return refinedContentAndImageIds;
     }
-
-    protected Answer checkAndGetAnswer(long answerId) {
-        Answer answer = knowledgeService.getAnswer(answerId);
-        if (answer == null || answer.getCommonState() == CommonState.DELETE) {
-            throw new VirgoRestException(RestExceptionFactor.ANSWER_NOT_EXISTED);
-        }
-
-        return answer;
-    }
 }

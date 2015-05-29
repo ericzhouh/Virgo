@@ -1,6 +1,7 @@
 package com.winterfarmer.virgo.restapi.v1.knowledge;
 
 import com.winterfarmer.virgo.base.model.CommonState;
+import com.winterfarmer.virgo.knowledge.model.Answer;
 import com.winterfarmer.virgo.knowledge.model.Question;
 import com.winterfarmer.virgo.knowledge.service.KnowledgeService;
 import com.winterfarmer.virgo.restapi.BaseResource;
@@ -29,5 +30,14 @@ public abstract class KnowledgeResource extends BaseResource {
         }
 
         return question;
+    }
+
+    protected Answer checkAndGetAnswer(long answerId) {
+        Answer answer = knowledgeService.getAnswer(answerId);
+        if (answer == null || answer.getCommonState() == CommonState.DELETE) {
+            throw new VirgoRestException(RestExceptionFactor.ANSWER_NOT_EXISTED);
+        }
+
+        return answer;
     }
 }

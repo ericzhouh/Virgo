@@ -1,5 +1,6 @@
 package com.winterfarmer.virgo.knowledge;
 
+import com.winterfarmer.virgo.knowledge.dao.AnswerCommentMysqlDaoImpl;
 import com.winterfarmer.virgo.knowledge.dao.AnswerMysqlDaoImpl;
 import com.winterfarmer.virgo.knowledge.dao.QuestionMysqlDaoImpl;
 import com.winterfarmer.virgo.knowledge.model.Question;
@@ -26,12 +27,16 @@ public class TestKnowledgeDao {
     @Resource(name = "answerMysqlDao")
     AnswerMysqlDaoImpl answerMysqlDao;
 
+    @Resource(name = "answerCommentMysqlDao")
+    AnswerCommentMysqlDaoImpl answerCommentMysqlDao;
 
-    //    @Test
-//    public void initDao() {
-//        questionMysqlDao.initTable(false);
-//        answerMysqlDao.initTable(false);
-//    }
+    @Test
+    public void initDao() {
+        questionMysqlDao.initTable(false);
+        answerMysqlDao.initTable(false);
+        answerCommentMysqlDao.initTable(false);
+    }
+
     @Test
     public void testSearch() {
         List<Question> list = questionMysqlDao.searchBySubject("test", 10, 0);
