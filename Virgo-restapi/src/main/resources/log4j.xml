@@ -73,7 +73,6 @@
         </layout>
     </appender>
 
-
     <appender class="org.apache.log4j.DailyRollingFileAppender" name="requestfile">
         <param value="'.'yyyyMMdd-HH" name="DatePattern"/>
         <param value="${constant.local.logs.dir.path}/request.log" name="file"/>
@@ -186,12 +185,13 @@
     </logger>
 
     <!--============================================================-->
-    <!--                    Console Appender                        -->
+    <!--                     ROOT Loggers                           -->
+    <!--                     STDOUT & AMQP && logentries            -->
     <!--============================================================-->
-    <appender class="org.apache.log4j.ConsoleAppender" name="stdout">
-        <layout class="com.jcabi.log.MulticolorLayout">
-            <param value="${log4j.console.log.pattern}" name="ConversionPattern"/>
-        </layout>
-    </appender>
+    <root>
+        <level value="info"/>
+        <appender-ref ref="stdout"/>
+        <appender-ref ref="amqp"/>
+    </root>
 
 </log4j:configuration>
