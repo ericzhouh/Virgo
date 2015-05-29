@@ -185,4 +185,13 @@
         <level value="debug"/>
     </logger>
 
+    <!--============================================================-->
+    <!--                    Console Appender                        -->
+    <!--============================================================-->
+    <appender class="org.apache.log4j.ConsoleAppender" name="stdout">
+        <layout class="com.jcabi.log.MulticolorLayout">
+            <param value="${log4j.console.log.pattern}" name="ConversionPattern"/>
+        </layout>
+    </appender>
+
 </log4j:configuration>
