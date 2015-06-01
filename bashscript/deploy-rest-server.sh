@@ -31,5 +31,5 @@ scp 'ubuntu@'${DEPLOY_MACHINE_IP}':'${DEPLOY_JAR_PATH} ${REST_JAR_PATH}
 sleep 2s;
 
 echo "start REST API now!"
-sh /data/tomcat/8180/bin/startup.sh
+sh ${REST_BASE_DIR}"bin/startup.sh"
 sleep 1s;
