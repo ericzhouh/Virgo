@@ -42,18 +42,6 @@ public class AccountResource extends BaseResource {
     private static final String NICK_NAME_SPEC = "UnicodeString:2~15";
     private static final String NICK_NAME_DESC = "昵称:只能是英文,中文,数字以及-和_,并且不能全是数字2~15个字符";
 
-
-    @Path("test.json")
-    @GET
-    @Produces(MediaType.TEXT_PLAIN)
-    public String test() {
-        VirgoLogger.debug("this is debug");
-        VirgoLogger.info("this is info");
-        VirgoLogger.warn("this is warn");
-        VirgoLogger.error("this is error");
-        return "yes";
-    }
-
     @Path("nick_name_existed.json")
     @GET
     @RestApiInfo(
