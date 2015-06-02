@@ -84,7 +84,7 @@ public class UserMysqlDaoImpl extends BaseMysqlDao implements UserDao {
 
     @Override
     public boolean createUser(long userId, String nickName, UserType userType, String hashedPassword, String salt, AccountVersion version, Map<String, Object> extInfo) {
-        return update(insert_user_sql, userId, nickName, userType, hashedPassword, salt, version.getIndex(), ExtInfoColumn.toBytes(extInfo)) > 0;
+        return update(insert_user_sql, userId, nickName, userType.getIndex(), hashedPassword, salt, version.getIndex(), ExtInfoColumn.toBytes(extInfo)) > 0;
     }
 
     private static final String update_user_sql = "update " + USER_TABLE_NAME + " insert " +

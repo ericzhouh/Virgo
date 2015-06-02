@@ -43,4 +43,6 @@ public interface AccountService {
     AccessToken createAccessToken(long userId, int appKey);
 
     Long getUserId(String openId, PlatformType platformType);
+
+    String getRandomNickName();
 }

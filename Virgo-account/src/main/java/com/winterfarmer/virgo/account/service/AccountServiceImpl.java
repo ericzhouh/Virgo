@@ -8,6 +8,7 @@ import com.winterfarmer.virgo.base.Exception.UnexpectedVirgoException;
 import com.winterfarmer.virgo.base.model.CommonState;
 import com.winterfarmer.virgo.base.service.IdService;
 import com.winterfarmer.virgo.common.util.AccountUtil;
+import com.winterfarmer.virgo.common.util.Base36Util;
 import com.winterfarmer.virgo.common.util.Base62Util;
 import com.winterfarmer.virgo.log.VirgoLogger;
 import org.apache.commons.codec.digest.DigestUtils;
@@ -202,6 +203,17 @@ public class AccountServiceImpl implements AccountService {
             default:
                 return null;
         }
+    }
+
+    /**
+     * 生成随机的用户名，规则:
+     * 机器标示字符+毫秒距离(base)
+     *
+     * @return
+     */
+    @Override
+    public String getRandomNickName() {
+        return "车主" + Base36Util.encode(System.currentTimeMillis());
     }
 
     private Long getUserIdByMobile(String mobile) {
