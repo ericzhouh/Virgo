@@ -3,10 +3,7 @@ package com.winterfarmer.virgo.restapi.v1.admin;
 import com.google.common.base.Function;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
-import com.winterfarmer.virgo.account.model.GroupType;
-import com.winterfarmer.virgo.account.model.Privilege;
-import com.winterfarmer.virgo.account.model.RolePrivilege;
-import com.winterfarmer.virgo.account.model.User;
+import com.winterfarmer.virgo.account.model.*;
 import com.winterfarmer.virgo.account.service.AccountService;
 import com.winterfarmer.virgo.account.service.StaffService;
 import com.winterfarmer.virgo.aggregator.model.ApiPrivilege;
@@ -70,13 +67,13 @@ public class AdminResource extends BaseResource {
             CollectionsUtil.putMapList(privilegeMap, privilege.getUserId(), privilege);
         }
 
-        Map<Long, User> userMap = Maps.newHashMap();
+        Map<Long, UserInfo> userMap = Maps.newHashMap();
         for (Long userId : privilegeMap.keySet()) {
-            userMap.put(userId, accountService.getUser(userId));
+            userMap.put(userId, accountService.getUserInfo(userId));
         }
 
         List<ApiStaff> apiStaffList = Lists.newArrayList();
-        for (Map.Entry<Long, User> userEntry : userMap.entrySet()) {
+        for (Map.Entry<Long, UserInfo> userEntry : userMap.entrySet()) {
             List<Privilege> privilegeList = privilegeMap.get(userEntry.getKey());
             List<ApiPrivilege> apiPrivilegeList = Lists.transform(privilegeList, new Function<Privilege, ApiPrivilege>() {
                 @Override
@@ -115,7 +112,7 @@ public class AdminResource extends BaseResource {
             @HeaderParam(HEADER_USER_ID)
             long operatorId
     ) {
-        User user = checkAndGetUser(userId);
+        UserInfo userInfo = checkAndGetUser(userId);
         Privilege operatorPrivilege = staffService.getPrivilege(operatorId, GroupType.SUPERVISOR);
         if (operatorPrivilege != null && Privilege.hasPrivileges(RolePrivilege.ADMIN.getBit(), operatorPrivilege.getPrivileges())) {
             // 超级管理员可以添加任何权限
@@ -139,16 +136,16 @@ public class AdminResource extends BaseResource {
             }
         });
 
-        return new ApiStaff(new ApiUser(user), apiPrivilegeList);
+        return new ApiStaff(new ApiUser(userInfo), apiPrivilegeList);
     }
 
-    private User checkAndGetUser(long userId) {
-        User user = accountService.getUser(userId);
+    private UserInfo checkAndGetUser(long userId) {
+        UserInfo userInfo = accountService.getUserInfo(userId);
 
-        if (user == null) {
+        if (userInfo == null) {
             throw new VirgoRestException(RestExceptionFactor.USER_ID_NOT_EXISTED);
         }
 
-        return user;
+        return userInfo;
     }
 }

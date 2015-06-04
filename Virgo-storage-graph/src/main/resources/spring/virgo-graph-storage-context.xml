@@ -38,4 +38,9 @@
           init-method="init"
           p:jdbcTemplateFactory-ref="jdbcTemplateFactory"
           p:bizName="question_tag"/>
+
+    <bean id="userApplyExpertTagGraphMysqlDao" class="com.winterfarmer.virgo.storage.graph.dao.MysqlGraphDaoImpl"
+          init-method="init"
+          p:jdbcTemplateFactory-ref="jdbcTemplateFactory"
+          p:bizName="user_apply_expert_tag"/>
 </beans>

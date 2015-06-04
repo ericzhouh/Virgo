@@ -5,25 +5,23 @@ import com.winterfarmer.virgo.storage.base.BaseModel;
 /**
  * Created by yangtianhang on 15-2-26.
  */
-public class User extends BaseModel {
+public class Account extends BaseModel {
     private static final long serialVersionUID = -2155394502113462241L;
 
     private long userId;
     private long createAtMs;
     private String nickName;
-    private UserType userType;
     private String hashedPassword;
     private String salt;
     private AccountVersion version;
 
-    public User() {
+    public Account() {
     }
 
-    public User(long userId, long createAtMs, String nickName, UserType userType, String hashedPassword, String salt, AccountVersion version) {
+    public Account(long userId, long createAtMs, String nickName, String hashedPassword, String salt, AccountVersion version) {
         this.userId = userId;
         this.createAtMs = createAtMs;
         this.nickName = nickName;
-        this.userType = userType;
         this.hashedPassword = hashedPassword;
         this.salt = salt;
         this.version = version;
@@ -59,14 +57,6 @@ public class User extends BaseModel {
 
     public void setNickName(String nickName) {
         this.nickName = nickName;
-    }
-
-    public UserType getUserType() {
-        return userType;
-    }
-
-    public void setUserType(UserType userType) {
-        this.userType = userType;
     }
 
     public String getHashedPassword() {

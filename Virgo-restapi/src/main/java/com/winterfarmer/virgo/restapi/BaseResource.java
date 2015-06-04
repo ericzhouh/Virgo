@@ -29,6 +29,12 @@ public abstract class BaseResource {
 
     protected static final String EXTENSION_SPEC = "string:0~32768";
 
+    protected static final String IMAGE_SPEC = "string:0~1024";
+    protected static final String IMAGE_DESC = "单张图片id";
+
+    protected static final String COMMA_IMAGE_SPEC = "string:0~2048";
+    protected static final String COMMA_IMAGE_DESC = "多张图片id,用逗号分隔";
+
     protected static final String MOBILE_SPEC = "mobile";
     protected static final String PASSWORD_SPEC = "string:6~24";
 

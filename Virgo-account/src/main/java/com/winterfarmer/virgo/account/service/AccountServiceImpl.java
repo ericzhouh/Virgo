@@ -11,8 +11,11 @@ import com.winterfarmer.virgo.common.util.AccountUtil;
 import com.winterfarmer.virgo.common.util.Base36Util;
 import com.winterfarmer.virgo.common.util.Base62Util;
 import com.winterfarmer.virgo.log.VirgoLogger;
+import com.winterfarmer.virgo.storage.graph.Edge;
+import com.winterfarmer.virgo.storage.graph.dao.GraphDao;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.tuple.Pair;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
@@ -32,8 +35,8 @@ public class AccountServiceImpl implements AccountService {
     @Resource(name = "accountIdService")
     IdService idService;
 
-    @Resource(name = "userMysqlDao")
-    UserDao userDao;
+    @Resource(name = "accountMysqlDao")
+    AccountDao accountMysqlDao;
 
     @Resource(name = "accessTokenMysqlDao")
     AccessTokenDao accessTokenDao;
@@ -47,11 +50,20 @@ public class AccountServiceImpl implements AccountService {
     @Resource(name = "privilegeMysqlDao")
     PrivilegeDao privilegeDao;
 
+    @Resource(name = "userInfoHybridDao")
+    UserInfoDao userInfoHybridDao;
+
+    @Resource(name = "applyExpertMysqlDao")
+    ApplyExpertMysqlDao applyExpertMysqlDao;
+
+    @Resource(name = "userApplyExpertTagGraphMysqlDao")
+    GraphDao userApplyExpertTagGraphMysqlDao;
+
     private SecureRandom secureRandom;
 
     private static final String SECURE_RANDOM_ALGORITHM = "SHA1PRNG";
     private static final int SECURE_RANDOM_BYTES_LENGTH = 32;
-    private static final int CACHE_SIGNUP_MOBILE_REQUEST_EXPIRE_S = 60; // seconds
+    private static final int CACHE_SINGUP_MOBILE_REQUEST_EXPIRE_S = 60; // seconds
 
     @PostConstruct
     void init() throws NoSuchAlgorithmException {
@@ -64,24 +76,24 @@ public class AccountServiceImpl implements AccountService {
     }
 
     @Override
-    public User getUser(long userId) {
-        return userDao.retrieveUser(userId, false);
+    public Account getAccount(long userId) {
+        return accountMysqlDao.retrieveAccount(userId, false);
     }
 
     @Override
-    public List<User> getUsers(long... userIds) {
-        List<User> users = Lists.newArrayList();
+    public List<Account> getAccounts(long... userIds) {
+        List<Account> accounts = Lists.newArrayList();
         for (long userId : userIds) {
-            users.add(getUser(userId));
+            accounts.add(getAccount(userId));
         }
 
-        return users;
+        return accounts;
     }
 
     @Override
     public boolean isNickNameExisted(String nickName) {
-        User user = userDao.retrieveUserByNickName(nickName);
-        return user != null;
+        Account account = accountMysqlDao.retrieveAccountByNickName(nickName);
+        return account != null;
     }
 
     @Override
@@ -111,6 +123,7 @@ public class AccountServiceImpl implements AccountService {
         long userId = signUp(nickName, password);
         AccessToken accessToken = createAccessToken(userId, appKey);
         insertOpenPlatformAccount(userId, formattedMobileNumber, PlatformType.MOBILE, openToken);
+        createUserInfo(userId, nickName);
 
         return accessToken;
     }
@@ -157,7 +170,7 @@ public class AccountServiceImpl implements AccountService {
 
     @Override
     public void cacheSentSignUpMobileVerificationCode(String mobileNumber) {
-        accountRedisDao.cacheSignUpMobileRequest(mobileNumber, CACHE_SIGNUP_MOBILE_REQUEST_EXPIRE_S);
+        accountRedisDao.cacheSignUpMobileRequest(mobileNumber, CACHE_SINGUP_MOBILE_REQUEST_EXPIRE_S);
     }
 
     @Override
@@ -167,17 +180,17 @@ public class AccountServiceImpl implements AccountService {
 
     @Override
     @Transactional(rollbackFor = Exception.class, propagation = Propagation.REQUIRED)
-    public void resetPassword(User user, String password) throws UnexpectedVirgoException {
+    public void resetPassword(Account account, String password) throws UnexpectedVirgoException {
         // 重设密码
-        String hashedPassword = getHashedPassword(password, user.getSalt());
-        user.setHashedPassword(hashedPassword);
-        if (!userDao.updatePassword(user.getUserId(), user.getHashedPassword())) {
-            throw new UnexpectedVirgoException("update user(" + user.getUserId() + ")  failed: ");
+        String hashedPassword = getHashedPassword(password, account.getSalt());
+        account.setHashedPassword(hashedPassword);
+        if (!accountMysqlDao.updatePassword(account.getUserId(), account.getHashedPassword())) {
+            throw new UnexpectedVirgoException("update user(" + account.getUserId() + ")  failed: ");
         }
         // 删除所有相关token
-        accessTokenDao.deleteAccessToken(user.getUserId());
+        accessTokenDao.deleteAccessToken(account.getUserId());
         for (AppKey appKey : AppKey.values()) {
-            accountRedisDao.deleteAccessToken(user.getUserId(), appKey.getIndex());
+            accountRedisDao.deleteAccessToken(account.getUserId(), appKey.getIndex());
         }
     }
 
@@ -214,6 +227,49 @@ public class AccountServiceImpl implements AccountService {
     @Override
     public String getRandomNickName() {
         return "车主" + Base36Util.encode(System.currentTimeMillis());
+    }
+
+    @Override
+    public UserInfo getUserInfo(long userId) {
+        return userInfoHybridDao.retrieveUser(userId, false);
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class, propagation = Propagation.REQUIRED)
+    public UserInfo updateUserInfo(UserInfo userInfo) {
+        Account account = getAccount(userInfo.getUserId());
+        if (account == null) {
+            VirgoLogger.error("account " + userInfo.getUserId() + " not existed!");
+            throw new RuntimeException("account " + userInfo.getUserId() + " not existed!");
+        }
+        if (!StringUtils.equals(account.getNickName(), userInfo.getNickName())) {
+            account.setNickName(userInfo.getNickName());
+            accountMysqlDao.updateAccount(account);
+        }
+
+        userInfoHybridDao.update(userInfo);
+        return userInfo;
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class, propagation = Propagation.REQUIRED)
+    public Pair<UserInfo, ExpertApplying> updateUserInfoAndApplyExpert(UserInfo userInfo, String reason, long[] tagIds) throws UnexpectedVirgoException {
+        // 1. 检查是否有申请
+        List<ExpertApplying> applyingList = applyExpertMysqlDao.retrieveByUserId(userInfo.getUserId());
+        for (ExpertApplying applying : applyingList) {
+            if (applying.getState() == ExpertApplying.APPLYING) {
+                throw new UnexpectedVirgoException("user " + userInfo.getUserId() + " has already been applying.");
+            }
+        }
+
+        userInfo = updateUserInfo(userInfo);
+        if (userApplyExpertTagGraphMysqlDao.insertOrUpdateEdges(Edge.createEdges(userInfo.getUserId(), tagIds)) < 1) {
+            throw new UnexpectedVirgoException("insert user apply expert tag failed.");
+        }
+
+        ExpertApplying expertApplying =
+                applyExpertMysqlDao.create(userInfo.getUserId(), reason, System.currentTimeMillis(), ExpertApplying.APPLYING);
+        return Pair.of(userInfo, expertApplying);
     }
 
     private Long getUserIdByMobile(String mobile) {
@@ -274,11 +330,19 @@ public class AccountServiceImpl implements AccountService {
         String salt = generateSalt();
         String hashedPassword = getHashedPassword(password, salt);
 
-        if (userDao.createUser(userId, nickName, UserType.NORMAL, hashedPassword, salt, AccountVersion.SALT_SHA256, null)) {
+        if (accountMysqlDao.createAccount(userId, nickName, hashedPassword, salt, AccountVersion.SALT_SHA256, null)) {
             return userId;
         } else {
-            VirgoLogger.error("Create new user into db failed!");
-            throw new RuntimeException("Create new user into db failed!");
+            VirgoLogger.error("Create new account into db failed!");
+            throw new RuntimeException("Create new account into db failed!");
+        }
+    }
+
+    private void createUserInfo(long userId, String nickName) {
+        UserInfo userInfo = new UserInfo(userId, nickName);
+        boolean successful = userInfoHybridDao.create(userInfo);
+        if (!successful) {
+            throw new RuntimeException("Create new user info into db failed!");
         }
     }
 

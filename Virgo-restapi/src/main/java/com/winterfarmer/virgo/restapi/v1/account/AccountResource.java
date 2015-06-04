@@ -1,15 +1,19 @@
 package com.winterfarmer.virgo.restapi.v1.account;
 
-import com.winterfarmer.virgo.account.model.AccessToken;
-import com.winterfarmer.virgo.account.model.OpenPlatformAccount;
-import com.winterfarmer.virgo.account.model.PlatformType;
-import com.winterfarmer.virgo.account.model.User;
+import com.winterfarmer.virgo.account.dao.ApplyExpertMysqlDao;
+import com.winterfarmer.virgo.account.model.*;
 import com.winterfarmer.virgo.account.service.AccountService;
+import com.winterfarmer.virgo.aggregator.model.ApiQuestionTag;
+import com.winterfarmer.virgo.aggregator.model.ApiUser;
 import com.winterfarmer.virgo.base.Exception.MobileNumberException;
 import com.winterfarmer.virgo.base.Exception.UnexpectedVirgoException;
 import com.winterfarmer.virgo.base.model.CommonResult;
 import com.winterfarmer.virgo.base.service.SmsService;
 import com.winterfarmer.virgo.common.util.AccountUtil;
+import com.winterfarmer.virgo.common.util.ArrayUtil;
+import com.winterfarmer.virgo.common.util.StringUtil;
+import com.winterfarmer.virgo.knowledge.model.QuestionTag;
+import com.winterfarmer.virgo.knowledge.service.KnowledgeService;
 import com.winterfarmer.virgo.log.VirgoLogger;
 import com.winterfarmer.virgo.restapi.BaseResource;
 import com.winterfarmer.virgo.restapi.core.annotation.ParamSpec;
@@ -17,12 +21,15 @@ import com.winterfarmer.virgo.restapi.core.annotation.ResourceOverview;
 import com.winterfarmer.virgo.restapi.core.annotation.RestApiInfo;
 import com.winterfarmer.virgo.restapi.core.exception.RestExceptionFactor;
 import com.winterfarmer.virgo.restapi.core.exception.VirgoRestException;
+import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.tuple.Pair;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
+import java.sql.Date;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -38,6 +45,11 @@ public class AccountResource extends BaseResource {
 
     @Resource(name = "smsService")
     SmsService smsService;
+
+    @Resource(name = "knowledgeService")
+    KnowledgeService knowledgeService;
+
+    public static final int MAX_TAG_NUMBER = 5;
 
     private static final String NICK_NAME_SPEC = "UnicodeString:2~15";
     private static final String NICK_NAME_DESC = "昵称:只能是英文,中文,数字以及-和_,并且不能全是数字2~15个字符";
@@ -186,14 +198,14 @@ public class AccountResource extends BaseResource {
             int appKey
     ) {
         mobileNumber = checkAndStandardizeMobileNumber(mobileNumber);
-        User user = checkAndGetUser(mobileNumber, PlatformType.MOBILE);
+        Account account = checkAndGetAccount(mobileNumber, PlatformType.MOBILE);
 
-        String hashedPassword = accountService.getHashedPassword(password, user.getSalt());
-        if (hashedPassword.equals(user.getHashedPassword())) {
-            AccessToken accessToken = accountService.getAccessToken(user.getUserId(), appKey);
+        String hashedPassword = accountService.getHashedPassword(password, account.getSalt());
+        if (hashedPassword.equals(account.getHashedPassword())) {
+            AccessToken accessToken = accountService.getAccessToken(account.getUserId(), appKey);
             if (accessToken == null || accessToken.isExpire()) {
-                accountService.deleteAccessToken(user.getUserId(), appKey);
-                return accountService.createAccessToken(user.getUserId(), appKey);
+                accountService.deleteAccessToken(account.getUserId(), appKey);
+                return accountService.createAccessToken(account.getUserId(), appKey);
             } else {
                 return accessToken;
             }
@@ -225,26 +237,146 @@ public class AccountResource extends BaseResource {
             int verificationCode) {
         mobileNumber = checkAndStandardizeMobileNumber(mobileNumber);
         checkMobileVerificationCode(mobileNumber, verificationCode);
-        User user = checkAndGetUser(mobileNumber, PlatformType.MOBILE);
+        Account account = checkAndGetAccount(mobileNumber, PlatformType.MOBILE);
         try {
-            accountService.resetPassword(user, password);
+            accountService.resetPassword(account, password);
         } catch (UnexpectedVirgoException e) {
             throw new VirgoRestException(RestExceptionFactor.RESET_PASSWORD_FAILED);
         }
         return CommonResult.isSuccessfulCommonResult(true);
     }
 
-
-    @Path("testing.json")
-    @GET
+    @Path("update_user_info.json")
+    @POST
+    @RestApiInfo(
+            desc = "修改用户信息",
+            authPolicy = RestApiInfo.AuthPolicy.OAUTH,
+            resultDemo = CommonResult.class,
+            errors = {RestExceptionFactor.USER_ID_NOT_EXISTED,
+                    RestExceptionFactor.INVALID_NICK_NAME,
+                    RestExceptionFactor.NICK_NAME_EXISTED}
+    )
     @Produces(MediaType.APPLICATION_JSON)
-    @RestApiInfo(authPolicy = RestApiInfo.AuthPolicy.OAUTH)
-    public AccessToken testing(
-    ) {
-        AccessToken accessToken = new AccessToken();
-        accessToken.setAppKey(100);
-        accessToken.setToken("00000");
-        return accessToken;
+    public ApiUser updateUserInfo(
+            @FormParam("nick_name")
+            @ParamSpec(isRequired = true, spec = NICK_NAME_SPEC, desc = NICK_NAME_DESC)
+            String nickName,
+            @FormParam("portrait")
+            @ParamSpec(isRequired = false, spec = IMAGE_SPEC, desc = IMAGE_DESC)
+            @DefaultValue("0")
+            String portrait,
+            @FormParam("gender")
+            @ParamSpec(isRequired = false, spec = "int:[0,1]", desc = "性别{0,1}->{M,F}")
+            @DefaultValue("0")
+            String gender,
+            @FormParam("birthday")
+            @ParamSpec(isRequired = false, spec = "string:10~10", desc = "生日:1970-01-01的形式")
+            String birthday,
+            @FormParam("email")
+            @ParamSpec(isRequired = false, spec = "string:0~200", desc = "email")
+            String email,
+            @FormParam("introduction")
+            @ParamSpec(isRequired = false, spec = "string:0~500", desc = "自我介绍")
+            String introduction,
+            @HeaderParam(HEADER_USER_ID)
+            long userId) {
+        nickName = checkAndPurifyNickName(nickName);
+        UserInfo userInfo = accountService.getUserInfo(userId);
+        if (userInfo == null) {
+            throw new VirgoRestException(RestExceptionFactor.USER_ID_NOT_EXISTED);
+        }
+
+        userInfo.setNickName(nickName);
+        userInfo.setPortrait(portrait);
+        if (birthday != null) {
+            try {
+                Date birthdayDate = Date.valueOf(birthday);
+                userInfo.setBirthday(birthdayDate);
+            } catch (IllegalArgumentException e) {
+                throw new VirgoRestException(RestExceptionFactor.INVALID_PARAM, "invalid birthday");
+            }
+        }
+        if (email != null) {
+            userInfo.setEmail(email);
+        }
+        if (introduction != null) {
+            userInfo.setIntroduction(introduction);
+        }
+        userInfo = accountService.updateUserInfo(userInfo);
+        return new ApiUser(userInfo);
+    }
+
+    @Path("apply_expert.json")
+    @POST
+    @RestApiInfo(
+            desc = "申请专家",
+            authPolicy = RestApiInfo.AuthPolicy.OAUTH,
+            resultDemo = CommonResult.class,
+            errors = {RestExceptionFactor.USER_ID_NOT_EXISTED,
+                    RestExceptionFactor.INVALID_NICK_NAME,
+                    RestExceptionFactor.NICK_NAME_EXISTED,
+                    RestExceptionFactor.INVALID_TAG_ID}
+    )
+    @Produces(MediaType.APPLICATION_JSON)
+    public ApiUser applyExpert(
+            @FormParam("nick_name")
+            @ParamSpec(isRequired = true, spec = NICK_NAME_SPEC, desc = NICK_NAME_DESC)
+            String nickName,
+            @FormParam("tags")
+            @ParamSpec(isRequired = true, spec = "string:1~30", desc = "逗号分开的tag,最多5个")
+            String tagsString,
+            @FormParam("reason")
+            @ParamSpec(isRequired = true, spec = "UnicodeString:10~500", desc = "申请理由, 最少10个字")
+            String reason,
+            @FormParam("portrait")
+            @ParamSpec(isRequired = false, spec = IMAGE_SPEC, desc = IMAGE_DESC)
+            @DefaultValue("0")
+            String portrait,
+            @FormParam("gender")
+            @ParamSpec(isRequired = false, spec = "int:[0,1]", desc = "性别{0,1}->{M,F}")
+            @DefaultValue("0")
+            String gender,
+            @FormParam("birthday")
+            @ParamSpec(isRequired = false, spec = "string:10~10", desc = "生日:1970-01-01的形式")
+            String birthday,
+            @FormParam("email")
+            @ParamSpec(isRequired = false, spec = "string:0~200", desc = "email")
+            String email,
+            @FormParam("introduction")
+            @ParamSpec(isRequired = false, spec = "string:0~500", desc = "自我介绍")
+            String introduction,
+            @HeaderParam(HEADER_USER_ID)
+            long userId) {
+        nickName = checkAndPurifyNickName(nickName);
+        UserInfo userInfo = accountService.getUserInfo(userId);
+        if (userInfo == null) {
+            throw new VirgoRestException(RestExceptionFactor.USER_ID_NOT_EXISTED);
+        }
+
+        long[] tagIds = checkAndGetTagIds(tagsString);
+        userInfo.setNickName(nickName);
+        userInfo.setPortrait(portrait);
+        if (birthday != null) {
+            try {
+                Date birthdayDate = Date.valueOf(birthday);
+                userInfo.setBirthday(birthdayDate);
+            } catch (IllegalArgumentException e) {
+                throw new VirgoRestException(RestExceptionFactor.INVALID_PARAM, "invalid birthday");
+            }
+        }
+        if (email != null) {
+            userInfo.setEmail(email);
+        }
+        if (introduction != null) {
+            userInfo.setIntroduction(introduction);
+        }
+
+        try {
+            Pair<UserInfo, ExpertApplying> result = accountService.updateUserInfoAndApplyExpert(userInfo, reason, tagIds);
+            return new ApiUser(result.getLeft(), result.getRight(), knowledgeService.listQuestionTag(tagIds));
+        } catch (UnexpectedVirgoException e) {
+            throw new VirgoRestException(RestExceptionFactor.INVALID_PARAM, "applying failed");
+        }
     }
 
     private String checkAndStandardizeMobileNumber(String mobileNumber) {
@@ -262,19 +394,19 @@ public class AccountResource extends BaseResource {
         }
     }
 
-    private User checkAndGetUser(String openId, PlatformType platformType) {
+    private Account checkAndGetAccount(String openId, PlatformType platformType) {
         OpenPlatformAccount openPlatformAccount = accountService.getOpenPlatformAccount(openId, platformType);
         if (openPlatformAccount == null) {
             throw new VirgoRestException(RestExceptionFactor.INVALID_ID_OR_PASSWORD);
         }
 
-        User user = accountService.getUser(openPlatformAccount.getUserId());
-        if (user == null) {
+        Account account = accountService.getAccount(openPlatformAccount.getUserId());
+        if (account == null) {
             VirgoLogger.error("no user id for open platform account: {}", openId);
             throw new VirgoRestException(RestExceptionFactor.INVALID_ID_OR_PASSWORD);
         }
 
-        return user;
+        return account;
     }
 
 
@@ -301,5 +433,27 @@ public class AccountResource extends BaseResource {
         } else {
             throw new VirgoRestException(RestExceptionFactor.INVALID_NICK_NAME);
         }
+    }
+
+    private ApiQuestionTag[] getApiQuestionTags(long[] tagIds) {
+        QuestionTag[] tags = knowledgeService.listQuestionTag(tagIds);
+        ApiQuestionTag[] apiQuestionTags = new ApiQuestionTag[tags.length];
+
+        int i = 0;
+        for (QuestionTag tag : tags) {
+            apiQuestionTags[i++] = new ApiQuestionTag(tag);
+        }
+
+        return apiQuestionTags;
+    }
+
+    private long[] checkAndGetTagIds(String tagsString) {
+        long[] tagIds = StringUtil.splitLongCommaString(tagsString);
+        tagIds = ArrayUtil.deduplicate(tagIds);
+        if (ArrayUtils.isEmpty(tagIds) || tagIds.length > MAX_TAG_NUMBER || !knowledgeService.isValidTags(tagIds)) {
+            throw new VirgoRestException(RestExceptionFactor.INVALID_TAG_ID);
+        }
+
+        return tagIds;
     }
 }

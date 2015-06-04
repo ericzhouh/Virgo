@@ -1,11 +1,9 @@
 package com.winterfarmer.virgo.account.service;
 
-import com.winterfarmer.virgo.account.model.AccessToken;
-import com.winterfarmer.virgo.account.model.OpenPlatformAccount;
-import com.winterfarmer.virgo.account.model.PlatformType;
-import com.winterfarmer.virgo.account.model.User;
+import com.winterfarmer.virgo.account.model.*;
 import com.winterfarmer.virgo.base.Exception.MobileNumberException;
 import com.winterfarmer.virgo.base.Exception.UnexpectedVirgoException;
+import org.apache.commons.lang3.tuple.Pair;
 
 import java.util.List;
 
@@ -13,9 +11,9 @@ import java.util.List;
  * Created by yangtianhang on 15-2-14.
  */
 public interface AccountService {
-    User getUser(long userId);
+    Account getAccount(long userId);
 
-    List<User> getUsers(long... userIds);
+    List<Account> getAccounts(long... userIds);
 
     boolean isNickNameExisted(String nickName);
 
@@ -36,7 +34,7 @@ public interface AccountService {
 
     OpenPlatformAccount getOpenPlatformAccount(String openId, PlatformType platformType);
 
-    void resetPassword(User user, String password) throws UnexpectedVirgoException;
+    void resetPassword(Account account, String password) throws UnexpectedVirgoException;
 
     boolean deleteAccessToken(long userId, int appKey);
 
@@ -45,4 +43,10 @@ public interface AccountService {
     Long getUserId(String openId, PlatformType platformType);
 
     String getRandomNickName();
+
+    UserInfo getUserInfo(long userId);
+
+    UserInfo updateUserInfo(UserInfo userInfo);
+
+    Pair<UserInfo, ExpertApplying> updateUserInfoAndApplyExpert(UserInfo userInfo, String reason, long[] tagIds) throws UnexpectedVirgoException;
 }

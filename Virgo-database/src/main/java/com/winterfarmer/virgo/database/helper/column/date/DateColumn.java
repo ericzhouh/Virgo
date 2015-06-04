@@ -1,8 +1,8 @@
 package com.winterfarmer.virgo.database.helper.column.date;
 
+import java.sql.Date;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.Date;
 
 /**
  * Created by yangtianhang on 15-3-5.

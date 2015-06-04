@@ -4,7 +4,10 @@ package com.winterfarmer.virgo.account;
 import com.alibaba.fastjson.JSON;
 import com.winterfarmer.virgo.account.dao.*;
 import com.winterfarmer.virgo.account.model.AccessToken;
+import com.winterfarmer.virgo.account.model.UserInfo;
+import org.junit.Assert;
 import org.junit.FixMethodOrder;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.MethodSorters;
@@ -22,8 +25,8 @@ import javax.annotation.Resource;
 @ContextConfiguration(locations = "classpath:spring/virgo-test-account-context.xml")
 @TransactionConfiguration(transactionManager = "transactionManager", defaultRollback = false)
 public class DaoInit {
-    @Resource(name = "userMysqlDao")
-    UserDao userDao;
+    @Resource(name = "accountMysqlDao")
+    AccountDao accountDao;
 
     @Resource(name = "accessTokenMysqlDao")
     AccessTokenDao accessTokenDao;
@@ -31,22 +34,30 @@ public class DaoInit {
     @Resource(name = "openPlatformAccountMysqlDao")
     OpenPlatformAccountDao openPlatformAccountDao;
 
-    @Resource(name = "oauth2MysqlDao")
-    OAuth2Dao oauth2Dao;
-
     @Resource(name = "privilegeMysqlDao")
     PrivilegeDao privilegeDao;
 
+    @Resource(name = "userInfoMysqlDao")
+    UserInfoDao userInfoDao;
+
+    @Resource(name = "userInfoHybridDao")
+    UserInfoDao userInfoHybridDao;
+
+    @Resource(name = "userInfoRedisDao")
+    UserInfoDao userInfoRedisDao;
+
     @Test
     public void init() {
-        ((UserMysqlDaoImpl) userDao).initTable(true);
-        ((AccessTokenMysqlDaoImpl) accessTokenDao).initTable(true);
-        ((OpenPlatformAccountMysqlDaoImpl) openPlatformAccountDao).initTable(true);
-        ((OAuth2MysqlDaoImpl) oauth2Dao).initTable(true);
-        ((PrivilegeMysqlDaoImpl) privilegeDao).initTable(true);
+//        ((AccountMysqlDaoImpl) accountDao).initTable(false);
+//        ((AccessTokenMysqlDaoImpl) accessTokenDao).initTable(false);
+//        ((OpenPlatformAccountMysqlDaoImpl) openPlatformAccountDao).initTable(false);
+//        ((PrivilegeMysqlDaoImpl) privilegeDao).initTable(false);
+
+        ((UserInfoMysqlDaoImpl) userInfoDao).initTable(true);
     }
 
     @Test
+    @Ignore
     public void testAccessToken() {
         String tokenString = "{\"expire_at\":1461056605436,\"token\":\"0.UyDx1cGLA1wgjq26fAxDhWSrJMioJW\",\"user_id\":1201500287756537856}";
 
@@ -77,8 +88,31 @@ public class DaoInit {
         System.out.println(JSON.parseObject(val));
         AccessToken accessToken2 = JSON.parseObject(val, AccessToken.class);
         System.out.println(accessToken2);
+    }
 
+    @Test
+    public void testUserInfoDao() {
+        long userId = 99999;
+        UserInfo userInfo = new UserInfo(userId);
+        String nickName = "ttnick";
+        userInfo.setNickName(nickName);
 
+        Assert.assertTrue(userInfoHybridDao.create(userInfo));
 
+        Assert.assertNotNull(userInfoRedisDao.retrieveUser(userId, true));
+        Assert.assertNotNull(userInfoHybridDao.retrieveUser(userId, true));
+        Assert.assertNotNull(userInfoHybridDao.retrieveUser(userId, false));
+        userInfo = userInfoHybridDao.retrieveUser(userId, false);
+        Assert.assertEquals(nickName, userInfo.getNickName());
+
+        String intro = "122345";
+        nickName = "kknickname";
+        userInfo.setIntroduction(intro);
+        userInfo.setNickName(nickName);
+        Assert.assertTrue(userInfoHybridDao.update(userInfo));
+        userInfo = userInfoHybridDao.retrieveUser(userId, false);
+        Assert.assertNotNull(userInfo);
+        Assert.assertEquals(intro, userInfo.getIntroduction());
+        Assert.assertEquals(nickName, userInfo.getNickName());
     }
 }

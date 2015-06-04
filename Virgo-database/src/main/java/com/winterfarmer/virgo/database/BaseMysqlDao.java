@@ -10,6 +10,7 @@ import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.collections4.MapUtils;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.tuple.Pair;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
@@ -61,7 +62,6 @@ public class BaseMysqlDao {
      * @param dropBeforeCreate
      */
     public void initTable(String createDDL, String dropDDL, boolean dropBeforeCreate) {
-        System.out.println(createDDL);
         if (ConfigUtil.isUnitTesting()) {
             if (dropBeforeCreate) {
                 getWriteJdbcTemplate().execute(dropDDL);
@@ -176,6 +176,7 @@ public class BaseMysqlDao {
         String whereClause;
         boolean limit = false;
         boolean offset = false;
+        List<Pair<Column, Boolean>> orderByList = null;
 
         public WhereClauseBuilder() {
             this.whereClause = "";
@@ -216,6 +217,25 @@ public class BaseMysqlDao {
             return this;
         }
 
+        public WhereClauseBuilder orderBy(Column column, boolean desc) {
+            if (orderByList == null) {
+                orderByList = Lists.newArrayList();
+            }
+
+            orderByList.add(Pair.of(column, desc));
+            return this;
+        }
+
+        /**
+         * 默认逆序
+         *
+         * @param column
+         * @return
+         */
+        public WhereClauseBuilder orderBy(Column column) {
+            return orderBy(column, true);
+        }
+
 
         public String build() {
             String whereClause;
@@ -224,6 +244,15 @@ public class BaseMysqlDao {
             } else {
                 whereClause = " where " + this.whereClause + " ";
             }
+
+            if (CollectionUtils.isNotEmpty(orderByList)) {
+                whereClause += " order by ";
+                for (Pair<Column, Boolean> orderBy : orderByList) {
+                    whereClause += orderBy.getLeft().getName() + " " +
+                            (orderBy.getRight() ? "desc" : "asc") + " ";
+                }
+            }
+
             if (limit != false) {
                 whereClause += " limit ? ";
             }

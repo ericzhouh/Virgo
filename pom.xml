@@ -508,7 +508,6 @@
         <module>Virgo-restapi-doc</module>
         <module>Virgo-3rd-part</module>
         <module>Virgo-knowledge</module>
-        <module>Virgo-prestige</module>
         <module>Virgo-storage-base</module>
         <module>Virgo-storage-id</module>
         <module>Virgo-storage-graph</module>

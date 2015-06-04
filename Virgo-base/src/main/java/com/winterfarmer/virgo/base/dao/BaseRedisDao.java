@@ -1,5 +1,7 @@
 package com.winterfarmer.virgo.base.dao;
 
+import com.alibaba.druid.util.StringUtils;
+
 /**
  * Created by yangtianhang on 15-4-11.
  * redis 服务的基类
@@ -15,6 +17,13 @@ public abstract class BaseRedisDao {
     protected static final int SIGN_UP_VERIFICATION_CODE_REQUEST = 102;
     protected static final int MOBILE_TO_USER_ID = 103;
     protected static final int PRIVILEGE = 104;
+    protected static final int USER_INFO = 105;
+
+    protected static final String OK = "OK";
+
+    protected static boolean successful(String executeResult) {
+        return StringUtils.equals(executeResult, OK);
+    }
 
     protected String getKey(int namespace, String key) {
         return namespace + "." + key;
