@@ -27,6 +27,7 @@ public enum RestExceptionFactor {
     MOBILE_NUMBER_HAS_BEEN_REGISTERED(404, 404_002_005, "mobile number has been registered"),
     NICK_NAME_EXISTED(404, 404_002_006, "nick name existed"),
     INVALID_NICK_NAME(404, 404_002_007, "invalid nick name"),
+    ALREADY_EXPERT(403, 403_002_008, "user has been already expert"),
 
     // Vehicle Exception Factor 404_003
     VEHICLE_NOT_EXISTED(404, 404_003_000, "vehicle not existed"),

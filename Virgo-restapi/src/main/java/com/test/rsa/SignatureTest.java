@@ -19,7 +19,7 @@ public class SignatureTest {
 		 */
 //        String verifyStr = "验证字符：yanzhengzifu";
 
-        String verifyStr = "<Request> <Order> <TBOrderId>order123</TBOrderId> <SubOrderList> <SubOrder type='force'> <TBOrderId>order123</TBOrderId> </SubOrder> <SubOrder type='biz'> <TBOrderId>order123</TBOrderId> </SubOrder> </SubOrderList> </Order></Request>";
+        String verifyStr = "<Request><InputsList><Inputs type='vehicleInfo'><input name='licenseNo'>川A00290</input><input name='cityCode'>21114000</input><input name='noLicenseFlag'>川A00290</input></Inputs></InputsList></Request>";
         //生产签名串 和 验证类
         PartnerSignerImpl signer = new PartnerSignerImpl();
 

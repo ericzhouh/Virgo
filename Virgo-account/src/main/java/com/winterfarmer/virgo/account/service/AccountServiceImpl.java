@@ -59,11 +59,14 @@ public class AccountServiceImpl implements AccountService {
     @Resource(name = "userApplyExpertTagGraphMysqlDao")
     GraphDao userApplyExpertTagGraphMysqlDao;
 
+    @Resource(name = "userFollowTagGraphMysqlDao")
+    GraphDao userFollowTagGraphMysqlDao;
+
     private SecureRandom secureRandom;
 
     private static final String SECURE_RANDOM_ALGORITHM = "SHA1PRNG";
     private static final int SECURE_RANDOM_BYTES_LENGTH = 32;
-    private static final int CACHE_SINGUP_MOBILE_REQUEST_EXPIRE_S = 60; // seconds
+    private static final int CACHE_SIGNUP_MOBILE_REQUEST_EXPIRE_S = 60; // seconds
 
     @PostConstruct
     void init() throws NoSuchAlgorithmException {
@@ -170,7 +173,7 @@ public class AccountServiceImpl implements AccountService {
 
     @Override
     public void cacheSentSignUpMobileVerificationCode(String mobileNumber) {
-        accountRedisDao.cacheSignUpMobileRequest(mobileNumber, CACHE_SINGUP_MOBILE_REQUEST_EXPIRE_S);
+        accountRedisDao.cacheSignUpMobileRequest(mobileNumber, CACHE_SIGNUP_MOBILE_REQUEST_EXPIRE_S);
     }
 
     @Override
@@ -185,7 +188,7 @@ public class AccountServiceImpl implements AccountService {
         String hashedPassword = getHashedPassword(password, account.getSalt());
         account.setHashedPassword(hashedPassword);
         if (!accountMysqlDao.updatePassword(account.getUserId(), account.getHashedPassword())) {
-            throw new UnexpectedVirgoException("update user(" + account.getUserId() + ")  failed: ");
+            throw new UnexpectedVirgoException("updateApplyingExpert user(" + account.getUserId() + ")  failed: ");
         }
         // 删除所有相关token
         accessTokenDao.deleteAccessToken(account.getUserId());
@@ -255,11 +258,9 @@ public class AccountServiceImpl implements AccountService {
     @Transactional(rollbackFor = Exception.class, propagation = Propagation.REQUIRED)
     public Pair<UserInfo, ExpertApplying> updateUserInfoAndApplyExpert(UserInfo userInfo, String reason, long[] tagIds) throws UnexpectedVirgoException {
         // 1. 检查是否有申请
-        List<ExpertApplying> applyingList = applyExpertMysqlDao.retrieveByUserId(userInfo.getUserId());
-        for (ExpertApplying applying : applyingList) {
-            if (applying.getState() == ExpertApplying.APPLYING) {
-                throw new UnexpectedVirgoException("user " + userInfo.getUserId() + " has already been applying.");
-            }
+        ExpertApplying expertApplying = applyExpertMysqlDao.retrieveLastByUserId(userInfo.getUserId());
+        if (expertApplying != null && expertApplying.getState() == ExpertApplying.APPLYING) {
+            throw new UnexpectedVirgoException("user " + userInfo.getUserId() + " has already been applying.");
         }
 
         userInfo = updateUserInfo(userInfo);
@@ -267,9 +268,53 @@ public class AccountServiceImpl implements AccountService {
             throw new UnexpectedVirgoException("insert user apply expert tag failed.");
         }
 
-        ExpertApplying expertApplying =
-                applyExpertMysqlDao.create(userInfo.getUserId(), reason, System.currentTimeMillis(), ExpertApplying.APPLYING);
+        expertApplying = applyExpertMysqlDao.create(userInfo.getUserId(), reason, System.currentTimeMillis(), ExpertApplying.APPLYING);
         return Pair.of(userInfo, expertApplying);
+    }
+
+    @Override
+    public void updateApplyingExpertTags(UserInfo userInfo, long[] tagIds) throws UnexpectedVirgoException {
+        ExpertApplying expertApplying = applyExpertMysqlDao.retrieveLastByUserId(userInfo.getUserId());
+        if (expertApplying != null && expertApplying.getState() == ExpertApplying.APPLYING) {
+            List<Edge> edgeList = userApplyExpertTagGraphMysqlDao.queryEdgesByHead(userInfo.getUserId(), 100, 0);
+            for (Edge edge : edgeList) {
+                edge.setState(Edge.DELETED_EDGE);
+            }
+            if (userApplyExpertTagGraphMysqlDao.insertOrUpdateEdges(edgeList) < 1) {
+                throw new UnexpectedVirgoException("delete user apply expert old tag failed.");
+            }
+            if (userApplyExpertTagGraphMysqlDao.insertOrUpdateEdges(Edge.createEdges(userInfo.getUserId(), tagIds)) < 1) {
+                throw new UnexpectedVirgoException("insert user apply expert tag failed.");
+            }
+        } else {
+            throw new UnexpectedVirgoException("user " + userInfo.getUserId() + " has no applying.");
+        }
+    }
+
+    @Override
+    public boolean updateApplyingExpertReason(UserInfo userInfo, String reason) throws UnexpectedVirgoException {
+        ExpertApplying applying = applyExpertMysqlDao.retrieveLastByUserId(userInfo.getUserId());
+        if (applying != null && applying.getState() == ExpertApplying.APPLYING) {
+            return applyExpertMysqlDao.updateApplyingExpert(userInfo.getUserId(), reason, applying.getState());
+        } else {
+            throw new UnexpectedVirgoException("user " + userInfo.getUserId() + " has no applying.");
+        }
+    }
+
+    @Override
+    public ExpertApplying getExpertApplying(long userId) {
+        return applyExpertMysqlDao.retrieveLastByUserId(userId);
+    }
+
+    @Override
+    public boolean followTag(long userId, long tagId, CommonState state) {
+        return userFollowTagGraphMysqlDao.insertOrUpdateEdges(new Edge(userId, tagId, state.getIndex())) > 0;
+    }
+
+    @Override
+    public List<Long> listFollowTags(long userId) {
+        List<Edge> edgeList = userFollowTagGraphMysqlDao.queryEdgesByHead(userId, 100, 0);
+        return Edge.listTails(edgeList);
     }
 
     private Long getUserIdByMobile(String mobile) {

@@ -3,6 +3,7 @@ package com.winterfarmer.virgo.account.service;
 import com.winterfarmer.virgo.account.model.*;
 import com.winterfarmer.virgo.base.Exception.MobileNumberException;
 import com.winterfarmer.virgo.base.Exception.UnexpectedVirgoException;
+import com.winterfarmer.virgo.base.model.CommonState;
 import org.apache.commons.lang3.tuple.Pair;
 
 import java.util.List;
@@ -49,4 +50,14 @@ public interface AccountService {
     UserInfo updateUserInfo(UserInfo userInfo);
 
     Pair<UserInfo, ExpertApplying> updateUserInfoAndApplyExpert(UserInfo userInfo, String reason, long[] tagIds) throws UnexpectedVirgoException;
+
+    void updateApplyingExpertTags(UserInfo userInfo, long[] tagIds) throws UnexpectedVirgoException;
+
+    boolean updateApplyingExpertReason(UserInfo userInfo, String reason) throws UnexpectedVirgoException;
+
+    ExpertApplying getExpertApplying(long userId);
+
+    boolean followTag(long userId, long tagId, CommonState state);
+
+    List<Long> listFollowTags(long userId);
 }

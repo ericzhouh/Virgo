@@ -1,6 +1,7 @@
 package com.winterfarmer.virgo.aggregator.model;
 
 import com.alibaba.fastjson.annotation.JSONField;
+import com.google.common.base.Function;
 import com.google.common.collect.Lists;
 import com.winterfarmer.virgo.base.annotation.ApiField;
 import com.winterfarmer.virgo.base.annotation.ApiMode;
@@ -32,6 +33,15 @@ public class ApiQuestionTag {
         }
 
         return apiQuestionTagList;
+    }
+
+    public static List<ApiQuestionTag> from(List<QuestionTag> questionTags) {
+        return Lists.transform(questionTags, new Function<QuestionTag, ApiQuestionTag>() {
+            @Override
+            public ApiQuestionTag apply(QuestionTag questionTag) {
+                return new ApiQuestionTag(questionTag);
+            }
+        });
     }
 
     public ApiQuestionTag(QuestionTag questionTag) {

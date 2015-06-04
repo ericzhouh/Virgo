@@ -83,7 +83,7 @@ public class AccountMysqlDaoImpl extends BaseMysqlDao implements AccountDao {
         return update(insert_account_sql, userId, nickName, hashedPassword, salt, version.getIndex(), ExtInfoColumn.toBytes(extInfo)) > 0;
     }
 
-    private static final String update_account_sql = "update " + ACCOUNT_TABLE_NAME + " set " +
+    private static final String update_account_sql = "updateApplyingExpert " + ACCOUNT_TABLE_NAME + " set " +
             nickName.eqWhich() + ", " +
             extInfo.eqWhich() +
             " where " + userId.eqWhich() + ";";

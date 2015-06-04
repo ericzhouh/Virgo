@@ -1,16 +1,13 @@
 package com.winterfarmer.virgo.aggregator.model;
 
 import com.alibaba.fastjson.annotation.JSONField;
-import com.winterfarmer.virgo.account.model.Account;
 import com.winterfarmer.virgo.account.model.ExpertApplying;
 import com.winterfarmer.virgo.account.model.UserInfo;
-import com.winterfarmer.virgo.account.model.UserType;
 import com.winterfarmer.virgo.base.annotation.ApiField;
 import com.winterfarmer.virgo.base.annotation.ApiMode;
 import com.winterfarmer.virgo.base.util.StaticFileUtil;
 import com.winterfarmer.virgo.knowledge.model.QuestionTag;
 
-import java.sql.Date;
 import java.util.List;
 
 /**
@@ -68,8 +65,8 @@ public class ApiUser {
     private Integer applyingState;
 
     @JSONField(name = "applying_expert_tag")
-    @ApiField(desc = "擅长领域的标签")
-    private List<ApiQuestionTag> expertTags;
+    @ApiField(desc = "申请的擅长领域的标签")
+    private List<ApiQuestionTag> applyingExpertTags;
 
     public ApiUser(UserInfo userInfo) {
         this.userId = userInfo.getUserId();
@@ -88,7 +85,7 @@ public class ApiUser {
         reason = applying.getReason();
         applyingTime = applying.getApplyingTime();
         applyingState = applying.getState();
-        expertTags = ApiQuestionTag.from(tags);
+        applyingExpertTags = ApiQuestionTag.from(tags);
     }
 
     public long getUserId() {
@@ -187,11 +184,11 @@ public class ApiUser {
         this.applyingState = applyingState;
     }
 
-    public List<ApiQuestionTag> getExpertTags() {
-        return expertTags;
+    public List<ApiQuestionTag> getApplyingExpertTags() {
+        return applyingExpertTags;
     }
 
-    public void setExpertTags(List<ApiQuestionTag> expertTags) {
-        this.expertTags = expertTags;
+    public void setApplyingExpertTags(List<ApiQuestionTag> applyingExpertTags) {
+        this.applyingExpertTags = applyingExpertTags;
     }
 }

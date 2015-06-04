@@ -1,6 +1,5 @@
 package com.winterfarmer.virgo.restapi.v1.account;
 
-import com.winterfarmer.virgo.account.dao.ApplyExpertMysqlDao;
 import com.winterfarmer.virgo.account.model.*;
 import com.winterfarmer.virgo.account.service.AccountService;
 import com.winterfarmer.virgo.aggregator.model.ApiQuestionTag;
@@ -8,6 +7,7 @@ import com.winterfarmer.virgo.aggregator.model.ApiUser;
 import com.winterfarmer.virgo.base.Exception.MobileNumberException;
 import com.winterfarmer.virgo.base.Exception.UnexpectedVirgoException;
 import com.winterfarmer.virgo.base.model.CommonResult;
+import com.winterfarmer.virgo.base.model.CommonState;
 import com.winterfarmer.virgo.base.service.SmsService;
 import com.winterfarmer.virgo.common.util.AccountUtil;
 import com.winterfarmer.virgo.common.util.ArrayUtil;
@@ -30,6 +30,7 @@ import javax.annotation.Resource;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import java.sql.Date;
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -251,7 +252,7 @@ public class AccountResource extends BaseResource {
     @RestApiInfo(
             desc = "修改用户信息",
             authPolicy = RestApiInfo.AuthPolicy.OAUTH,
-            resultDemo = CommonResult.class,
+            resultDemo = ApiUser.class,
             errors = {RestExceptionFactor.USER_ID_NOT_EXISTED,
                     RestExceptionFactor.INVALID_NICK_NAME,
                     RestExceptionFactor.NICK_NAME_EXISTED}
@@ -281,10 +282,7 @@ public class AccountResource extends BaseResource {
             @HeaderParam(HEADER_USER_ID)
             long userId) {
         nickName = checkAndPurifyNickName(nickName);
-        UserInfo userInfo = accountService.getUserInfo(userId);
-        if (userInfo == null) {
-            throw new VirgoRestException(RestExceptionFactor.USER_ID_NOT_EXISTED);
-        }
+        UserInfo userInfo = checkAndGetUserInfo(userId);
 
         userInfo.setNickName(nickName);
         userInfo.setPortrait(portrait);
@@ -311,10 +309,8 @@ public class AccountResource extends BaseResource {
     @RestApiInfo(
             desc = "申请专家",
             authPolicy = RestApiInfo.AuthPolicy.OAUTH,
-            resultDemo = CommonResult.class,
+            resultDemo = ApiUser.class,
             errors = {RestExceptionFactor.USER_ID_NOT_EXISTED,
-                    RestExceptionFactor.INVALID_NICK_NAME,
-                    RestExceptionFactor.NICK_NAME_EXISTED,
                     RestExceptionFactor.INVALID_TAG_ID}
     )
     @Produces(MediaType.APPLICATION_JSON)
@@ -323,7 +319,7 @@ public class AccountResource extends BaseResource {
             @ParamSpec(isRequired = true, spec = NICK_NAME_SPEC, desc = NICK_NAME_DESC)
             String nickName,
             @FormParam("tags")
-            @ParamSpec(isRequired = true, spec = "string:1~30", desc = "逗号分开的tag,最多5个")
+            @ParamSpec(isRequired = true, spec = "1~100", desc = "逗号分开的tag,最多5个")
             String tagsString,
             @FormParam("reason")
             @ParamSpec(isRequired = true, spec = "UnicodeString:10~500", desc = "申请理由, 最少10个字")
@@ -348,9 +344,9 @@ public class AccountResource extends BaseResource {
             @HeaderParam(HEADER_USER_ID)
             long userId) {
         nickName = checkAndPurifyNickName(nickName);
-        UserInfo userInfo = accountService.getUserInfo(userId);
-        if (userInfo == null) {
-            throw new VirgoRestException(RestExceptionFactor.USER_ID_NOT_EXISTED);
+        UserInfo userInfo = checkAndGetUserInfo(userId);
+        if (userInfo.getUserType() == UserType.EXPERT) {
+            throw new VirgoRestException(RestExceptionFactor.ALREADY_EXPERT);
         }
 
         long[] tagIds = checkAndGetTagIds(tagsString);
@@ -377,6 +373,184 @@ public class AccountResource extends BaseResource {
         } catch (UnexpectedVirgoException e) {
             throw new VirgoRestException(RestExceptionFactor.INVALID_PARAM, "applying failed");
         }
+    }
+
+    @Path("modify_apply_expert_tags.json")
+    @POST
+    @RestApiInfo(
+            desc = "修改申请专家的擅长标签",
+            authPolicy = RestApiInfo.AuthPolicy.OAUTH,
+            resultDemo = CommonResult.class,
+            errors = {RestExceptionFactor.USER_ID_NOT_EXISTED,
+                    RestExceptionFactor.INVALID_TAG_ID,
+                    RestExceptionFactor.ALREADY_EXPERT}
+    )
+    @Produces(MediaType.APPLICATION_JSON)
+    public CommonResult modifyApplyingExpertReason(
+            @FormParam("reason")
+            @ParamSpec(isRequired = true, spec = "UnicodeString:10~500", desc = "申请理由, 最少10个字")
+            String reason,
+            @HeaderParam(HEADER_USER_ID)
+            long userId) {
+        UserInfo userInfo = checkAndGetUserInfo(userId);
+        if (userInfo.getUserType() == UserType.EXPERT) {
+            throw new VirgoRestException(RestExceptionFactor.ALREADY_EXPERT);
+        }
+
+        try {
+            boolean successful = accountService.updateApplyingExpertReason(userInfo, reason);
+            return CommonResult.isSuccessfulCommonResult(successful);
+        } catch (UnexpectedVirgoException e) {
+            throw new VirgoRestException(RestExceptionFactor.INVALID_PARAM, "updateApplyingExpert applying failed");
+        }
+    }
+
+    @Path("modify_apply_expert_reason.json")
+    @POST
+    @RestApiInfo(
+            desc = "修改申请专家的申请原因",
+            authPolicy = RestApiInfo.AuthPolicy.OAUTH,
+            resultDemo = CommonResult.class,
+            errors = {RestExceptionFactor.USER_ID_NOT_EXISTED,
+                    RestExceptionFactor.INVALID_TAG_ID,
+                    RestExceptionFactor.ALREADY_EXPERT}
+    )
+    @Produces(MediaType.APPLICATION_JSON)
+    public CommonResult applyExpert(
+            @FormParam("tags")
+            @ParamSpec(isRequired = true, spec = "string:1~100", desc = "逗号分开的tag,最多5个")
+            String tagsString,
+            @HeaderParam(HEADER_USER_ID)
+            long userId) {
+        UserInfo userInfo = checkAndGetUserInfo(userId);
+        if (userInfo == null) {
+            throw new VirgoRestException(RestExceptionFactor.USER_ID_NOT_EXISTED);
+        }
+        if (userInfo.getUserType() == UserType.EXPERT) {
+            throw new VirgoRestException(RestExceptionFactor.ALREADY_EXPERT);
+        }
+
+        long[] tagIds = checkAndGetTagIds(tagsString);
+        try {
+            accountService.updateApplyingExpertTags(userInfo, tagIds);
+            return CommonResult.isSuccessfulCommonResult(true);
+        } catch (UnexpectedVirgoException e) {
+            throw new VirgoRestException(RestExceptionFactor.INVALID_PARAM, "updateApplyingExpert applying failed");
+        }
+    }
+
+    private static final String COMMON_RESULT_APPLYING_EXPERT_STATE = "applying_expert_state";
+
+    private static final int APPLYING_EXPERT_STATE_NO_APPLY = 0;
+    private static final int APPLYING_EXPERT_STATE_APPLYING = 1;
+    private static final int APPLYING_EXPERT_STATE_ALREADY_EXPERT = 2;
+
+    @Path("check_applying_expert_state.json")
+    @GET
+    @Produces(MediaType.APPLICATION_JSON)
+    @RestApiInfo(
+            desc = "检查申请专家状态:{0,1,2}->{没有申请,申请中,申请通过已经是专家}," +
+                    "返回{'applying_expert_state':0}这样的形式",
+            authPolicy = RestApiInfo.AuthPolicy.OAUTH,
+            resultDemo = CommonResult.class,
+            errors = {RestExceptionFactor.USER_ID_NOT_EXISTED}
+    )
+    public CommonResult checkUserType(
+            @HeaderParam(HEADER_USER_ID)
+            long userId
+    ) {
+        UserInfo userInfo = checkAndGetUserInfo(userId);
+        if (userInfo.getUserType() == UserType.EXPERT) {
+            return CommonResult.oneResultCommonResult(COMMON_RESULT_APPLYING_EXPERT_STATE, APPLYING_EXPERT_STATE_ALREADY_EXPERT);
+        } else {
+            ExpertApplying expertApplying = accountService.getExpertApplying(userId);
+            if (expertApplying == null) {
+                return CommonResult.oneResultCommonResult(COMMON_RESULT_APPLYING_EXPERT_STATE, APPLYING_EXPERT_STATE_NO_APPLY);
+            } else {
+                switch (expertApplying.getState()) {
+                    case ExpertApplying.APPLYING:
+                        return CommonResult.oneResultCommonResult(COMMON_RESULT_APPLYING_EXPERT_STATE, APPLYING_EXPERT_STATE_APPLYING);
+                    case ExpertApplying.REJECT:
+                        return CommonResult.oneResultCommonResult(COMMON_RESULT_APPLYING_EXPERT_STATE, APPLYING_EXPERT_STATE_APPLYING);
+                    case ExpertApplying.PASS:
+                        return CommonResult.oneResultCommonResult(COMMON_RESULT_APPLYING_EXPERT_STATE, APPLYING_EXPERT_STATE_ALREADY_EXPERT);
+                    default:
+                        return CommonResult.oneResultCommonResult(COMMON_RESULT_APPLYING_EXPERT_STATE, APPLYING_EXPERT_STATE_NO_APPLY);
+                }
+            }
+        }
+    }
+
+    @Path("user_info.json")
+    @GET
+    @Produces(MediaType.APPLICATION_JSON)
+    @RestApiInfo(
+            desc = "获取用户资料信息,如果不是本人访问,则不带上:" +
+                    "real_name,email",
+            authPolicy = RestApiInfo.AuthPolicy.PUBLIC,
+            resultDemo = ApiUser.class,
+            errors = {RestExceptionFactor.USER_ID_NOT_EXISTED}
+    )
+    public ApiUser getUserInfo(
+            @QueryParam("user_id")
+            @ParamSpec(isRequired = true, spec = USER_ID_SPEC, desc = USER_ID_DESC)
+            long userId,
+            @HeaderParam(HEADER_USER_ID)
+            Long fromUserId
+    ) {
+        UserInfo userInfo = checkAndGetUserInfo(userId);
+        ApiUser apiUser = new ApiUser(userInfo);
+        if (fromUserId == null || userId != fromUserId) {
+            apiUser.setRealName(null);
+        }
+
+        return apiUser;
+    }
+
+    @Path("user_follow_tag.json")
+    @POST
+    @RestApiInfo(
+            desc = "用户关注或者取消关注标签",
+            authPolicy = RestApiInfo.AuthPolicy.OAUTH,
+            resultDemo = CommonResult.class,
+            errors = {RestExceptionFactor.USER_ID_NOT_EXISTED,
+                    RestExceptionFactor.INVALID_TAG_ID,
+                    RestExceptionFactor.ALREADY_EXPERT}
+    )
+    @Produces(MediaType.APPLICATION_JSON)
+    public CommonResult userFollowTag(
+            @FormParam("tag_id")
+            @ParamSpec(isRequired = true, spec = "long:[1000~2000]", desc = "标签id")
+            long tagId,
+            @FormParam("state")
+            @ParamSpec(isRequired = true, spec = COMMON_STATE_SPEC, desc = "是否关注: {0,1}->{not follow, follow}")
+            CommonState state,
+            @HeaderParam(HEADER_USER_ID)
+            long userId) {
+        if (!knowledgeService.isValidTags(tagId)) {
+            throw new VirgoRestException(RestExceptionFactor.INVALID_TAG_ID);
+        }
+
+        return CommonResult.isSuccessfulCommonResult(accountService.followTag(userId, tagId, state));
+    }
+
+    @Path("user_followed_tag.json")
+    @POST
+    @RestApiInfo(
+            desc = "用户关注的标签列表",
+            authPolicy = RestApiInfo.AuthPolicy.PUBLIC,
+            resultDemo = ApiQuestionTag.class,
+            errors = {RestExceptionFactor.USER_ID_NOT_EXISTED}
+    )
+    @Produces(MediaType.APPLICATION_JSON)
+    public List<ApiQuestionTag> getUserFollowTags(
+            @QueryParam("user_id")
+            @ParamSpec(isRequired = true, spec = USER_ID_SPEC, desc = USER_ID_DESC)
+            long userId) {
+        UserInfo userInfo = checkAndGetUserInfo(userId);
+        List<Long> tagIds = accountService.listFollowTags(userInfo.getUserId());
+        List<QuestionTag> questionTagList = knowledgeService.listQuestionTag(tagIds);
+        return ApiQuestionTag.from(questionTagList);
     }
 
     private String checkAndStandardizeMobileNumber(String mobileNumber) {
@@ -409,6 +583,14 @@ public class AccountResource extends BaseResource {
         return account;
     }
 
+    private UserInfo checkAndGetUserInfo(long userId) {
+        UserInfo userInfo = accountService.getUserInfo(userId);
+        if (userInfo == null) {
+            throw new VirgoRestException(RestExceptionFactor.USER_ID_NOT_EXISTED);
+        }
+
+        return userInfo;
+    }
 
     private static String regex = "^[a-zA-Z0-9\u4E00-\u9FA5-_]+$";
     private Pattern pattern = Pattern.compile(regex);

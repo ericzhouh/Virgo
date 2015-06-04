@@ -140,6 +140,8 @@ public interface KnowledgeService {
 
     QuestionTag[] listQuestionTag(long... questionTagId);
 
+    List<QuestionTag> listQuestionTag(List<Long> questionTagIdList);
+
     List<QuestionTag> listQuestionTag();
 
     // ========================================================================

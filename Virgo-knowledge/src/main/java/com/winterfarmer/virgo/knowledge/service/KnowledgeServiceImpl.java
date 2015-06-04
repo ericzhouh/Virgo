@@ -350,6 +350,16 @@ public class KnowledgeServiceImpl implements KnowledgeService {
     }
 
     @Override
+    public List<QuestionTag> listQuestionTag(List<Long> questionTagIdList) {
+        return Lists.transform(questionTagIdList, new Function<Long, QuestionTag>() {
+            @Override
+            public QuestionTag apply(Long id) {
+                return getQuestionTag(id);
+            }
+        });
+    }
+
+    @Override
     public List<QuestionTag> listQuestionTag() {
         return tagList;
     }

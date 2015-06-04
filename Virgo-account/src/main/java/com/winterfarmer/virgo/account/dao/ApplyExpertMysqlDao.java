@@ -51,7 +51,7 @@ public class ApplyExpertMysqlDao extends BaseMysqlDao {
     private static final String update_applying_expert_sql =
             updateSql(APPLY_EXPERT_TABLE_NAME, reason, state) + new WhereClauseBuilder(userId.eqWhich());
 
-    public boolean update(long userId, String reason, int state) {
+    public boolean updateApplyingExpert(long userId, String reason, int state) {
         return update(update_applying_expert_sql, reason, state, userId) > 0;
     }
 
@@ -83,10 +83,10 @@ public class ApplyExpertMysqlDao extends BaseMysqlDao {
         }
     }
 
-    private static final String select_by_user_id_sql =
-            selectAllSql(APPLY_EXPERT_TABLE_NAME) + new WhereClauseBuilder(userId.eqWhich()).orderBy(applyingTime);
+    private static final String select_last_by_user_id_sql =
+            selectAllSql(APPLY_EXPERT_TABLE_NAME) + new WhereClauseBuilder(userId.eqWhich()).orderBy(applyingTime).limit();
 
-    public List<ExpertApplying> retrieveByUserId(long userId) {
-        return queryForList(getReadJdbcTemplate(), select_by_user_id_sql, expertApplyingRowMapper, userId);
+    public ExpertApplying retrieveLastByUserId(long userId) {
+        return queryForObject(getReadJdbcTemplate(), select_last_by_user_id_sql, expertApplyingRowMapper, userId, 1);
     }
 }
