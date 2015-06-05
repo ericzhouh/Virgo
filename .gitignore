@@ -27,3 +27,4 @@ dump_table_desc.sql
 #others
 Virgo-restapi/src/main/java/com/test/rsa/EncryptDecryptData.java
 Virgo-restapi/src/main/java/com/test/rsa/MD5UtilForUTF8.java
+dump.rdb

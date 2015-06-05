@@ -5,16 +5,16 @@ package com.winterfarmer.virgo.storage.counter.model;
  */
 public class Counter {
     private long id;
-    private int count;
     private int type;
+    private int count;
 
     public Counter() {
     }
 
-    public Counter(long id, int count, int type) {
+    public Counter(long id, int type, int count) {
         this.id = id;
-        this.count = count;
         this.type = type;
+        this.count = count;
     }
 
     public long getId() {

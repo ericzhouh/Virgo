@@ -13,7 +13,7 @@ public class CounterRedisDaoImpl implements CounterDao {
     private final String keyPrefix;
     private final Vedis vedis;
 
-    public CounterRedisDaoImpl(RedisBiz redisBiz, Vedis vedis) {
+    public CounterRedisDaoImpl(RedisBiz redisBiz) {
         this.keyPrefix = redisBiz.name().toLowerCase() + ".";
         this.vedis = VedisFactory.getVedis(redisBiz);
     }
@@ -23,7 +23,7 @@ public class CounterRedisDaoImpl implements CounterDao {
         String key = getKey(id, type);
         String countStr = vedis.get(key);
         if (countStr == null) {
-            return 0;
+            return null;
         }
 
         try {

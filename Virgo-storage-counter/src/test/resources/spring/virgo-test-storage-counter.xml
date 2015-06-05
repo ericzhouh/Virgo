@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:c="http://www.springframework.org/schema/c"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+       http://www.springframework.org/schema/beans/spring-beans-3.2.xsd
+          http://www.springframework.org/schema/context
+          http://www.springframework.org/schema/context/spring-context-3.2.xsd">
+
+    <import resource="classpath*:spring/virgo-database-context.xml"/>
+    <import resource="classpath*:spring/virgo-redis-context.xml"/>
+
+    <context:annotation-config/>
+    <!-- 开启ignore-unresolvable＝true是为了防止其他spring配置文件开启了property-placeholder后导致其他的property configurer失效 -->
+    <context:property-placeholder location="classpath:redis.properties" ignore-unresolvable="true"/>
+
+    <context:annotation-config/>
+    <context:component-scan base-package="com.winterfarmer.virgo.storage.counter.*"/>
+
+    <!--test vedis config start-->
+    <bean id="testJedisPoolFactory" class="com.winterfarmer.virgo.redis.JedisPoolFactory"
+          c:config-ref="jedisPoolConfig"
+          c:connection="${redis.biz.question}"
+          c:timeout="1000"
+          c:password=""/>
+
+    <bean id="testVedisProxy" class="com.winterfarmer.virgo.redis.VedisProxy">
+        <constructor-arg ref="testJedisPoolFactory"/>
+    </bean>
+
+    <bean id="testVedis" factory-bean="testVedisProxy" factory-method="newVedis"/>
+    <!--test Vedis config end-->
+
+    <bean id="testCounterRedisDao" class="com.winterfarmer.virgo.storage.counter.dao.CounterRedisDaoImpl"
+          c:redisBiz="Test"/>
+
+    <bean id="testCounterMysqlDao" class="com.winterfarmer.virgo.storage.counter.dao.CounterMysqlDaoImpl"
+          c:tableName="test_counter"/>
+
+    <bean id="testCounterHybridDao" class="com.winterfarmer.virgo.storage.counter.dao.CounterHybridDaoImpl"
+          c:redisDao-ref="testCounterRedisDao"
+          c:mysqlDao-ref="testCounterMysqlDao"/>
+
+</beans>
