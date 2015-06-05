@@ -9,10 +9,8 @@ import com.winterfarmer.virgo.common.util.ArrayUtil;
 import com.winterfarmer.virgo.knowledge.dao.AnswerCommentMysqlDaoImpl;
 import com.winterfarmer.virgo.knowledge.dao.AnswerMysqlDaoImpl;
 import com.winterfarmer.virgo.knowledge.dao.QuestionMysqlDaoImpl;
-import com.winterfarmer.virgo.knowledge.model.Answer;
-import com.winterfarmer.virgo.knowledge.model.AnswerComment;
-import com.winterfarmer.virgo.knowledge.model.Question;
-import com.winterfarmer.virgo.knowledge.model.QuestionTag;
+import com.winterfarmer.virgo.knowledge.model.*;
+import com.winterfarmer.virgo.storage.counter.dao.CounterDao;
 import com.winterfarmer.virgo.storage.graph.Edge;
 import com.winterfarmer.virgo.storage.graph.dao.GraphDao;
 import com.winterfarmer.virgo.storage.id.dao.IdModelDao;
@@ -67,6 +65,8 @@ public class KnowledgeServiceImpl implements KnowledgeService {
     @Resource(name = "userCollectAnswerGraphMysqlDao")
     GraphDao userCollectAnswerGraphDao;
 
+    @Resource(name = "knowledgeCounterHybridDao")
+    CounterDao knowledgeCounterHybridDao;
 
     //===========================================================================================
 
@@ -86,6 +86,7 @@ public class KnowledgeServiceImpl implements KnowledgeService {
         question = questionDao.insert(question);
 
         questionTagGraphDao.insertOrUpdateEdges(Edge.createEdges(question.getId(), tagIds));
+        setUserQuestionCount(userId, true);
 
         return question;
     }
@@ -143,7 +144,11 @@ public class KnowledgeServiceImpl implements KnowledgeService {
             edge.setState(0);
         }
         questionTagGraphDao.insertOrUpdateEdges(tagged);
-        return questionDao.update(question);
+        question = questionDao.update(question);
+
+        setUserQuestionCount(question.getUserId(), true);
+
+        return question;
     }
 
     @Override
@@ -226,6 +231,11 @@ public class KnowledgeServiceImpl implements KnowledgeService {
         return questionMysqlDao.searchBySubject(keywords, count, page * count);
     }
 
+    private void setUserQuestionCount(long userId, boolean fromWrite) {
+        Integer count = questionMysqlDao.getUserQuestionCount(userId, fromWrite);
+        knowledgeCounterHybridDao.setCount(userId, KnowledgeCounterType.USER_QUESTION_COUNT.getIndex(), count);
+    }
+
     // ========================================================================
 
     @Override
@@ -250,7 +260,10 @@ public class KnowledgeServiceImpl implements KnowledgeService {
         answer.setCreateAtMs(current);
         answer.setUpdateAtMs(current);
 
-        return answerDao.insert(answer);
+        answer = answerDao.insert(answer);
+        setUserAnswerCount(userId, true);
+        setQuestionAnswerCount(questionId, true);
+        return answer;
     }
 
     @Override
@@ -268,7 +281,10 @@ public class KnowledgeServiceImpl implements KnowledgeService {
     public Answer updateAnswerState(Answer answer, CommonState commonState) {
         answer.setUpdateAtMs(System.currentTimeMillis());
         answer.setCommonState(commonState);
-        return answerDao.update(answer);
+        answer = answerDao.update(answer);
+        setUserAnswerCount(answer.getUserId(), true);
+        setQuestionAnswerCount(answer.getQuestionId(), true);
+        return answer;
     }
 
     @Override
@@ -305,6 +321,16 @@ public class KnowledgeServiceImpl implements KnowledgeService {
     public List<Answer> listUserCollectedAnswers(long userId, int page, int count) {
         List<Edge> edgeList = userCollectAnswerGraphDao.queryEdgesByHead(userId, count, page * count);
         return listAnswersAsTail(edgeList);
+    }
+
+    private void setUserAnswerCount(long userId, boolean fromWrite) {
+        Integer count = answerMysqlDao.getUserAnswerCount(userId, fromWrite);
+        knowledgeCounterHybridDao.setCount(userId, KnowledgeCounterType.USER_ANSWERED_COUNT.getIndex(), count);
+    }
+
+    private void setQuestionAnswerCount(long questionId, boolean fromWrite) {
+        Integer count = answerMysqlDao.getQuestionAnswerCount(questionId, fromWrite);
+        knowledgeCounterHybridDao.setCount(questionId, KnowledgeCounterType.QUESTION_ANSWERED_COUNT.getIndex(), count);
     }
 
     // ======================================================================

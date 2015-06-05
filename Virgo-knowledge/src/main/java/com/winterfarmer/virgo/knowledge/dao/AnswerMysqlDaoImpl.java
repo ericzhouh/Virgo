@@ -13,6 +13,7 @@ import com.winterfarmer.virgo.database.helper.column.string.VarcharColumn;
 import com.winterfarmer.virgo.knowledge.model.Answer;
 import com.winterfarmer.virgo.log.VirgoLogger;
 import com.winterfarmer.virgo.storage.id.dao.IdModelMysqlDao;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
 
@@ -134,5 +135,33 @@ public class AnswerMysqlDaoImpl extends IdModelMysqlDao<Answer> {
                 return questionId.getValue(rs);
             }
         }, userId, limit, offset);
+    }
+
+    private static final String SELECT_USER_ANSWER_COUNT =
+            "select count(1) as counter from " + ANSWER_TABLE_NAME + new WhereClauseBuilder(userId.eqWhich()).
+                    and(state.eq(CommonState.NORMAL.getIndex()));
+
+    public Integer getUserAnswerCount(long userId, boolean fromWrite) {
+        JdbcTemplate jdbcTemplate = fromWrite ? getWriteJdbcTemplate() : getReadJdbcTemplate();
+        return queryForObject(jdbcTemplate, SELECT_USER_ANSWER_COUNT, new RowMapper<Integer>() {
+            @Override
+            public Integer mapRow(ResultSet rs, int rowNum) throws SQLException {
+                return rs.getInt("counter");
+            }
+        }, userId);
+    }
+
+    private static final String SELECT_QUESTION_ANSWER_COUNT =
+            "select count(1) as counter from " + ANSWER_TABLE_NAME + new WhereClauseBuilder(questionId.eqWhich()).
+                    and(state.eq(CommonState.NORMAL.getIndex()));
+
+    public Integer getQuestionAnswerCount(long questionId, boolean fromWrite) {
+        JdbcTemplate jdbcTemplate = fromWrite ? getWriteJdbcTemplate() : getReadJdbcTemplate();
+        return queryForObject(jdbcTemplate, SELECT_QUESTION_ANSWER_COUNT, new RowMapper<Integer>() {
+            @Override
+            public Integer mapRow(ResultSet rs, int rowNum) throws SQLException {
+                return rs.getInt("counter");
+            }
+        }, questionId);
     }
 }

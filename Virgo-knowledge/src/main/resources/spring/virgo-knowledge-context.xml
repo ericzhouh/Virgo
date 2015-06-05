@@ -39,4 +39,11 @@
           c:mysqlDao-ref="answerCommentMysqlDao"
           c:redisDao-ref="answerCommentRedisDao"/>
 
+    <bean id="knowledgeCounterRedisDao" class="com.winterfarmer.virgo.storage.counter.dao.CounterRedisDaoImpl"
+          c:redisBiz="KnowledgeCounter"/>
+    <bean id="knowledgeCounterMysqlDao" class="com.winterfarmer.virgo.storage.counter.dao.CounterMysqlDaoImpl"
+          c:tableName="knowledge_counter"/>
+    <bean id="knowledgeCounterHybridDao" class="com.winterfarmer.virgo.storage.counter.dao.CounterHybridDaoImpl"
+          c:redisDao-ref="knowledgeCounterRedisDao"
+          c:mysqlDao-ref="knowledgeCounterMysqlDao"/>
 </beans>

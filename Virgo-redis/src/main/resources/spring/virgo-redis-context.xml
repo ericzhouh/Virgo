@@ -106,4 +106,18 @@
     <bean id="userInfoVedis" factory-bean="userInfoVedisProxy" factory-method="newVedis"/>
     <!--userInfoVedis config end-->
 
+    <!--knowledgeCounterVedis config start-->
+    <bean id="knowledgeCounterJedisPoolFactory" class="com.winterfarmer.virgo.redis.JedisPoolFactory"
+          c:config-ref="jedisPoolConfig"
+          c:connection="${redis.biz.knowledge.counter}"
+          c:timeout="1000"
+          c:password=""/>
+
+    <bean id="knowledgeCounterVedisProxy" class="com.winterfarmer.virgo.redis.VedisProxy">
+        <constructor-arg ref="knowledgeCounterJedisPoolFactory"/>
+    </bean>
+
+    <bean id="knowledgeCounterVedis" factory-bean="knowledgeCounterVedisProxy" factory-method="newVedis"/>
+    <!--knowledgeCounterVedis config end-->
+
 </beans>

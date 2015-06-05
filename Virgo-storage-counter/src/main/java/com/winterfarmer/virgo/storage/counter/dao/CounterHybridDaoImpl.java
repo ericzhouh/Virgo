@@ -27,7 +27,11 @@ public class CounterHybridDaoImpl implements CounterDao {
     }
 
     @Override
-    public boolean setCount(long id, int type, int count) {
+    public boolean setCount(long id, int type, Integer count) {
+        if (count == null) {
+            return false;
+        }
+
         if (mysqlDao.setCount(id, type, count)) {
             return redisDao.setCount(id, type, count);
         } else {

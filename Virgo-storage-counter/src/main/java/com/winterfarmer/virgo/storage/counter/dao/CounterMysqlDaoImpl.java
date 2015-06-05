@@ -58,7 +58,11 @@ public class CounterMysqlDaoImpl extends BaseMysqlDao implements CounterDao {
     }
 
     @Override
-    public boolean setCount(long id, int type, int count) {
+    public boolean setCount(long id, int type, Integer count) {
+        if (count == null) {
+            return false;
+        }
+
         return getWriteJdbcTemplate().update(insertOrUpdateCountSql, id, type, count) > 0;
     }
 }

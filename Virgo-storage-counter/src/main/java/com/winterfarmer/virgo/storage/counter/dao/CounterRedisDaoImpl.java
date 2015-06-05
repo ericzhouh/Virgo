@@ -35,7 +35,11 @@ public class CounterRedisDaoImpl implements CounterDao {
     }
 
     @Override
-    public boolean setCount(long id, int type, int count) {
+    public boolean setCount(long id, int type, Integer count) {
+        if (count == null) {
+            return false;
+        }
+        
         String key = getKey(id, type);
         String result = vedis.set(key, Integer.toString(count));
         return StringUtils.equals(result, "OK");

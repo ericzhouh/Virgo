@@ -240,7 +240,7 @@ public class BaseMysqlDao {
         public String build() {
             String whereClause;
             if (StringUtils.isBlank(this.whereClause)) {
-                whereClause = "";
+                whereClause = " ";
             } else {
                 whereClause = " where " + this.whereClause + " ";
             }

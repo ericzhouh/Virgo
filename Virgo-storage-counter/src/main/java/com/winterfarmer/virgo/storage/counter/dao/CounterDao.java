@@ -6,5 +6,5 @@ package com.winterfarmer.virgo.storage.counter.dao;
 public interface CounterDao {
     Integer getCount(long id, int type);
 
-    boolean setCount(long id, int type, int count);
+    boolean setCount(long id, int type, Integer count);
 }

@@ -12,4 +12,5 @@ public enum RedisBiz {
     Answer,
     AnswerComment,
     UserInfo,
+    KnowledgeCounter,
 }

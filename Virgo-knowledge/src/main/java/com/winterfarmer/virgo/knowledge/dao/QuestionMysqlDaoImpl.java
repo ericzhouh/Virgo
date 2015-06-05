@@ -13,6 +13,7 @@ import com.winterfarmer.virgo.database.helper.column.string.VarcharColumn;
 import com.winterfarmer.virgo.knowledge.model.Question;
 import com.winterfarmer.virgo.log.VirgoLogger;
 import com.winterfarmer.virgo.storage.id.dao.IdModelMysqlDao;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
 
@@ -93,6 +94,20 @@ public class QuestionMysqlDaoImpl extends IdModelMysqlDao<Question> {
 
     public List<Question> searchBySubject(String keywords, int limit, int offset) {
         return queryForList(getReadJdbcTemplate(), SELECT_QUESTIONS_BY_SUBJECT, rowMapper, "%" + keywords + "%", limit, offset);
+    }
+
+    private static final String SELECT_USER_QUESTION_COUNT =
+            "select count(1) as counter from " + QUESTION_TABLE_NAME + new WhereClauseBuilder(userId.eqWhich()).
+                    and(state.eq(CommonState.NORMAL.getIndex()));
+
+    public Integer getUserQuestionCount(long userId, boolean fromWrite) {
+        JdbcTemplate jdbcTemplate = fromWrite ? getWriteJdbcTemplate() : getReadJdbcTemplate();
+        return queryForObject(jdbcTemplate, SELECT_USER_QUESTION_COUNT, new RowMapper<Integer>() {
+            @Override
+            public Integer mapRow(ResultSet rs, int rowNum) throws SQLException {
+                return rs.getInt("counter");
+            }
+        }, userId);
     }
 
     private static final String INSERT_QUESTION_SQL = insertIntoSQL(QUESTION_TABLE_NAME,
