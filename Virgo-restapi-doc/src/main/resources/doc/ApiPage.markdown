@@ -46,6 +46,11 @@ curl  {curlPostParam} "{protocol}://this_is_fake_demo{requestURI}{curlGetParam}"
 ==============
 {cautions}
 
+错误信息
+==============
+HTTP状态码 |错误码|错误信息
+-----------------|----------|--------------
+{errors}
 
 返回结果示例
 ===============

@@ -8,6 +8,7 @@ import com.winterfarmer.virgo.base.annotation.ApiMode;
 import com.winterfarmer.virgo.base.model.CommonResult;
 import com.winterfarmer.virgo.restapi.core.annotation.ParamSpec;
 import com.winterfarmer.virgo.restapi.core.annotation.RestApiInfo;
+import com.winterfarmer.virgo.restapi.core.exception.RestExceptionFactor;
 import com.winterfarmer.virgo.restapi.core.param.AbstractParamSpec;
 import com.winterfarmer.virgo.restapi.core.param.ParamSpecFactory;
 import org.apache.commons.lang3.ArrayUtils;
@@ -61,6 +62,7 @@ public class WikiPageGenerator extends DocGenerator {
         rstMap.put("{authPolicy}", restApiInfo.authPolicy().name());
         String cautions = resolveStringArray("> ", restApiInfo.cautions());
         rstMap.put("{cautions}", StringUtils.isBlank(cautions) ? "无" : cautions);
+        rstMap.put("{errors}", resolveErrors(restApiInfo.errors()));
         Class returnType = this.resourceMethod.getReturnType();
         boolean isCollection = false;
         if (returnType.isArray()
@@ -75,6 +77,27 @@ public class WikiPageGenerator extends DocGenerator {
         rstMap.putAll(resolveParamTable());
 
         return rstMap;
+    }
+
+    private String resolveErrors(RestExceptionFactor[] errors) {
+        StringBuilder sb = new StringBuilder();
+        sb.append(RestExceptionFactor.INVALID_PARAM.getHttpErrorCode()).
+                append("|").append(RestExceptionFactor.INVALID_PARAM.getInnerErrorCode())
+                .append("|").append(RestExceptionFactor.INVALID_PARAM.getReason()).append(NEWLINE);
+
+        sb.append(RestExceptionFactor.MISSING_PARAM.getHttpErrorCode()).
+                append("|").append(RestExceptionFactor.MISSING_PARAM.getInnerErrorCode())
+                .append("|").append(RestExceptionFactor.MISSING_PARAM.getReason()).append(NEWLINE);
+
+        sb.append(RestExceptionFactor.INTERNAL_SERVER_ERROR.getHttpErrorCode()).
+                append("|").append(RestExceptionFactor.INTERNAL_SERVER_ERROR.getInnerErrorCode())
+                .append("|").append(RestExceptionFactor.INTERNAL_SERVER_ERROR.getReason()).append(NEWLINE);
+
+        for (RestExceptionFactor ref : errors) {
+            sb.append(ref.getHttpErrorCode()).append("|").append(ref.getInnerErrorCode()).append("|").append(ref.getReason()).append(NEWLINE);
+        }
+
+        return sb.toString();
     }
 
     private String resolveDemoJSON(boolean isCollection, Class returnType) {
