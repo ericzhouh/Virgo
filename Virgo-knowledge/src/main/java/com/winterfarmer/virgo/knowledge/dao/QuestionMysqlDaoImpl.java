@@ -75,14 +75,14 @@ public class QuestionMysqlDaoImpl extends IdModelMysqlDao<Question> {
     }
 
     private static final String SELECT_QUESTIONS =
-            selectAllSql(QUESTION_TABLE_NAME) + new WhereClauseBuilder(state.getName() + "=1 ").limitOffset();
+            selectAllSql(QUESTION_TABLE_NAME) + new WhereClauseBuilder(state.getName() + "=1 ").orderBy(createAtMs).limitOffset();
 
     public List<Question> list(int limit, int offset) {
         return queryForList(getReadJdbcTemplate(), SELECT_QUESTIONS, rowMapper, limit, offset);
     }
 
     private static final String SELECT_QUESTIONS_BY_USER =
-            selectAllSql(QUESTION_TABLE_NAME) + new WhereClauseBuilder(userId.eqWhich()).and(state.eq(1)).limitOffset();
+            selectAllSql(QUESTION_TABLE_NAME) + new WhereClauseBuilder(userId.eqWhich()).and(state.eq(1)).orderBy(createAtMs).limitOffset();
 
     public List<Question> listByUser(long userId, int limit, int offset) {
         return queryForList(getReadJdbcTemplate(), SELECT_QUESTIONS_BY_USER, rowMapper, userId, limit, offset);

@@ -111,16 +111,28 @@ public class AnswerMysqlDaoImpl extends IdModelMysqlDao<Answer> {
     }
 
     private static final String SELECT_ANSWERS_BY_QUESTION_ID =
-            selectAllSql(ANSWER_TABLE_NAME) + new WhereClauseBuilder(questionId.eqWhich()).and(state.eq(1)).limitOffset();
+            selectAllSql(ANSWER_TABLE_NAME) + new WhereClauseBuilder(questionId.eqWhich()).and(state.eq(1)).orderBy(createAtMs).limitOffset();
 
     public List<Answer> listByQuestionId(long questionId, int limit, int offset) {
         return queryForList(getReadJdbcTemplate(), SELECT_ANSWERS_BY_QUESTION_ID, rowMapper, questionId, limit, offset);
     }
 
     private static final String SELECT_ANSWERS_BY_USER_ID =
-            selectAllSql(ANSWER_TABLE_NAME) + new WhereClauseBuilder(userId.eqWhich()).and(state.eq(1)).limitOffset();
+            selectAllSql(ANSWER_TABLE_NAME) + new WhereClauseBuilder(userId.eqWhich()).and(state.eq(1)).orderBy(createAtMs).limitOffset();
 
     public List<Answer> listByUserId(long userId, int limit, int offset) {
         return queryForList(getReadJdbcTemplate(), SELECT_ANSWERS_BY_USER_ID, rowMapper, userId, limit, offset);
+    }
+
+    private static final String SELECT_QUESTION_ID_BY_USER_ID =
+            selectSql(ANSWER_TABLE_NAME, questionId) + new WhereClauseBuilder(userId.eqWhich()).and(state.eq(1)).orderBy(createAtMs).limitOffset();
+
+    public List<Long> listQuestionIdByUserId(long userId, int limit, int offset) {
+        return queryForList(getReadJdbcTemplate(), SELECT_QUESTION_ID_BY_USER_ID, new RowMapper<Long>() {
+            @Override
+            public Long mapRow(ResultSet rs, int rowNum) throws SQLException {
+                return questionId.getValue(rs);
+            }
+        }, userId, limit, offset);
     }
 }

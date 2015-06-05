@@ -230,7 +230,12 @@ public class KnowledgeServiceImpl implements KnowledgeService {
 
     @Override
     public List<Question> listUserAnsweredQuestions(long userId, int page, int count) {
-        return null;
+        List<Long> questionIdList = answerMysqlDao.listQuestionIdByUserId(userId, count, page * count);
+        if (CollectionUtils.isEmpty(questionIdList)) {
+            return Lists.newArrayList();
+        } else {
+            return questionDao.listByIds(ArrayUtil.toLongArray(questionIdList));
+        }
     }
 
     @Override
