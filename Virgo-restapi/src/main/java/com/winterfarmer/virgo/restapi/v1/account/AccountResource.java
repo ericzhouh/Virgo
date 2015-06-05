@@ -319,7 +319,7 @@ public class AccountResource extends BaseResource {
             @ParamSpec(isRequired = true, spec = NICK_NAME_SPEC, desc = NICK_NAME_DESC)
             String nickName,
             @FormParam("tags")
-            @ParamSpec(isRequired = true, spec = "1~100", desc = "逗号分开的tag,最多5个")
+            @ParamSpec(isRequired = true, spec = "string:1~100", desc = "逗号分开的tag,最多5个")
             String tagsString,
             @FormParam("reason")
             @ParamSpec(isRequired = true, spec = "UnicodeString:10~500", desc = "申请理由, 最少10个字")
@@ -520,7 +520,7 @@ public class AccountResource extends BaseResource {
     @Produces(MediaType.APPLICATION_JSON)
     public CommonResult userFollowTag(
             @FormParam("tag_id")
-            @ParamSpec(isRequired = true, spec = "long:[1000~2000]", desc = "标签id")
+            @ParamSpec(isRequired = true, spec = "long:[1000,2000]", desc = "标签id")
             long tagId,
             @FormParam("state")
             @ParamSpec(isRequired = true, spec = COMMON_STATE_SPEC, desc = "是否关注: {0,1}->{not follow, follow}")
