@@ -12,6 +12,7 @@ import com.winterfarmer.virgo.knowledge.dao.QuestionMysqlDaoImpl;
 import com.winterfarmer.virgo.knowledge.model.*;
 import com.winterfarmer.virgo.storage.counter.dao.CounterDao;
 import com.winterfarmer.virgo.storage.graph.Edge;
+import com.winterfarmer.virgo.storage.graph.HeadVertex;
 import com.winterfarmer.virgo.storage.graph.dao.GraphDao;
 import com.winterfarmer.virgo.storage.id.dao.IdModelDao;
 import org.apache.commons.collections4.CollectionUtils;
@@ -23,6 +24,7 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -430,7 +432,53 @@ public class KnowledgeServiceImpl implements KnowledgeService {
     }
 
     // ======================================================================
+    // TODO: 考虑用FeatureTask进行优化
+    @Override
+    public Map<KnowledgeCounterType, Integer> getUserCounter(Collection<KnowledgeCounterType> counterTypes, long userId) {
+        Map<KnowledgeCounterType, Integer> map = Maps.newHashMap();
+        for (KnowledgeCounterType knowledgeCounterType : counterTypes) {
+            map.put(knowledgeCounterType, getUserCounter(knowledgeCounterType, userId));
+        }
+        return map;
+    }
 
+    private Integer getUserCounter(KnowledgeCounterType knowledgeCounterType, long userId) {
+        switch (knowledgeCounterType) {
+            case USER_QUESTION_COUNT:
+                return getUserQuestionCounter(userId);
+            case USER_ANSWERED_COUNT:
+                return getUserAnsweredCounter(userId);
+            case USER_OBTAIN_AGREE_COUNT:
+                return getUserObtainAgreeCounter(userId);
+            case USER_COLLECT_COUNT:
+                return getUserCollectCounter(userId);
+            default:
+                return 0;
+        }
+    }
+
+    private Integer getUserQuestionCounter(long userId) {
+        return knowledgeCounterHybridDao.getCount(userId, KnowledgeCounterType.USER_QUESTION_COUNT.getIndex());
+    }
+
+    private Integer getUserAnsweredCounter(long userId) {
+        return knowledgeCounterHybridDao.getCount(userId, KnowledgeCounterType.USER_ANSWERED_COUNT.getIndex());
+    }
+
+    private Integer getUserObtainAgreeCounter(long userId) {
+        return knowledgeCounterHybridDao.getCount(userId, KnowledgeCounterType.USER_OBTAIN_AGREE_COUNT.getIndex());
+    }
+
+    private Integer getUserCollectCounter(long userId) {
+        HeadVertex headVertex = userCollectAnswerGraphDao.queryHeadVertex(userId);
+        if (headVertex == null) {
+            return 0;
+        } else {
+            return headVertex.getDegree();
+        }
+    }
+
+    // ======================================================================
     private List<Question> listQuestionsAsHead(List<Edge> edgeList) {
         List<Long> idList = Edge.listHeads(edgeList);
         long[] ids = ArrayUtil.toLongArray(idList);

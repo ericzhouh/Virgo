@@ -1,13 +1,12 @@
 package com.winterfarmer.virgo.knowledge.service;
 
 import com.winterfarmer.virgo.base.model.CommonState;
-import com.winterfarmer.virgo.knowledge.model.Answer;
-import com.winterfarmer.virgo.knowledge.model.AnswerComment;
-import com.winterfarmer.virgo.knowledge.model.Question;
-import com.winterfarmer.virgo.knowledge.model.QuestionTag;
+import com.winterfarmer.virgo.knowledge.model.*;
 import org.apache.commons.lang3.tuple.Pair;
 
+import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by yangtianhang on 15/5/13.
@@ -152,4 +151,7 @@ public interface KnowledgeService {
     AnswerComment updateAnswerCommentState(AnswerComment answerComment, CommonState commonState);
 
     List<AnswerComment> listAnswerComments(long answerId, int page, int count);
+
+    // ========================================================================
+    Map<KnowledgeCounterType, Integer> getUserCounter(Collection<KnowledgeCounterType> counterTypes, long userId);
 }

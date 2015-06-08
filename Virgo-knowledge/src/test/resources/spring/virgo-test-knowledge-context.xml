@@ -37,4 +37,7 @@
     <bean id="hybridAnswerCommentDao" class="com.winterfarmer.virgo.storage.id.dao.IdModelHybridDao"
           c:mysqlDao-ref="answerCommentMysqlDao"
           c:redisDao-ref="answerCommentRedisDao"/>
+
+    <bean id="knowledgeCounterMysqlDao" class="com.winterfarmer.virgo.storage.counter.dao.CounterMysqlDaoImpl"
+          c:tableName="knowledge_counter"/>
 </beans>

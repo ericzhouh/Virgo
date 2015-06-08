@@ -4,6 +4,7 @@ import com.winterfarmer.virgo.knowledge.dao.AnswerCommentMysqlDaoImpl;
 import com.winterfarmer.virgo.knowledge.dao.AnswerMysqlDaoImpl;
 import com.winterfarmer.virgo.knowledge.dao.QuestionMysqlDaoImpl;
 import com.winterfarmer.virgo.knowledge.model.Question;
+import com.winterfarmer.virgo.storage.counter.dao.CounterMysqlDaoImpl;
 import org.junit.FixMethodOrder;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -19,7 +20,7 @@ import java.util.List;
  */
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(locations = {"classpath:spring/virgo-test-knowledge-context.xml"})
+@ContextConfiguration(locations = {"classpath:spring/virgo-knowledge-context.xml"})
 public class TestKnowledgeDao {
     @Resource(name = "questionMysqlDao")
     QuestionMysqlDaoImpl questionMysqlDao;
@@ -30,11 +31,15 @@ public class TestKnowledgeDao {
     @Resource(name = "answerCommentMysqlDao")
     AnswerCommentMysqlDaoImpl answerCommentMysqlDao;
 
+    @Resource(name ="knowledgeCounterMysqlDao")
+    CounterMysqlDaoImpl knowledgeCounterMysqlDao;
+
     @Test
     public void initDao() {
-        questionMysqlDao.initTable(false);
-        answerMysqlDao.initTable(false);
-        answerCommentMysqlDao.initTable(false);
+        knowledgeCounterMysqlDao.initTable(true);
+//        questionMysqlDao.initTable(false);
+//        answerMysqlDao.initTable(false);
+//        answerCommentMysqlDao.initTable(false);
     }
 
     @Test

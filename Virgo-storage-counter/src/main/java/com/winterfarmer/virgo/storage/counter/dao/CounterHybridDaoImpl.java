@@ -21,6 +21,8 @@ public class CounterHybridDaoImpl implements CounterDao {
         count = mysqlDao.getCount(id, type);
         if (count != null) {
             redisDao.setCount(id, type, count);
+        } else {
+            redisDao.setCount(id, type, 0);
         }
 
         return count;

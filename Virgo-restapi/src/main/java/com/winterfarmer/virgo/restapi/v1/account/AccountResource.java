@@ -1,9 +1,11 @@
 package com.winterfarmer.virgo.restapi.v1.account;
 
+import com.google.common.collect.Lists;
 import com.winterfarmer.virgo.account.model.*;
 import com.winterfarmer.virgo.account.service.AccountService;
 import com.winterfarmer.virgo.aggregator.model.ApiQuestionTag;
 import com.winterfarmer.virgo.aggregator.model.ApiUser;
+import com.winterfarmer.virgo.aggregator.model.ApiUserCounter;
 import com.winterfarmer.virgo.base.Exception.MobileNumberException;
 import com.winterfarmer.virgo.base.Exception.UnexpectedVirgoException;
 import com.winterfarmer.virgo.base.model.CommonResult;
@@ -12,6 +14,7 @@ import com.winterfarmer.virgo.base.service.SmsService;
 import com.winterfarmer.virgo.common.util.AccountUtil;
 import com.winterfarmer.virgo.common.util.ArrayUtil;
 import com.winterfarmer.virgo.common.util.StringUtil;
+import com.winterfarmer.virgo.knowledge.model.KnowledgeCounterType;
 import com.winterfarmer.virgo.knowledge.model.QuestionTag;
 import com.winterfarmer.virgo.knowledge.service.KnowledgeService;
 import com.winterfarmer.virgo.log.VirgoLogger;
@@ -31,6 +34,7 @@ import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import java.sql.Date;
 import java.util.List;
+import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -505,6 +509,38 @@ public class AccountResource extends BaseResource {
         }
 
         return apiUser;
+    }
+
+    @Path("user_counter.json")
+    @GET
+    @Produces(MediaType.APPLICATION_JSON)
+    @RestApiInfo(
+            desc = "获取用户相关的计数",
+            authPolicy = RestApiInfo.AuthPolicy.PUBLIC,
+            resultDemo = ApiUser.class,
+            errors = {RestExceptionFactor.USER_ID_NOT_EXISTED}
+    )
+    public ApiUserCounter getUserCounter(
+            @QueryParam("user_id")
+            @ParamSpec(isRequired = true, spec = USER_ID_SPEC, desc = USER_ID_DESC)
+            long userId,
+            @QueryParam("counter_types")
+            @ParamSpec(isRequired = true, spec = "string:1~100", desc = "types,用逗号分开{1,2,3,4}->{提问数,回答数,获得赞的个数,收藏答案数}")
+            String counterTypes
+    ) {
+        checkAndGetUserInfo(userId);
+        int[] types = StringUtil.splitIntCommaString(counterTypes);
+        List<KnowledgeCounterType> counterTypeList = Lists.newArrayList();
+        for (int type : types) {
+            KnowledgeCounterType counterType = KnowledgeCounterType.valueByIndex(type);
+            if (counterType != null) {
+                counterTypeList.add(counterType);
+            }
+        }
+
+        Map<KnowledgeCounterType, Integer> map = knowledgeService.getUserCounter(counterTypeList, userId);
+        ApiUserCounter apiUserCounter = new ApiUserCounter(map);
+        return apiUserCounter;
     }
 
     @Path("user_follow_tag.json")
