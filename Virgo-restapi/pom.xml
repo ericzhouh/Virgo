@@ -62,6 +62,12 @@
             <version>${project.version}</version>
         </dependency>
 
+        <dependency>
+            <groupId>com.winterfarmer</groupId>
+            <artifactId>Virgo-qiniu</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+
     </dependencies>
 
     <build>

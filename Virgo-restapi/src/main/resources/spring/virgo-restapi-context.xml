@@ -8,6 +8,7 @@
     <import resource="classpath:spring/virgo-account-context.xml"/>
     <import resource="classpath:spring/virgo-vehicle-context.xml"/>
     <import resource="classpath:spring/virgo-knowledge-context.xml"/>
+    <import resource="classpath:spring/virgo-qiniu-context.xml"/>
     <import resource="classpath:spring/restapi-core-context.xml"/>
 
     <context:annotation-config/>
