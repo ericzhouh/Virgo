@@ -10,7 +10,6 @@ import com.winterfarmer.virgo.restapi.core.annotation.ResourceOverview;
 import com.winterfarmer.virgo.restapi.core.annotation.RestApiInfo;
 import org.springframework.stereotype.Component;
 
-import javax.annotation.Resource;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 
@@ -21,8 +20,7 @@ import javax.ws.rs.core.MediaType;
 @ResourceOverview(desc = "七牛文件接口")
 @Component("qiniuResource")
 public class QiniuResource extends BaseResource {
-    @Resource(name = "qiniuService")
-    QiniuService qiniuService;
+    QiniuService qiniuService = new QiniuService();
 
     @Path("token.json")
     @GET
