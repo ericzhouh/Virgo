@@ -29,7 +29,7 @@ public class QiniuResource extends BaseResource {
     @RestApiInfo(
             desc = "上传的token",
             authPolicy = RestApiInfo.AuthPolicy.OAUTH,
-            resultDemo = ApiQuestion.class,
+            resultDemo = CommonResult.class,
             errors = {}
     )
     @Produces(MediaType.APPLICATION_JSON)
