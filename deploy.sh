@@ -20,7 +20,9 @@ mvn -U clean package
 #echo "building virgo complete"
 
 echo "shutdown tomcat..."
-${TOMCAT_BIN_PATH}/shutdown.sh
+pid=`ps aux | grep tomcat | grep -i virgo |awk '{print $2}'`
+kill -9 ${pid}
+grep tomcat
 echo "shutdown tomcat complete"
 
 echo "mv package..."

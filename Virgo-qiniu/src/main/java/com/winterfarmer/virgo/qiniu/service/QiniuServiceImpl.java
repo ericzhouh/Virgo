@@ -1,18 +1,20 @@
-package com.winterfarmer.virgo.qiniu;
+package com.winterfarmer.virgo.qiniu.service;
 
 import com.qiniu.util.Auth;
+import com.winterfarmer.virgo.qiniu.BucketType;
 import org.springframework.stereotype.Service;
 
 /**
  * Created by yangtianhang on 15/5/20.
  */
 @Service("qiniuService")
-public class QiniuService {
+public class QiniuServiceImpl implements QiniuService {
     private static final String ACCESS_KEY = "1DAfo7Xx2yRt9_o0W8DeVxYzFmxLXDCD0CNOIywU";
     private static final String SECRET_KEY = "Ye79V0TWj-qdDXhqP3DLC5hHky_h-hdEBnxN4HU1";
 
     private static final Auth auth = Auth.create(ACCESS_KEY, SECRET_KEY);
 
+    @Override
     public String getUpToken(BucketType bucketType) {
         return auth.uploadToken(bucketType.getBizName(), null, bucketType.getExpireS(), null, true);
     }
@@ -23,7 +25,7 @@ public class QiniuService {
 //        System.out.println(token);
 //        File file = new File("/Users/yangtianhang/Documents/1.pic.jpg");
 //        MyRet ret = qiniuService.testUpload(token, null, file);
-//        System.out.println("fsize=" + ret.fsize);
+//        System.out.println("fsize=" + ret.fsize);ac'c
 //        System.out.println("key=" + ret.key);
 //        System.out.println("hash=" + ret.hash);
 //        System.out.println("width=" + ret.width);

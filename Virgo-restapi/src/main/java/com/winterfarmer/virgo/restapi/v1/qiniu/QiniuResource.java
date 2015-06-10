@@ -1,15 +1,14 @@
 package com.winterfarmer.virgo.restapi.v1.qiniu;
 
-import com.winterfarmer.virgo.aggregator.model.ApiAnswer;
-import com.winterfarmer.virgo.aggregator.model.ApiQuestion;
 import com.winterfarmer.virgo.base.model.CommonResult;
 import com.winterfarmer.virgo.qiniu.BucketType;
-import com.winterfarmer.virgo.qiniu.QiniuService;
+import com.winterfarmer.virgo.qiniu.service.QiniuService;
 import com.winterfarmer.virgo.restapi.BaseResource;
 import com.winterfarmer.virgo.restapi.core.annotation.ResourceOverview;
 import com.winterfarmer.virgo.restapi.core.annotation.RestApiInfo;
 import org.springframework.stereotype.Component;
 
+import javax.annotation.Resource;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 
@@ -20,7 +19,8 @@ import javax.ws.rs.core.MediaType;
 @ResourceOverview(desc = "七牛文件接口")
 @Component("qiniuResource")
 public class QiniuResource extends BaseResource {
-    QiniuService qiniuService = new QiniuService();
+    @Resource(name = "qiniuService")
+    QiniuService qiniuService;
 
     @Path("token.json")
     @GET
