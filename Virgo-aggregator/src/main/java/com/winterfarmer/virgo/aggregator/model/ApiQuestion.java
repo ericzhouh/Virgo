@@ -45,6 +45,18 @@ public class ApiQuestion {
     @ApiField(desc = "标签列表")
     private List<ApiQuestionTag> tags;
 
+    @JSONField(name = "user")
+    @ApiField(desc = "提问者")
+    private ApiUser user;
+
+    public ApiUser getUser() {
+        return user;
+    }
+
+    public void setUser(ApiUser user) {
+        this.user = user;
+    }
+
     public long getQuestionId() {
         return questionId;
     }

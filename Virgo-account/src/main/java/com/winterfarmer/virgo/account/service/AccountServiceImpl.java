@@ -317,6 +317,12 @@ public class AccountServiceImpl implements AccountService {
         return Edge.listTails(edgeList);
     }
 
+    @Override
+    public List<Long> getExpertTags(long userId) {
+        List<Edge> edgeList = userApplyExpertTagGraphMysqlDao.queryEdgesByHead(userId, 100, 0);
+        return Edge.listTails(edgeList);
+    }
+
     private Long getUserIdByMobile(String mobile) {
         Long userId = accountRedisDao.getUserIdByMobile(mobile);
         if (userId != null) {

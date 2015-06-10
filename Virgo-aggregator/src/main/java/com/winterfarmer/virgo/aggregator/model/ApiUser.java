@@ -51,6 +51,11 @@ public class ApiUser {
     @ApiField(desc = "用户类型 {0,1}->{普通,专家}")
     private int userType;
 
+    //==============专家相关============
+    @JSONField(name = "expert_tag")
+    @ApiField(desc = "擅长领域的标签")
+    private List<ApiQuestionTag> expertTags;
+
     //==============以下是申请专家相关============
     @JSONField(name = "applying_expert_reason")
     @ApiField(desc = "申请成为专家的理由")
@@ -67,6 +72,20 @@ public class ApiUser {
     @JSONField(name = "applying_expert_tag")
     @ApiField(desc = "申请的擅长领域的标签")
     private List<ApiQuestionTag> applyingExpertTags;
+
+    public static ApiUser simpleUser(UserInfo userInfo) {
+        ApiUser apiUser = new ApiUser();
+        apiUser.setNickName(userInfo.getNickName());
+        apiUser.setPortrait(StaticFileUtil.getPortraitUrl(userInfo.getPortrait()));
+        apiUser.setUserId(userInfo.getUserId());
+        apiUser.setUserType(userInfo.getUserType().getIndex());
+
+        return apiUser;
+    }
+
+    private ApiUser() {
+
+    }
 
     public ApiUser(UserInfo userInfo) {
         this.userId = userInfo.getUserId();
@@ -190,5 +209,13 @@ public class ApiUser {
 
     public void setApplyingExpertTags(List<ApiQuestionTag> applyingExpertTags) {
         this.applyingExpertTags = applyingExpertTags;
+    }
+
+    public List<ApiQuestionTag> getExpertTags() {
+        return expertTags;
+    }
+
+    public void setExpertTags(List<ApiQuestionTag> expertTags) {
+        this.expertTags = expertTags;
     }
 }

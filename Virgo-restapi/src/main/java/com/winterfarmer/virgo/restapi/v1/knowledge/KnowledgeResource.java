@@ -1,5 +1,6 @@
 package com.winterfarmer.virgo.restapi.v1.knowledge;
 
+import com.winterfarmer.virgo.account.service.AccountService;
 import com.winterfarmer.virgo.base.model.CommonState;
 import com.winterfarmer.virgo.knowledge.model.Answer;
 import com.winterfarmer.virgo.knowledge.model.Question;
@@ -16,6 +17,9 @@ import javax.annotation.Resource;
 public abstract class KnowledgeResource extends BaseResource {
     @Resource(name = "knowledgeService")
     KnowledgeService knowledgeService;
+
+    @Resource(name = "accountService")
+    AccountService accountService;
 
     protected static final String ANSWER_ID_DESC = "答案id";
     protected static final String QUESTION_ID_DESC = "问题id";

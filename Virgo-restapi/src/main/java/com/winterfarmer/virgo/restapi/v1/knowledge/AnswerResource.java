@@ -2,12 +2,18 @@ package com.winterfarmer.virgo.restapi.v1.knowledge;
 
 import com.google.common.base.Function;
 import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
+import com.winterfarmer.virgo.account.model.UserInfo;
+import com.winterfarmer.virgo.account.model.UserType;
 import com.winterfarmer.virgo.aggregator.model.ApiAnswer;
 import com.winterfarmer.virgo.aggregator.model.ApiQuestion;
+import com.winterfarmer.virgo.aggregator.model.ApiQuestionTag;
+import com.winterfarmer.virgo.aggregator.model.ApiUser;
 import com.winterfarmer.virgo.base.model.CommonResult;
 import com.winterfarmer.virgo.base.model.CommonState;
 import com.winterfarmer.virgo.knowledge.model.Answer;
 import com.winterfarmer.virgo.knowledge.model.Question;
+import com.winterfarmer.virgo.knowledge.model.QuestionTag;
 import com.winterfarmer.virgo.restapi.core.annotation.ParamSpec;
 import com.winterfarmer.virgo.restapi.core.annotation.ResourceOverview;
 import com.winterfarmer.virgo.restapi.core.annotation.RestApiInfo;
@@ -20,6 +26,7 @@ import org.springframework.stereotype.Component;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by yangtianhang on 15/5/17.
@@ -233,7 +240,8 @@ public class AnswerResource extends KnowledgeResource {
             @DefaultValue(NORMAL_DEFAULT_PAGE_COUNT)
             int count) {
         List<Answer> answerList = knowledgeService.listAnswers(questionId, page, count);
-        return Lists.transform(answerList, apiAnswerListConverter);
+        List<ApiAnswer> apiAnswerList = Lists.transform(answerList, apiAnswerListConverter);
+        return addUserInfo(apiAnswerList);
     }
 
     @Path("answer_detail.json")
@@ -278,5 +286,26 @@ public class AnswerResource extends KnowledgeResource {
         }
 
         return refinedContentAndImageIds;
+    }
+
+    private List<ApiAnswer> addUserInfo(List<ApiAnswer> apiAnswerList) {
+        Map<Long, ApiUser> userMap = Maps.newHashMap();
+        for (ApiAnswer apiAnswer : apiAnswerList) {
+            long userId = apiAnswer.getUserId();
+            if (!userMap.containsKey(userId)) {
+                UserInfo userInfo = accountService.getUserInfo(userId);
+                ApiUser apiUser = ApiUser.simpleUser(userInfo);
+                if (userInfo.getUserType() == UserType.EXPERT) {
+                    List<Long> tagIdList = accountService.getExpertTags(userInfo.getUserId());
+                    List<QuestionTag> questionTagList = knowledgeService.listQuestionTag(tagIdList);
+                    apiUser.setExpertTags(ApiQuestionTag.from(questionTagList));
+                }
+                userMap.put(userId, apiUser);
+            }
+
+            apiAnswer.setUser(userMap.get(userId));
+        }
+
+        return apiAnswerList;
     }
 }

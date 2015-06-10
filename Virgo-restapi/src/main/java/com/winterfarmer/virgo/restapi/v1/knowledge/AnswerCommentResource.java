@@ -2,9 +2,12 @@ package com.winterfarmer.virgo.restapi.v1.knowledge;
 
 import com.google.common.base.Function;
 import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
+import com.winterfarmer.virgo.account.model.UserInfo;
 import com.winterfarmer.virgo.aggregator.model.ApiAnswer;
 import com.winterfarmer.virgo.aggregator.model.ApiAnswerComment;
 import com.winterfarmer.virgo.aggregator.model.ApiQuestion;
+import com.winterfarmer.virgo.aggregator.model.ApiUser;
 import com.winterfarmer.virgo.base.model.CommonResult;
 import com.winterfarmer.virgo.base.model.CommonState;
 import com.winterfarmer.virgo.knowledge.model.AnswerComment;
@@ -18,6 +21,7 @@ import org.springframework.stereotype.Component;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by yangtianhang on 15/5/29.
@@ -102,11 +106,29 @@ public class AnswerCommentResource extends KnowledgeResource {
             int count) {
         checkAndGetAnswer(answerId);
         List<AnswerComment> answerCommentList = knowledgeService.listAnswerComments(answerId, page, count);
-        return Lists.transform(answerCommentList, new Function<AnswerComment, ApiAnswerComment>() {
+        List<ApiAnswerComment> apiAnswerCommentList = Lists.transform(answerCommentList, new Function<AnswerComment, ApiAnswerComment>() {
             @Override
             public ApiAnswerComment apply(AnswerComment answerComment) {
                 return new ApiAnswerComment(answerComment);
             }
         });
+        return addUserInfo(apiAnswerCommentList);
     }
+
+    private List<ApiAnswerComment> addUserInfo(List<ApiAnswerComment> apiCommentList) {
+        Map<Long, ApiUser> userMap = Maps.newHashMap();
+        for (ApiAnswerComment apiComment : apiCommentList) {
+            long userId = apiComment.getUserId();
+            if (!userMap.containsKey(userId)) {
+                UserInfo userInfo = accountService.getUserInfo(userId);
+                ApiUser apiUser = ApiUser.simpleUser(userInfo);
+                userMap.put(userId, apiUser);
+            }
+
+            apiComment.setUser(userMap.get(userId));
+        }
+
+        return apiCommentList;
+    }
+
 }

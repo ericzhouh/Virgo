@@ -60,4 +60,6 @@ public interface AccountService {
     boolean followTag(long userId, long tagId, CommonState state);
 
     List<Long> listFollowTags(long userId);
+
+    List<Long> getExpertTags(long userId);
 }

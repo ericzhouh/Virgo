@@ -2,8 +2,11 @@ package com.winterfarmer.virgo.restapi.v1.knowledge;
 
 import com.google.common.base.Function;
 import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
+import com.winterfarmer.virgo.account.model.UserInfo;
 import com.winterfarmer.virgo.aggregator.model.ApiQuestion;
 import com.winterfarmer.virgo.aggregator.model.ApiQuestionTag;
+import com.winterfarmer.virgo.aggregator.model.ApiUser;
 import com.winterfarmer.virgo.base.model.CommonResult;
 import com.winterfarmer.virgo.base.model.CommonState;
 import com.winterfarmer.virgo.common.util.ArrayUtil;
@@ -23,6 +26,7 @@ import org.springframework.stereotype.Component;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by yangtianhang on 15/5/15.
@@ -257,7 +261,8 @@ public class QuestionResource extends KnowledgeResource {
         List<Question> questionList = tagId == 0 ?
                 knowledgeService.listQuestions(page, count) :
                 knowledgeService.listQuestions(tagId, page, count);
-        return Lists.transform(questionList, apiQuestionListConverter);
+        List<ApiQuestion> apiQuestionList = Lists.transform(questionList, apiQuestionListConverter);
+        return addUserInfo(apiQuestionList);
     }
 
     @Path("question_detail.json")
@@ -383,5 +388,21 @@ public class QuestionResource extends KnowledgeResource {
     private List<ApiQuestionTag> getApiQuestionTags(List<Long> tagIdList) {
         ApiQuestionTag[] apiQuestionTags = getApiQuestionTags(ArrayUtil.toLongArray(tagIdList));
         return Lists.newArrayList(apiQuestionTags);
+    }
+
+    private List<ApiQuestion> addUserInfo(List<ApiQuestion> apiQuestionList) {
+        Map<Long, ApiUser> userMap = Maps.newHashMap();
+        for (ApiQuestion apiQuestion : apiQuestionList) {
+            long userId = apiQuestion.getUserId();
+            if (!userMap.containsKey(userId)) {
+                UserInfo userInfo = accountService.getUserInfo(userId);
+                ApiUser apiUser = ApiUser.simpleUser(userInfo);
+                userMap.put(userId, apiUser);
+            }
+
+            apiQuestion.setUser(userMap.get(userId));
+        }
+
+        return apiQuestionList;
     }
 }

@@ -42,6 +42,10 @@ public class ApiAnswer {
     @ApiField(desc = "更新时间")
     private long updateAtMs;
 
+    @JSONField(name = "user")
+    @ApiField(desc = "回答者")
+    private ApiUser user;
+
     public ApiAnswer(Answer answer) {
         this.answerId = answer.getId();
         this.questionId = answer.getQuestionId();
@@ -106,5 +110,13 @@ public class ApiAnswer {
 
     public void setUpdateAtMs(long updateAtMs) {
         this.updateAtMs = updateAtMs;
+    }
+
+    public ApiUser getUser() {
+        return user;
+    }
+
+    public void setUser(ApiUser user) {
+        this.user = user;
     }
 }
