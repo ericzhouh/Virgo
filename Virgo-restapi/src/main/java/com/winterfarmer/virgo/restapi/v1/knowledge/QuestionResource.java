@@ -13,6 +13,7 @@ import com.winterfarmer.virgo.common.util.ArrayUtil;
 import com.winterfarmer.virgo.common.util.StringUtil;
 import com.winterfarmer.virgo.knowledge.model.Question;
 import com.winterfarmer.virgo.knowledge.model.QuestionTag;
+import com.winterfarmer.virgo.log.VirgoLogger;
 import com.winterfarmer.virgo.restapi.core.annotation.ParamSpec;
 import com.winterfarmer.virgo.restapi.core.annotation.ResourceOverview;
 import com.winterfarmer.virgo.restapi.core.annotation.RestApiInfo;
@@ -391,9 +392,11 @@ public class QuestionResource extends KnowledgeResource {
     }
 
     private List<ApiQuestion> addUserInfo(List<ApiQuestion> apiQuestionList) {
+        VirgoLogger.info("addUserInfo");
         Map<Long, ApiUser> userMap = Maps.newHashMap();
         for (ApiQuestion apiQuestion : apiQuestionList) {
             long userId = apiQuestion.getUserId();
+            VirgoLogger.info("addUserInfo: " + userId);
             if (!userMap.containsKey(userId)) {
                 UserInfo userInfo = accountService.getUserInfo(userId);
                 ApiUser apiUser = ApiUser.simpleUser(userInfo);
