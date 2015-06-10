@@ -263,7 +263,12 @@ public class QuestionResource extends KnowledgeResource {
                 knowledgeService.listQuestions(page, count) :
                 knowledgeService.listQuestions(tagId, page, count);
         List<ApiQuestion> apiQuestionList = Lists.transform(questionList, apiQuestionListConverter);
-        return addUserInfo(apiQuestionList);
+        List<ApiQuestion> apiQuestionList1 = addUserInfo(apiQuestionList);
+        VirgoLogger.debug("outof");
+        for (ApiQuestion apiQuestion : apiQuestionList1) {
+            VirgoLogger.debug("apiQuestion: " + apiQuestion.getQuestionId() + " " + apiQuestion.getUser());
+        }
+        return apiQuestionList1;
     }
 
     @Path("question_detail.json")
@@ -392,18 +397,23 @@ public class QuestionResource extends KnowledgeResource {
     }
 
     private List<ApiQuestion> addUserInfo(List<ApiQuestion> apiQuestionList) {
-        VirgoLogger.info("addUserInfo");
+        VirgoLogger.debug("addUserInfo");
         Map<Long, ApiUser> userMap = Maps.newHashMap();
         for (ApiQuestion apiQuestion : apiQuestionList) {
             long userId = apiQuestion.getUserId();
-            VirgoLogger.info("addUserInfo: " + userId);
+            VirgoLogger.debug("addUserInfo: " + userId);
             if (!userMap.containsKey(userId)) {
+                VirgoLogger.debug("handle: " + userId);
                 UserInfo userInfo = accountService.getUserInfo(userId);
                 ApiUser apiUser = ApiUser.simpleUser(userInfo);
                 userMap.put(userId, apiUser);
             }
 
             apiQuestion.setUser(userMap.get(userId));
+        }
+
+        for (ApiQuestion apiQuestion : apiQuestionList) {
+            VirgoLogger.debug("apiQuestion: " + apiQuestion.getQuestionId() + " " + apiQuestion.getUser());
         }
 
         return apiQuestionList;
