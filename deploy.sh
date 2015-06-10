@@ -21,7 +21,7 @@ mvn -U clean package
 
 echo "shutdown tomcat..."
 pid=`ps aux | grep tomcat | grep Bootstrap |awk '{print $2}'`
-if [[ "x$pid" != "x" ]]; then
+if [ "x$pid" != "x" ]; then
     echo "kill pid "${pid}
     kill -9 ${pid};
 fi;
