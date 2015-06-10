@@ -21,8 +21,10 @@ mvn -U clean package
 
 echo "shutdown tomcat..."
 pid=`ps aux | grep tomcat | grep Bootstrap |awk '{print $2}'`
-kill -9 ${pid}
-grep tomcat
+if [[ "x$pid" = "x" ]]; then
+    echo "kill pid "${pid}
+    kill -9 ${pid};
+fi;
 echo "shutdown tomcat complete"
 
 echo "mv package..."
