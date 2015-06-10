@@ -410,6 +410,7 @@ public class QuestionResource extends KnowledgeResource {
             }
 
             apiQuestion.setUser(userMap.get(userId));
+            VirgoLogger.debug("apiQuestion111: " + apiQuestion.getQuestionId() + " " + apiQuestion.getUser());
         }
 
         for (ApiQuestion apiQuestion : apiQuestionList) {
