@@ -107,7 +107,7 @@ public class VirgoLogFilter implements ContainerRequestFilter, ContainerResponse
         String url = LogHelper.getUrl();
 
         if (!ignoreLog(url)) {
-            VirgoLogger.logResponse("{}, {}, [{}]",
+            VirgoLogger.logResponse("{}, {}, {}",
                     endTime - LogHelper.getStartTime(), LogHelper.getHttpStatus(),
                     JSON.toJSONString(writerInterceptorContext.getEntity()));
         }
