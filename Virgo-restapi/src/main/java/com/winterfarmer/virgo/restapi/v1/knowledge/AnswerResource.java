@@ -290,6 +290,8 @@ public class AnswerResource extends KnowledgeResource {
 
     private List<ApiAnswer> addUserInfo(List<ApiAnswer> apiAnswerList) {
         Map<Long, ApiUser> userMap = Maps.newHashMap();
+        List<ApiAnswer> answerList = Lists.newArrayList();
+
         for (ApiAnswer apiAnswer : apiAnswerList) {
             long userId = apiAnswer.getUserId();
             if (!userMap.containsKey(userId)) {
@@ -304,8 +306,9 @@ public class AnswerResource extends KnowledgeResource {
             }
 
             apiAnswer.setUser(userMap.get(userId));
+            answerList.add(apiAnswer);
         }
 
-        return apiAnswerList;
+        return answerList;
     }
 }

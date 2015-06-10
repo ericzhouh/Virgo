@@ -117,6 +117,8 @@ public class AnswerCommentResource extends KnowledgeResource {
 
     private List<ApiAnswerComment> addUserInfo(List<ApiAnswerComment> apiCommentList) {
         Map<Long, ApiUser> userMap = Maps.newHashMap();
+        List<ApiAnswerComment> commentList = Lists.newArrayList();
+
         for (ApiAnswerComment apiComment : apiCommentList) {
             long userId = apiComment.getUserId();
             if (!userMap.containsKey(userId)) {
@@ -126,9 +128,10 @@ public class AnswerCommentResource extends KnowledgeResource {
             }
 
             apiComment.setUser(userMap.get(userId));
+            commentList.add(apiComment);
         }
 
-        return apiCommentList;
+        return commentList;
     }
 
 }
