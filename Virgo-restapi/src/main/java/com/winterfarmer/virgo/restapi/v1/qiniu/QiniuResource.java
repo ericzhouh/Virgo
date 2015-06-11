@@ -39,7 +39,7 @@ public class QiniuResource extends BaseResource {
     )
     @Produces(MediaType.APPLICATION_JSON)
     public CommonResult getUploadUserImageToken(
-            @FormParam("count")
+            @QueryParam("count")
             @ParamSpec(isRequired = true, spec = "int:[1,37]", desc = "需要上传图片的个数")
             @DefaultValue("1")
             int count,
