@@ -19,6 +19,11 @@ public class QiniuServiceImpl implements QiniuService {
         return auth.uploadToken(bucketType.getBizName(), null, bucketType.getExpireS(), null, true);
     }
 
+    @Override
+    public String getOneImageUpToken(BucketType bucketType, long id) {
+        return auth.uploadToken(bucketType.getBizName(), Long.toString(id), bucketType.getExpireS(), null);
+    }
+
 //    public static void main(String[] args) {
 //        QiniuService qiniuService = new QiniuService();
 //        String token = qiniuService.getUpToken(BucketType.test);

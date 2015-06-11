@@ -7,4 +7,6 @@ import com.winterfarmer.virgo.qiniu.BucketType;
  */
 public interface QiniuService {
     String getUpToken(BucketType bucketType);
+
+    String getOneImageUpToken(BucketType bucketType, long id);
 }

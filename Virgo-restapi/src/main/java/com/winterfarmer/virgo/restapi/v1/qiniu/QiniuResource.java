@@ -43,16 +43,11 @@ public class QiniuResource extends BaseResource {
     )
     @Produces(MediaType.APPLICATION_JSON)
     public CommonResult getUploadUserImageToken(
-            @QueryParam("count")
-            @ParamSpec(isRequired = true, spec = "int:[1,37]", desc = "需要上传图片的个数")
-            @DefaultValue("1")
-            int count,
             @HeaderParam(HEADER_USER_ID)
             long userId) {
-        String token = qiniuService.getUpToken(BucketType.app_user);
-        ImmutableList<Long> idList = idService.getIds(count);
-        return CommonResult.newCommonResult("token", token,
-                "ids", idList);
+        long id = idService.getId();
+        String token = qiniuService.getOneImageUpToken(BucketType.app_user, id);
+        return CommonResult.oneResultCommonResult("token", token);
     }
 
     @Path("qiniu.js")
