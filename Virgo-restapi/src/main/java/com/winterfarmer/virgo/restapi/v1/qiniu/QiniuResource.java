@@ -47,7 +47,7 @@ public class QiniuResource extends BaseResource {
             long userId) {
         long id = idService.getId();
         String token = qiniuService.getOneImageUpToken(BucketType.app_user, id);
-        return CommonResult.oneResultCommonResult("token", token);
+        return CommonResult.newCommonResult("token", token, "key", Long.toString(id));
     }
 
     @Path("qiniu.js")

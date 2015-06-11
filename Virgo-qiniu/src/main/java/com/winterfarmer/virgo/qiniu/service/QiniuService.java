@@ -2,6 +2,8 @@ package com.winterfarmer.virgo.qiniu.service;
 
 import com.winterfarmer.virgo.qiniu.BucketType;
 
+import java.io.File;
+
 /**
  * Created by yangtianhang on 15/6/10.
  */
