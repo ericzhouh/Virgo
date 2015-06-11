@@ -22,4 +22,9 @@
           c:soTimeOutMs="2000"
           c:maxSize="1048576"
           p:accessLog-ref="accessLog"/>
+
+    <bean id="idService" class="com.winterfarmer.virgo.base.service.IdService"
+          p:token="${account_id_service_token}"
+          p:address="${account_id_service_address}"
+          destroy-method="close"/>
 </beans>

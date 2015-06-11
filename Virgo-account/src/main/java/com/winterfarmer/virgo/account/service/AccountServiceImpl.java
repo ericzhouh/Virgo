@@ -32,7 +32,7 @@ import java.util.List;
  */
 @Service("accountService")
 public class AccountServiceImpl implements AccountService {
-    @Resource(name = "accountIdService")
+    @Resource(name = "idService")
     IdService idService;
 
     @Resource(name = "accountMysqlDao")
@@ -331,6 +331,7 @@ public class AccountServiceImpl implements AccountService {
 
         OpenPlatformAccount openPlatformAccount = openPlatformAccountDao.retrieveOpenPlatformAccount(mobile, PlatformType.MOBILE);
         if (openPlatformAccount != null) {
+            userId = openPlatformAccount.getUserId();
             accountRedisDao.setMobileUserId(mobile, userId);
             return userId;
         }

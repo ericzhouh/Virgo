@@ -16,8 +16,8 @@ public enum BucketType {
     private static final int HALF_YEAR_S = ONE_DAY_S * 30 * 6;
     private static final int ONE_WEEK_S = ONE_DAY_S * 7;
 
-    private static final String BIZ_USER = "user";
-    private static final String BIZ_KNOWLEDGE = "knowledge";
+    private static final String BIZ_USER = "yiluxiangqian";
+    private static final String BIZ_KNOWLEDGE = "yiluxiangqian";
 
     private final String bizName;
     private final long expireS;
