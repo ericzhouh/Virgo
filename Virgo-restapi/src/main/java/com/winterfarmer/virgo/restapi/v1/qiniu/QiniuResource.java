@@ -66,7 +66,7 @@ public class QiniuResource extends BaseResource {
     @Produces(MediaType.TEXT_PLAIN)
     public String getQiniuJs() {
         if (qiniu == null) {
-            qiniu = read("/home/ubuntu/temp/temp/qiniu.js");
+            qiniu = read("/home/ubuntu/temp/qiniu.js");
         }
 
         return qiniu;
