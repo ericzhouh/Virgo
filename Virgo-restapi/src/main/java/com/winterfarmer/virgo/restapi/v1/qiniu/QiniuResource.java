@@ -34,7 +34,7 @@ public class QiniuResource extends BaseResource {
     public CommonResult getUploadUserImageToken(
             @HeaderParam(HEADER_USER_ID)
             long userId) {
-        String token = qiniuService.getUpToken(BucketType.app_user);
+        String token = qiniuService.getUpToken(BucketType.test);
         return CommonResult.oneResultCommonResult("token", token);
     }
 }
