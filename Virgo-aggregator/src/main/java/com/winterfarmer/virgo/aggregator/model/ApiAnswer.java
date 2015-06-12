@@ -10,10 +10,6 @@ import com.winterfarmer.virgo.knowledge.model.Answer;
  */
 @ApiMode(desc = "回答")
 public class ApiAnswer {
-    public static ApiAnswer forSimpleDisplay(Answer answer) {
-        return new ApiAnswer(answer);
-    }
-
     @JSONField(name = "answer_id")
     @ApiField(desc = "答案id")
     private long answerId;
@@ -26,8 +22,12 @@ public class ApiAnswer {
     @ApiField(desc = "用户id")
     private long userId;
 
+    @JSONField(name = "digest")
+    @ApiField(desc = "答案内容的摘要, 在list类接口中使用")
+    private String digest;
+
     @JSONField(name = "content")
-    @ApiField(desc = "答案内容")
+    @ApiField(desc = "答案内容, 在详情类接口中使用")
     private String content;
 
     @JSONField(name = "state")
@@ -46,11 +46,18 @@ public class ApiAnswer {
     @ApiField(desc = "回答者")
     private ApiUser user;
 
+    public static ApiAnswer forSimpleDisplay(Answer answer) {
+        ApiAnswer apiAnswer = new ApiAnswer(answer);
+        apiAnswer.setContent(null);
+        return apiAnswer;
+    }
+
     public ApiAnswer(Answer answer) {
         this.answerId = answer.getId();
         this.questionId = answer.getQuestionId();
         this.userId = answer.getUserId();
         this.content = answer.getContent();
+        this.digest = answer.getDigest();
         this.state = answer.getCommonState().getIndex();
         this.createAtMs = answer.getCreateAtMs();
         this.updateAtMs = answer.getUpdateAtMs();
@@ -118,5 +125,13 @@ public class ApiAnswer {
 
     public void setUser(ApiUser user) {
         this.user = user;
+    }
+
+    public String getDigest() {
+        return digest;
+    }
+
+    public void setDigest(String digest) {
+        this.digest = digest;
     }
 }

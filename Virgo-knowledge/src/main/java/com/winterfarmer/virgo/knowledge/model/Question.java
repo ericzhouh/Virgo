@@ -12,6 +12,7 @@ public class Question extends BaseIdModel {
     private long userId;
     private String subject;
     private String imageIds; // comma split
+    private String digest;
     private String content;
 
     private CommonState commonState;
@@ -43,6 +44,14 @@ public class Question extends BaseIdModel {
 
     public void setImageIds(String imageIds) {
         this.imageIds = imageIds;
+    }
+
+    public String getDigest() {
+        return digest;
+    }
+
+    public void setDigest(String digest) {
+        this.digest = digest;
     }
 
     public String getContent() {

@@ -164,7 +164,7 @@ public class AnswerResource extends KnowledgeResource {
         return CommonResult.isSuccessfulCommonResult(result);
     }
 
-    @Path("collect_question.json")
+    @Path("collect_answer.json")
     @POST
     @RestApiInfo(
             desc = "收藏答案",
@@ -173,7 +173,7 @@ public class AnswerResource extends KnowledgeResource {
             errors = {RestExceptionFactor.QUESTION_NOT_EXISTED}
     )
     @Produces(MediaType.APPLICATION_JSON)
-    public CommonResult followQuestion(
+    public CommonResult followAnswer(
             @FormParam(ANSWER_ID_PARAM_NAME)
             @ParamSpec(isRequired = true, spec = POSITIVE_LONG_ID_SPEC, desc = ANSWER_ID_DESC)
             long answerId,

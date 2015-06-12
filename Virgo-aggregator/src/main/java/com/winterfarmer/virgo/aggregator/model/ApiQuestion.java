@@ -26,8 +26,12 @@ public class ApiQuestion {
     private String subject;
 
     @JSONField(name = "content")
-    @ApiField(desc = "问题内容")
+    @ApiField(desc = "问题内容, 只在详情类接口中使用")
     private String content;
+
+    @JSONField(name = "digest")
+    @ApiField(desc = "问题内容摘要, 只在list类接口中使用")
+    private String digest;
 
     @JSONField(name = "state")
     @ApiField(desc = "state")
@@ -121,6 +125,14 @@ public class ApiQuestion {
         this.tags = tags;
     }
 
+    public String getDigest() {
+        return digest;
+    }
+
+    public void setDigest(String digest) {
+        this.digest = digest;
+    }
+
     /**
      * 对于list出的问题给简单的展现形式
      *
@@ -128,7 +140,9 @@ public class ApiQuestion {
      * @return
      */
     public static ApiQuestion forSimpleDisplay(Question question) {
-        return new ApiQuestion(question);
+        ApiQuestion apiQuestion = new ApiQuestion(question);
+        apiQuestion.setContent(null);
+        return apiQuestion;
     }
 
     public ApiQuestion(Question question, ApiQuestionTag[] tags) {
@@ -145,6 +159,7 @@ public class ApiQuestion {
         this.questionId = question.getId();
         this.userId = question.getUserId();
         this.subject = question.getSubject();
+        this.digest = question.getDigest();
         this.content = question.getContent();
         this.state = question.getCommonState().getIndex();
         this.createAtMs = question.getCreateAtMs();

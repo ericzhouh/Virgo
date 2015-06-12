@@ -50,57 +50,57 @@ public class QiniuResource extends BaseResource {
         return CommonResult.newCommonResult("token", token, "key", Long.toString(id));
     }
 
-    @Path("qiniu.js")
-    @GET
-    @RestApiInfo(
-            desc = "上传的token",
-            authPolicy = RestApiInfo.AuthPolicy.PUBLIC,
-            resultDemo = CommonResult.class,
-            errors = {}
-    )
-    @Produces(MediaType.TEXT_PLAIN)
-    public String getQiniuJs() {
-        if (qiniu == null) {
-            qiniu = read("/home/ubuntu/temp/qiniu.js");
-        }
+//    @Path("qiniu.js")
+//    @GET
+//    @RestApiInfo(
+//            desc = "上传的token",
+//            authPolicy = RestApiInfo.AuthPolicy.PUBLIC,
+//            resultDemo = CommonResult.class,
+//            errors = {}
+//    )
+//    @Produces(MediaType.TEXT_PLAIN)
+//    public String getQiniuJs() {
+//        if (qiniu == null) {
+//            qiniu = read("/home/ubuntu/temp/qiniu.js");
+//        }
+//
+//        return qiniu;
+//    }
 
-        return qiniu;
-    }
-
-    @Path("plupload.full.min.js")
-    @GET
-    @RestApiInfo(
-            desc = "上传的token",
-            authPolicy = RestApiInfo.AuthPolicy.PUBLIC,
-            resultDemo = CommonResult.class,
-            errors = {}
-    )
-    @Produces(MediaType.TEXT_PLAIN)
-    public String getUploadJs() {
-        if (plupload == null) {
-            plupload = read("/home/ubuntu/temp/plupload.full.min.js");
-        }
-
-        return plupload;
-    }
-
-    private String read(String path) {
-        File file = new File(path);
-        Long filelength = file.length();     //获取文件长度
-
-        byte[] filecontent = new byte[filelength.intValue()];
-        try {
-            FileInputStream in = new FileInputStream(file);
-            in.read(filecontent);
-            in.close();
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-            return "错了";
-        } catch (IOException e) {
-            e.printStackTrace();
-            return "错了";
-        }
-
-        return new String(filecontent);//返回文件内容,默认编码
-    }
+//    @Path("plupload.full.min.js")
+//    @GET
+//    @RestApiInfo(
+//            desc = "上传的token",
+//            authPolicy = RestApiInfo.AuthPolicy.PUBLIC,
+//            resultDemo = CommonResult.class,
+//            errors = {}
+//    )
+//    @Produces(MediaType.TEXT_PLAIN)
+//    public String getUploadJs() {
+//        if (plupload == null) {
+//            plupload = read("/home/ubuntu/temp/plupload.full.min.js");
+//        }
+//
+//        return plupload;
+//    }
+//
+//    private String read(String path) {
+//        File file = new File(path);
+//        Long filelength = file.length();     //获取文件长度
+//
+//        byte[] filecontent = new byte[filelength.intValue()];
+//        try {
+//            FileInputStream in = new FileInputStream(file);
+//            in.read(filecontent);
+//            in.close();
+//        } catch (FileNotFoundException e) {
+//            e.printStackTrace();
+//            return "错了";
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//            return "错了";
+//        }
+//
+//        return new String(filecontent);//返回文件内容,默认编码
+//    }
 }

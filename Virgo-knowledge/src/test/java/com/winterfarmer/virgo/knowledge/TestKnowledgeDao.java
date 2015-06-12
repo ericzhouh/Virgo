@@ -5,6 +5,8 @@ import com.winterfarmer.virgo.knowledge.dao.AnswerMysqlDaoImpl;
 import com.winterfarmer.virgo.knowledge.dao.QuestionMysqlDaoImpl;
 import com.winterfarmer.virgo.knowledge.model.Question;
 import com.winterfarmer.virgo.storage.counter.dao.CounterMysqlDaoImpl;
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
 import org.junit.FixMethodOrder;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -36,18 +38,30 @@ public class TestKnowledgeDao {
 
     @Test
     public void initDao() {
-        knowledgeCounterMysqlDao.initTable(true);
-//        questionMysqlDao.initTable(false);
+//        knowledgeCounterMysqlDao.initTable(true);
+        questionMysqlDao.initTable(true);
 //        answerMysqlDao.initTable(false);
 //        answerCommentMysqlDao.initTable(false);
     }
+//
+//    @Test
+//    public void testSearch() {
+//        List<Question> list = questionMysqlDao.searchBySubject("test", 10, 0);
+//        System.out.println(list.size());
+//        for (Question q : list) {
+//            System.out.println(q);
+//        }
+//    }
 
     @Test
-    public void testSearch() {
-        List<Question> list = questionMysqlDao.searchBySubject("test", 10, 0);
-        System.out.println(list.size());
-        for (Question q : list) {
-            System.out.println(q);
-        }
+    public void testJsoup() {
+//        String html = "An <a href='http://example.com/'>example</b></a>         \n\n\n\nlink.</p>" +
+//                "<p></p><p></p>  <p>   </p>    <p>    <p>asfasf</p>";
+//
+//        String plain = "dsfsaf        sadfasf\n\n\n\n\n\nasfasf";
+//
+//        Document doc = Jsoup.parse(html);
+//        String text = doc.body().text();
+//        System.out.println(text);
     }
 }

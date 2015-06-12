@@ -26,7 +26,6 @@ import java.util.List;
 /**
  * Created by yangtianhang on 15/5/17.
  */
-@Repository(value = "questionMysqlDao")
 public class QuestionMysqlDaoImpl extends IdModelMysqlDao<Question> {
     public static final String QUESTION_TABLE_NAME = "question";
 
@@ -37,6 +36,8 @@ public class QuestionMysqlDaoImpl extends IdModelMysqlDao<Question> {
             setAllowNull(false).setComment("问题题目").setUnique(false);
     private static final VarcharColumn imageIds = (VarcharColumn) new VarcharColumn("image_ids", 256).
             setAllowNull(false).setComment("逗号分隔的image id").setUnique(false);
+    private static final VarcharColumn digest = (VarcharColumn) new VarcharColumn("digest", 255).
+            setAllowNull(false).setComment("digest");
     private static final TextColumn content = (TextColumn) new TextColumn("content").
             setAllowNull(false).setComment("content");
     private static final TinyIntColumn state = Columns.newStateColumn(false);
@@ -52,6 +53,7 @@ public class QuestionMysqlDaoImpl extends IdModelMysqlDao<Question> {
             question.setUserId(userId.getValue(rs));
             question.setSubject(subject.getValue(rs));
             question.setImageIds(imageIds.getValue(rs));
+            question.setDigest(digest.getValue(rs));
             question.setContent(content.getValue(rs));
             question.setCommonState(CommonState.valueByIndex(state.getValue(rs)));
             question.setCreateAtMs(createAtMs.getValue(rs));
@@ -67,8 +69,9 @@ public class QuestionMysqlDaoImpl extends IdModelMysqlDao<Question> {
 
     public static final String CREATE_DDL = new MysqlDDLBuilder(QUESTION_TABLE_NAME).
             addColumn(questionId).addColumn(userId).addColumn(subject).
-            addColumn(imageIds).addColumn(content).addColumn(state).
-            addColumn(createAtMs).addColumn(updateAtMs).addColumn(extInfo).
+            addColumn(imageIds).addColumn(digest).addColumn(content).
+            addColumn(state).addColumn(createAtMs).addColumn(updateAtMs).
+            addColumn(extInfo).
             setPrimaryKey(IndexType.btree, questionId).addIndex(userId).addIndex(IndexType.btree, createAtMs).setAutoIncrement(6800).buildCreateDDL();
 
     public void initTable(boolean dropBeforeCreate) {
@@ -111,7 +114,9 @@ public class QuestionMysqlDaoImpl extends IdModelMysqlDao<Question> {
     }
 
     private static final String INSERT_QUESTION_SQL = insertIntoSQL(QUESTION_TABLE_NAME,
-            userId, subject, imageIds, content, state, createAtMs, updateAtMs, extInfo);
+            userId, subject, imageIds,
+            digest, content, state,
+            createAtMs, updateAtMs, extInfo);
 
     @Override
     protected PreparedStatement createInsertPreparedStatement(Connection connection, Question question) throws SQLException {
@@ -122,27 +127,28 @@ public class QuestionMysqlDaoImpl extends IdModelMysqlDao<Question> {
         ps.setLong(1, question.getUserId());
         ps.setString(2, question.getSubject());
         ps.setString(3, question.getImageIds());
-        ps.setString(4, question.getContent());
-        ps.setInt(5, question.getCommonState().getIndex());
-        ps.setLong(6, question.getCreateAtMs());
-        ps.setLong(7, question.getUpdateAtMs());
-        setExtForPreparedStatement(ps, 8, question.getProperties());
+        ps.setString(4, question.getDigest());
+        ps.setString(5, question.getContent());
+        ps.setInt(6, question.getCommonState().getIndex());
+        ps.setLong(7, question.getCreateAtMs());
+        ps.setLong(8, question.getUpdateAtMs());
+        setExtForPreparedStatement(ps, 9, question.getProperties());
 
         return ps;
     }
 
     private static final String UPDATE_QUESTION_SQL =
             updateSql(QUESTION_TABLE_NAME,
-                    userId, subject, imageIds, content,
-                    state, createAtMs, updateAtMs,
-                    extInfo) +
+                    userId, subject, imageIds,
+                    digest, content, state,
+                    createAtMs, updateAtMs, extInfo) +
                     new WhereClauseBuilder(questionId.eqWhich()).build();
 
     @Override
     public int doUpdate(Question question) {
         return update(UPDATE_QUESTION_SQL,
-                question.getUserId(), question.getSubject(), question.getImageIds(), question.getContent(),
-                question.getCommonState().getIndex(), question.getCreateAtMs(), question.getUpdateAtMs(),
-                ExtInfoColumn.toBytes(question.getProperties()), question.getId());
+                question.getUserId(), question.getSubject(), question.getImageIds(),
+                question.getDigest(), question.getContent(), question.getCommonState().getIndex(),
+                question.getCreateAtMs(), question.getUpdateAtMs(), ExtInfoColumn.toBytes(question.getProperties()), question.getId());
     }
 }

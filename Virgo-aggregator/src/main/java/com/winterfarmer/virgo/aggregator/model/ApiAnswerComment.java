@@ -4,12 +4,15 @@ import com.alibaba.fastjson.annotation.JSONField;
 import com.winterfarmer.virgo.base.annotation.ApiField;
 import com.winterfarmer.virgo.base.annotation.ApiMode;
 import com.winterfarmer.virgo.knowledge.model.AnswerComment;
+import org.apache.commons.lang3.StringUtils;
 
 /**
  * Created by yangtianhang on 15/5/29.
  */
 @ApiMode(desc = "回答的评论")
 public class ApiAnswerComment {
+    public static final int MAX_DIGEST_LENGTH = 140;
+
     @JSONField(name = "answer_id")
     @ApiField(desc = "答案id")
     private long answerId;
@@ -27,6 +30,10 @@ public class ApiAnswerComment {
     private int state;
 
     @JSONField(name = "content")
+    @ApiField(desc = "评论内容的摘要")
+    private String digest;
+
+    @JSONField(name = "digest")
     @ApiField(desc = "评论内容")
     private String content;
 
@@ -42,12 +49,19 @@ public class ApiAnswerComment {
     @ApiField(desc = "评论者")
     private ApiUser user;
 
+    public static ApiAnswerComment forSimpleDisplay(AnswerComment answerComment) {
+        ApiAnswerComment apiAnswerComment = new ApiAnswerComment(answerComment);
+        apiAnswerComment.setContent(null);
+        return apiAnswerComment;
+    }
+
     public ApiAnswerComment(AnswerComment answerComment) {
         this.answerId = answerComment.getAnswerId();
         this.userId = answerComment.getUserId();
         this.toUserId = answerComment.getToUserId();
         this.state = answerComment.getState().getIndex();
         this.content = answerComment.getContent();
+        this.digest = StringUtils.substring(this.content, 0, MAX_DIGEST_LENGTH);
         this.createAtMs = answerComment.getCreateAtMs();
         this.updateAtMs = answerComment.getUpdateAtMs();
     }

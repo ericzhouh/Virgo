@@ -109,7 +109,7 @@ public class AnswerCommentResource extends KnowledgeResource {
         List<ApiAnswerComment> apiAnswerCommentList = Lists.transform(answerCommentList, new Function<AnswerComment, ApiAnswerComment>() {
             @Override
             public ApiAnswerComment apply(AnswerComment answerComment) {
-                return new ApiAnswerComment(answerComment);
+                return ApiAnswerComment.forSimpleDisplay(answerComment);
             }
         });
         return addUserInfo(apiAnswerCommentList);

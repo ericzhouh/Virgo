@@ -19,6 +19,8 @@ import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.collections4.SetUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.tuple.Pair;
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
@@ -34,6 +36,8 @@ import java.util.Set;
  */
 @Service("knowledgeService")
 public class KnowledgeServiceImpl implements KnowledgeService {
+    public static final int MAX_DIGEST_LENGTH = 140;
+
     @Resource(name = "hybridQuestionDao")
     IdModelDao<Question> questionDao;
 
@@ -78,6 +82,7 @@ public class KnowledgeServiceImpl implements KnowledgeService {
         Question question = new Question();
         question.setUserId(userId);
         question.setSubject(subject);
+        question.setDigest(extractDigest(content));
         question.setContent(content);
         question.setImageIds(imageIds);
         question.setCommonState(CommonState.NORMAL);
@@ -97,6 +102,7 @@ public class KnowledgeServiceImpl implements KnowledgeService {
     @Transactional(rollbackFor = Exception.class, propagation = Propagation.REQUIRED)
     public Question updateQuestion(Question question, long[] tagIds) {
         question.setUpdateAtMs(System.currentTimeMillis());
+        question.setDigest(extractDigest(question.getContent()));
         question = questionDao.update(question);
         // 会对tag数进行限制，这里只当最多有100个标签
         List<Edge> tagged = questionTagGraphDao.queryEdgesByHead(question.getId(), 100, 0);
@@ -256,6 +262,7 @@ public class KnowledgeServiceImpl implements KnowledgeService {
         answer.setUserId(userId);
         answer.setQuestionId(questionId);
         answer.setContent(content);
+        answer.setDigest(extractDigest(content));
         answer.setImageIds(imageIds);
         answer.setCommonState(CommonState.NORMAL);
         long current = System.currentTimeMillis();
@@ -276,6 +283,7 @@ public class KnowledgeServiceImpl implements KnowledgeService {
     @Override
     public Answer updateAnswer(Answer answer) {
         answer.setUpdateAtMs(System.currentTimeMillis());
+        answer.setDigest(extractDigest(answer.getContent()));
         return answerDao.update(answer);
     }
 
@@ -495,5 +503,12 @@ public class KnowledgeServiceImpl implements KnowledgeService {
         List<Long> idList = Edge.listTails(edgeList);
         long[] ids = ArrayUtil.toLongArray(idList);
         return answerDao.listByIds(ids);
+    }
+
+    private static String extractDigest(String content) {
+        Document doc = Jsoup.parse(content);
+        String digest = doc.body().text();
+        digest = StringUtils.substring(digest, 0, MAX_DIGEST_LENGTH);
+        return StringUtils.trim(digest);
     }
 }
