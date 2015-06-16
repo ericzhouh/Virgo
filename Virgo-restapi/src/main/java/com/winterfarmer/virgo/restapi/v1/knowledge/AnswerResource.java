@@ -217,7 +217,7 @@ public class AnswerResource extends KnowledgeResource {
             long userId) {
         List<Answer> answerList = queryAnswers(type, userId, page, count);
         List<ApiAnswer> apiAnswerList = Lists.transform(answerList, apiAnswerListConverter);
-        return addCountInfo(addQuestionSubject(apiAnswerList));
+        return addCountInfo(addUserInfo(addQuestionSubject(apiAnswerList)));
     }
 
     @Path("question_answers.json")
@@ -260,7 +260,12 @@ public class AnswerResource extends KnowledgeResource {
             @ParamSpec(isRequired = true, spec = POSITIVE_LONG_ID_SPEC, desc = ANSWER_ID_DESC)
             long answerId) {
         Answer answer = checkAndGetAnswer(answerId);
-        return new ApiAnswer(answer);
+        Question question = knowledgeService.getQuestion(answerId);
+
+        ApiAnswer apiAnswer = new ApiAnswer(answer);
+        apiAnswer.setQuestionSubject(question.getSubject());
+
+        return addCount(new ApiAnswer(answer));
     }
 
     /**
