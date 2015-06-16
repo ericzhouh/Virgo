@@ -361,6 +361,11 @@ public class KnowledgeServiceImpl implements KnowledgeService {
     }
 
     @Override
+    public List<Answer> listUserQuestionAnswers(long questionUserId, int page, int count) {
+        return answerMysqlDao.listByQuestionUserId(questionUserId, count, page * count);
+    }
+
+    @Override
     public int getAnswerCommentCount(long answerId) {
         Integer count = knowledgeCounterHybridDao.getCount(answerId, KnowledgeCounterType.ANSWER_COMMENT_COUNT.getIndex());
         return count == null ? 0 : count;

@@ -203,7 +203,7 @@ public class AnswerResource extends KnowledgeResource {
     @Produces(MediaType.APPLICATION_JSON)
     public List<ApiAnswer> listUserAnswers(
             @QueryParam("type")
-            @ParamSpec(isRequired = true, spec = "int:[0,1]", desc = "筛选类型: 0-我回答的, 1-我收藏的")
+            @ParamSpec(isRequired = true, spec = "int:[0,2]", desc = "筛选类型: 0-我回答的, 1-我收藏的, 2-最新的回答我的")
             int type,
             @QueryParam(PAGE_PARAM_NAME)
             @ParamSpec(isRequired = false, spec = NORMAL_PAGE_SPEC, desc = NORMAL_PAGE_DESC)
@@ -276,6 +276,8 @@ public class AnswerResource extends KnowledgeResource {
                 return knowledgeService.listUserAnswers(userId, page, count);
             case 1:
                 return knowledgeService.listUserCollectedAnswers(userId, page, count);
+            case 2:
+                return knowledgeService.listUserQuestionAnswers(userId, page, count);
             default:
                 throw new VirgoRestException(RestExceptionFactor.INVALID_PARAM);
         }

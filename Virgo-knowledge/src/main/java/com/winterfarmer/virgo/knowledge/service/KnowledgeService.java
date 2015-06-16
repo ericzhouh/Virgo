@@ -137,6 +137,8 @@ public interface KnowledgeService {
      */
     List<Answer> listUserCollectedAnswers(long userId, int page, int count);
 
+    List<Answer> listUserQuestionAnswers(long userId, int page, int count);
+
     int getAnswerCollectCount(long answerId);
 
     int getAnswerAgreeCount(long answerId);

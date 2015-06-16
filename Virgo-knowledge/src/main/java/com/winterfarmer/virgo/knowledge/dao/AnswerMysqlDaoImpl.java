@@ -139,6 +139,13 @@ public class AnswerMysqlDaoImpl extends IdModelMysqlDao<Answer> {
         return queryForList(getReadJdbcTemplate(), SELECT_ANSWERS_BY_USER_ID, rowMapper, userId, limit, offset);
     }
 
+    private static final String SELECT_ANSWERS_BY_QUESTION_USER_ID =
+            selectAllSql(ANSWER_TABLE_NAME) + new WhereClauseBuilder(questionUserId.eqWhich()).and(state.eq(1)).orderBy(createAtMs).limitOffset();
+
+    public List<Answer> listByQuestionUserId(long questionUserId, int limit, int offset) {
+        return queryForList(getReadJdbcTemplate(), SELECT_ANSWERS_BY_QUESTION_USER_ID, rowMapper, questionUserId, limit, offset);
+    }
+
     private static final String SELECT_QUESTION_ID_BY_USER_ID =
             selectSql(ANSWER_TABLE_NAME, questionId) + new WhereClauseBuilder(userId.eqWhich()).and(state.eq(1)).orderBy(createAtMs).limitOffset();
 
