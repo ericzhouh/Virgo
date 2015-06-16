@@ -62,6 +62,11 @@ public interface KnowledgeService {
 
     List<Long> listQuestionTagIdsByQuestionId(long questionId);
 
+    int getQuestionFollowCount(long questionId);
+
+    int getQuestionAgreeCount(long questionId);
+
+    int getQuestionAnswerCount(long questionId);
 
     /**
      * @param questionContent

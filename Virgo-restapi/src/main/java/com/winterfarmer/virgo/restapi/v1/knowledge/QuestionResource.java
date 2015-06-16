@@ -77,7 +77,7 @@ public class QuestionResource extends KnowledgeResource {
         String imageIds = StringUtils.join(refinedContentAndImageIds.getRight(), ",");
         Question question = knowledgeService.newQuestion(userId, subject, refinedContentAndImageIds.getLeft(), imageIds, tagIds);
         ApiQuestionTag[] apiQuestionTags = getApiQuestionTags(tagIds);
-        return new ApiQuestion(question, apiQuestionTags);
+        return addCountInfo(new ApiQuestion(question, apiQuestionTags));
     }
 
     @Path("update_question.json")
@@ -123,7 +123,7 @@ public class QuestionResource extends KnowledgeResource {
 
         question = knowledgeService.updateQuestion(question, tagIds);
         ApiQuestionTag[] apiQuestionTags = getApiQuestionTags(tagIds);
-        return new ApiQuestion(question, apiQuestionTags);
+        return addCountInfo(new ApiQuestion(question, apiQuestionTags));
     }
 
     @Path("delete_question.json")
@@ -234,7 +234,8 @@ public class QuestionResource extends KnowledgeResource {
             @HeaderParam(HEADER_USER_ID)
             long userId) {
         List<Question> questionList = queryQuestions(type, userId, page, count);
-        return Lists.transform(questionList, apiQuestionListConverter);
+        List<ApiQuestion> apiQuestionList = Lists.transform(questionList, apiQuestionListConverter);
+        return addCountInfo(apiQuestionList);
     }
 
     @Path("list_questions.json")
@@ -263,7 +264,7 @@ public class QuestionResource extends KnowledgeResource {
                 knowledgeService.listQuestions(page, count) :
                 knowledgeService.listQuestions(tagId, page, count);
         List<ApiQuestion> apiQuestionList = Lists.transform(questionList, apiQuestionListConverter);
-        return addUserInfo(apiQuestionList);
+        return addCountInfo(addUserInfo(apiQuestionList));
     }
 
     @Path("question_detail.json")
@@ -282,7 +283,7 @@ public class QuestionResource extends KnowledgeResource {
         Question question = checkAndGetQuestion(questionId);
         List<Long> tagIdList = knowledgeService.listQuestionTagIdsByQuestionId(questionId);
         List<ApiQuestionTag> tagList = getApiQuestionTags(tagIdList);
-        return new ApiQuestion(question, tagList);
+        return addCountInfo(new ApiQuestion(question, tagList));
     }
 
     private List<ApiQuestionTag> apiQuestionTagList;
@@ -332,7 +333,8 @@ public class QuestionResource extends KnowledgeResource {
             @ParamSpec(isRequired = false, spec = NORMAL_COUNT_SPEC, desc = NORMAL_COUNT_DESC)
             @DefaultValue(NORMAL_DEFAULT_PAGE_COUNT)
             int count) {
-        return Lists.transform(knowledgeService.searchQuestion(keywords, page, count), apiQuestionListConverter);
+        List<ApiQuestion> apiQuestionList = Lists.transform(knowledgeService.searchQuestion(keywords, page, count), apiQuestionListConverter);
+        return addCountInfo(addUserInfo(apiQuestionList));
     }
 
     /**
@@ -407,5 +409,43 @@ public class QuestionResource extends KnowledgeResource {
         }
 
         return questionList;
+    }
+
+    private List<ApiQuestion> addCountInfo(List<ApiQuestion> apiQuestionList) {
+        Map<Long, Integer> followCountMap = Maps.newHashMap();
+        Map<Long, Integer> answerCountMap = Maps.newHashMap();
+        Map<Long, Integer> agreeCountMap = Maps.newHashMap();
+
+        List<ApiQuestion> newApiQuestionList = Lists.newArrayList();
+
+        for (ApiQuestion apiQuestion : apiQuestionList) {
+            long questionId = apiQuestion.getQuestionId();
+            if (!followCountMap.containsKey(questionId)) {
+                followCountMap.put(questionId, knowledgeService.getQuestionFollowCount(questionId));
+            }
+            if (!answerCountMap.containsKey(questionId)) {
+                answerCountMap.put(questionId, knowledgeService.getQuestionAnswerCount(questionId));
+            }
+            if (!agreeCountMap.containsKey(questionId)) {
+                agreeCountMap.put(questionId, knowledgeService.getQuestionAgreeCount(questionId));
+            }
+
+            apiQuestion.setAgreeCount(agreeCountMap.get(questionId));
+            apiQuestion.setAnswerCount(answerCountMap.get(questionId));
+            apiQuestion.setFollowCount(followCountMap.get(questionId));
+            newApiQuestionList.add(apiQuestion);
+        }
+
+        return newApiQuestionList;
+    }
+
+    private ApiQuestion addCountInfo(ApiQuestion apiQuestion) {
+        long questionId = apiQuestion.getQuestionId();
+
+        apiQuestion.setAgreeCount(knowledgeService.getQuestionAgreeCount(questionId));
+        apiQuestion.setAnswerCount(knowledgeService.getQuestionAnswerCount(questionId));
+        apiQuestion.setFollowCount(knowledgeService.getQuestionFollowCount(questionId));
+
+        return apiQuestion;
     }
 }

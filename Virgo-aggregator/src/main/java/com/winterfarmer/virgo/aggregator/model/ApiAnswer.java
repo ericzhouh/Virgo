@@ -50,6 +50,18 @@ public class ApiAnswer {
     @ApiField(desc = "问题题目")
     private String questionSubject;
 
+    @JSONField(name = "collect_count")
+    @ApiField(desc = "收藏数量")
+    private int collectCount;
+
+    @JSONField(name = "agree_count")
+    @ApiField(desc = "点赞数量")
+    private int agreeCount;
+
+    @JSONField(name = "comment_count")
+    @ApiField(desc = "评论数量")
+    private int commentCount;
+
     public static ApiAnswer forSimpleDisplay(Answer answer) {
         ApiAnswer apiAnswer = new ApiAnswer(answer);
         apiAnswer.setContent(null);
@@ -65,6 +77,30 @@ public class ApiAnswer {
         this.state = answer.getCommonState().getIndex();
         this.createAtMs = answer.getCreateAtMs();
         this.updateAtMs = answer.getUpdateAtMs();
+    }
+
+    public int getCollectCount() {
+        return collectCount;
+    }
+
+    public void setCollectCount(int collectCount) {
+        this.collectCount = collectCount;
+    }
+
+    public int getAgreeCount() {
+        return agreeCount;
+    }
+
+    public void setAgreeCount(int agreeCount) {
+        this.agreeCount = agreeCount;
+    }
+
+    public int getCommentCount() {
+        return commentCount;
+    }
+
+    public void setCommentCount(int commentCount) {
+        this.commentCount = commentCount;
     }
 
     public String getQuestionSubject() {

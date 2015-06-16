@@ -53,6 +53,42 @@ public class ApiQuestion {
     @ApiField(desc = "提问者")
     private ApiUser user;
 
+    @JSONField(name = "answer_count")
+    @ApiField(desc = "回答数量")
+    private int answerCount;
+
+    @JSONField(name = "follow_count")
+    @ApiField(desc = "关注数量")
+    private int followCount;
+
+    @JSONField(name = "agree_count")
+    @ApiField(desc = "对问题点赞的数量")
+    private int agreeCount;
+
+    public int getAgreeCount() {
+        return agreeCount;
+    }
+
+    public void setAgreeCount(int agreeCount) {
+        this.agreeCount = agreeCount;
+    }
+
+    public int getAnswerCount() {
+        return answerCount;
+    }
+
+    public void setAnswerCount(int answerCount) {
+        this.answerCount = answerCount;
+    }
+
+    public int getFollowCount() {
+        return followCount;
+    }
+
+    public void setFollowCount(int followCount) {
+        this.followCount = followCount;
+    }
+
     public ApiUser getUser() {
         return user;
     }

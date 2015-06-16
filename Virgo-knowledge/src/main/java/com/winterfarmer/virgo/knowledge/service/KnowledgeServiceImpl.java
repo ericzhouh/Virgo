@@ -13,6 +13,7 @@ import com.winterfarmer.virgo.knowledge.model.*;
 import com.winterfarmer.virgo.storage.counter.dao.CounterDao;
 import com.winterfarmer.virgo.storage.graph.Edge;
 import com.winterfarmer.virgo.storage.graph.HeadVertex;
+import com.winterfarmer.virgo.storage.graph.TailVertex;
 import com.winterfarmer.virgo.storage.graph.dao.GraphDao;
 import com.winterfarmer.virgo.storage.id.dao.IdModelDao;
 import org.apache.commons.collections4.CollectionUtils;
@@ -210,6 +211,36 @@ public class KnowledgeServiceImpl implements KnowledgeService {
                 return edge.getTail();
             }
         });
+    }
+
+    @Override
+    public int getQuestionFollowCount(long questionId) {
+        TailVertex tailVertex = userFollowQuestionGraphDao.queryTailVertex(questionId);
+        if (tailVertex == null) {
+            return 0;
+        } else {
+            return tailVertex.getDegree();
+        }
+    }
+
+    @Override
+    public int getQuestionAgreeCount(long questionId) {
+        TailVertex tailVertex = userAgreeQuestionGraphDao.queryTailVertex(questionId);
+        if (tailVertex == null) {
+            return 0;
+        } else {
+            return tailVertex.getDegree();
+        }
+    }
+
+    @Override
+    public int getQuestionAnswerCount(long questionId) {
+        Integer count = knowledgeCounterHybridDao.getCount(questionId, KnowledgeCounterType.QUESTION_ANSWERED_COUNT.getIndex());
+        if (count == null) {
+            return 0;
+        } else {
+            return count;
+        }
     }
 
     @Override
