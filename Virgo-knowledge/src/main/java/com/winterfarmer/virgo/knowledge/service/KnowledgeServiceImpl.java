@@ -236,11 +236,7 @@ public class KnowledgeServiceImpl implements KnowledgeService {
     @Override
     public int getQuestionAnswerCount(long questionId) {
         Integer count = knowledgeCounterHybridDao.getCount(questionId, KnowledgeCounterType.QUESTION_ANSWERED_COUNT.getIndex());
-        if (count == null) {
-            return 0;
-        } else {
-            return count;
-        }
+        return count == null ? 0 : count;
     }
 
     @Override
@@ -364,6 +360,24 @@ public class KnowledgeServiceImpl implements KnowledgeService {
         return listAnswersAsTail(edgeList);
     }
 
+    @Override
+    public int getAnswerCommentCount(long answerId) {
+        Integer count = knowledgeCounterHybridDao.getCount(answerId, KnowledgeCounterType.ANSWER_COMMENT_COUNT.getIndex());
+        return count == null ? 0 : count;
+    }
+
+    @Override
+    public int getAnswerAgreeCount(long answerId) {
+        TailVertex vertex = userAgreeAnswerGraphDao.queryTailVertex(answerId);
+        return vertex == null ? 0 : vertex.getDegree();
+    }
+
+    @Override
+    public int getAnswerCollectCount(long answerId) {
+        TailVertex vertex = userCollectAnswerGraphDao.queryTailVertex(answerId);
+        return vertex == null ? 0 : vertex.getDegree();
+    }
+
     private void setUserAnswerCount(long userId, boolean fromWrite) {
         Integer count = answerMysqlDao.getUserAnswerCount(userId, fromWrite);
         knowledgeCounterHybridDao.setCount(userId, KnowledgeCounterType.USER_ANSWERED_COUNT.getIndex(), count);
@@ -450,7 +464,9 @@ public class KnowledgeServiceImpl implements KnowledgeService {
         answerComment.setUpdateAtMs(time);
         answerComment.setState(CommonState.NORMAL);
 
-        return answerCommentDao.insert(answerComment);
+        AnswerComment comment = answerCommentDao.insert(answerComment);
+        setAnwerCommentCount(comment.getAnswerId(), true);
+        return comment;
     }
 
     @Override
@@ -462,7 +478,10 @@ public class KnowledgeServiceImpl implements KnowledgeService {
     public AnswerComment updateAnswerCommentState(AnswerComment answerComment, CommonState commonState) {
         answerComment.setState(commonState);
         answerComment.setUpdateAtMs(System.currentTimeMillis());
-        return answerCommentDao.update(answerComment);
+
+        AnswerComment comment = answerCommentDao.update(answerComment);
+        setAnwerCommentCount(comment.getAnswerId(), true);
+        return comment;
     }
 
     @Override
@@ -541,5 +560,10 @@ public class KnowledgeServiceImpl implements KnowledgeService {
         String digest = doc.body().text();
         digest = StringUtils.substring(digest, 0, MAX_DIGEST_LENGTH);
         return StringUtils.trim(digest);
+    }
+
+    private void setAnwerCommentCount(long answerId, boolean fromWrite) {
+        Integer count = answerCommentMysqlDao.getAnswerCommentCount(answerId, fromWrite);
+        knowledgeCounterHybridDao.setCount(answerId, KnowledgeCounterType.ANSWER_COMMENT_COUNT.getIndex(), count);
     }
 }

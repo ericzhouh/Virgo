@@ -8,12 +8,13 @@ import java.util.Map;
  * Created by yangtianhang on 15/6/5.
  */
 public enum KnowledgeCounterType implements EnumUtil.VirgoEnum {
-    USER_QUESTION_COUNT("用户提问个数", 1),
-    USER_ANSWERED_COUNT("用户回答个数", 2),
-    USER_OBTAIN_AGREE_COUNT("用户获得的赞的个数", 3),
-    USER_COLLECT_COUNT("用户收藏的答案个数", 4), // 不存在counter里，由graphdb获得
+    USER_QUESTION_COUNT("用户提问个数", 0x01),
+    USER_ANSWERED_COUNT("用户回答个数", 0x02),
+    USER_OBTAIN_AGREE_COUNT("用户获得的赞的个数", 0x03),
+    USER_COLLECT_COUNT("用户收藏的答案个数", 0x04), // 不存在counter里，由graphdb获得
 
-    QUESTION_ANSWERED_COUNT("问题的回答个数", 30);
+    QUESTION_ANSWERED_COUNT("问题的回答个数", 0x11),
+    ANSWER_COMMENT_COUNT("回答的评论个数", 0x12);
 
     private final String name;
     private final int index;

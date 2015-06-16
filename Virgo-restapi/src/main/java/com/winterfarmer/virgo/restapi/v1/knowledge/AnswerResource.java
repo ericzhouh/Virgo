@@ -73,7 +73,7 @@ public class AnswerResource extends KnowledgeResource {
         Pair<String, List<String>> refinedContentAndImageIds = checkAndGetContentAndImageIds(content);
         String imageIds = StringUtils.join(refinedContentAndImageIds.getRight(), ",");
         Answer answer = knowledgeService.newAnswer(userId, questionId, content, imageIds);
-        return new ApiAnswer(answer);
+        return addCount(new ApiAnswer(answer));
     }
 
     @Path("update_answer.json")
@@ -106,7 +106,7 @@ public class AnswerResource extends KnowledgeResource {
         answer.setImageIds(imageIds);
         answer.setUpdateAtMs(System.currentTimeMillis());
         answer = knowledgeService.updateAnswer(answer);
-        return new ApiAnswer(answer);
+        return addCount(new ApiAnswer(answer));
     }
 
     @Path("delete_answer.json")
@@ -217,7 +217,7 @@ public class AnswerResource extends KnowledgeResource {
             long userId) {
         List<Answer> answerList = queryAnswers(type, userId, page, count);
         List<ApiAnswer> apiAnswerList = Lists.transform(answerList, apiAnswerListConverter);
-        return addQuestionSubject(apiAnswerList);
+        return addCountInfo(addQuestionSubject(apiAnswerList));
     }
 
     @Path("question_answers.json")
@@ -243,7 +243,7 @@ public class AnswerResource extends KnowledgeResource {
             int count) {
         List<Answer> answerList = knowledgeService.listAnswers(questionId, page, count);
         List<ApiAnswer> apiAnswerList = Lists.transform(answerList, apiAnswerListConverter);
-        return addUserInfo(apiAnswerList);
+        return addCountInfo(addQuestionSubject(apiAnswerList));
     }
 
     @Path("answer_detail.json")
@@ -333,5 +333,43 @@ public class AnswerResource extends KnowledgeResource {
         }
 
         return newApiAnswerList;
+    }
+
+    private List<ApiAnswer> addCountInfo(List<ApiAnswer> apiAnswerList) {
+        Map<Long, Integer> collectCountMap = Maps.newHashMap();
+        Map<Long, Integer> commentCountMap = Maps.newHashMap();
+        Map<Long, Integer> agreeCountMap = Maps.newHashMap();
+
+        List<ApiAnswer> newApiAnswerList = Lists.newArrayList();
+        for (ApiAnswer apiAnswer : apiAnswerList) {
+            long answerId = apiAnswer.getAnswerId();
+            if (!collectCountMap.containsKey(answerId)) {
+                collectCountMap.put(answerId, knowledgeService.getAnswerCollectCount(answerId));
+            }
+            if (!commentCountMap.containsKey(answerId)) {
+                commentCountMap.put(answerId, knowledgeService.getAnswerCommentCount(answerId));
+            }
+            if (!agreeCountMap.containsKey(answerId)) {
+                agreeCountMap.put(answerId, knowledgeService.getAnswerAgreeCount(answerId));
+            }
+
+            apiAnswer.setCollectCount(collectCountMap.get(answerId));
+            apiAnswer.setCommentCount(commentCountMap.get(answerId));
+            apiAnswer.setAgreeCount(agreeCountMap.get(answerId));
+
+            newApiAnswerList.add(apiAnswer);
+        }
+
+        return newApiAnswerList;
+    }
+
+    private ApiAnswer addCount(ApiAnswer apiAnswer) {
+        long answerId = apiAnswer.getAnswerId();
+
+        apiAnswer.setCollectCount(knowledgeService.getAnswerCollectCount(answerId));
+        apiAnswer.setCommentCount(knowledgeService.getAnswerCommentCount(answerId));
+        apiAnswer.setAgreeCount(knowledgeService.getAnswerAgreeCount(answerId));
+
+        return apiAnswer;
     }
 }

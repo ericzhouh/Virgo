@@ -11,6 +11,7 @@ import com.winterfarmer.virgo.database.helper.column.string.VarcharColumn;
 import com.winterfarmer.virgo.knowledge.model.AnswerComment;
 import com.winterfarmer.virgo.log.VirgoLogger;
 import com.winterfarmer.virgo.storage.id.dao.IdModelMysqlDao;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
 
@@ -114,5 +115,20 @@ public class AnswerCommentMysqlDaoImpl extends IdModelMysqlDao<AnswerComment> {
 
     public List<AnswerComment> listAnswerComment(long answerId, int limit, int offset) {
         return queryForList(getReadJdbcTemplate(), SELECT_ANSWER_COMMENTS_BY_ANSWER_ID, rowMapper, answerId, limit, offset);
+    }
+
+    private static final String SELECT_ANSWER_COMMENT_COUNT_SQL =
+            "select count(1) as counter from " + ANSWER_COMMENT_TABLE_NAME + new WhereClauseBuilder(answerId.eqWhich()).
+                    and(state.eq(CommonState.NORMAL.getIndex()));
+
+    public Integer getAnswerCommentCount(long answerId, boolean fromWrite) {
+        JdbcTemplate jdbcTemplate = fromWrite ? getWriteJdbcTemplate() : getReadJdbcTemplate();
+
+        return queryForObject(jdbcTemplate, SELECT_ANSWER_COMMENT_COUNT_SQL, new RowMapper<Integer>() {
+            @Override
+            public Integer mapRow(ResultSet rs, int rowNum) throws SQLException {
+                return rs.getInt("counter");
+            }
+        }, answerId);
     }
 }

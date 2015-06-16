@@ -137,6 +137,12 @@ public interface KnowledgeService {
      */
     List<Answer> listUserCollectedAnswers(long userId, int page, int count);
 
+    int getAnswerCollectCount(long answerId);
+
+    int getAnswerAgreeCount(long answerId);
+
+    int getAnswerCommentCount(long answerId);
+
     // ========================================================================
     boolean isValidTags(long... questionTagId);
 
