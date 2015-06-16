@@ -283,7 +283,12 @@ public class QuestionResource extends KnowledgeResource {
         Question question = checkAndGetQuestion(questionId);
         List<Long> tagIdList = knowledgeService.listQuestionTagIdsByQuestionId(questionId);
         List<ApiQuestionTag> tagList = getApiQuestionTags(tagIdList);
-        return addCountInfo(new ApiQuestion(question, tagList));
+
+        ApiQuestion apiQuestion = new ApiQuestion(question, tagList);
+        UserInfo userInfo = accountService.getUserInfo(question.getUserId());
+        ApiUser apiUser = ApiUser.simpleUser(userInfo);
+        apiQuestion.setUser(apiUser);
+        return addCountInfo(apiQuestion);
     }
 
     private List<ApiQuestionTag> apiQuestionTagList;
