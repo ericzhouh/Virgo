@@ -243,7 +243,7 @@ public class AnswerResource extends KnowledgeResource {
             int count) {
         List<Answer> answerList = knowledgeService.listAnswers(questionId, page, count);
         List<ApiAnswer> apiAnswerList = Lists.transform(answerList, apiAnswerListConverter);
-        return addCountInfo(addQuestionSubject(apiAnswerList));
+        return addCountInfo(addUserInfo(addQuestionSubject(apiAnswerList)));
     }
 
     @Path("answer_detail.json")
