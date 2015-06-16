@@ -14,6 +14,7 @@ import com.winterfarmer.virgo.base.model.CommonState;
 import com.winterfarmer.virgo.knowledge.model.Answer;
 import com.winterfarmer.virgo.knowledge.model.Question;
 import com.winterfarmer.virgo.knowledge.model.QuestionTag;
+import com.winterfarmer.virgo.log.VirgoLogger;
 import com.winterfarmer.virgo.restapi.core.annotation.ParamSpec;
 import com.winterfarmer.virgo.restapi.core.annotation.ResourceOverview;
 import com.winterfarmer.virgo.restapi.core.annotation.RestApiInfo;
@@ -215,7 +216,8 @@ public class AnswerResource extends KnowledgeResource {
             @HeaderParam(HEADER_USER_ID)
             long userId) {
         List<Answer> answerList = queryAnswers(type, userId, page, count);
-        return Lists.transform(answerList, apiAnswerListConverter);
+        List<ApiAnswer> apiAnswerList = Lists.transform(answerList, apiAnswerListConverter);
+        return addQuestionSubject(apiAnswerList);
     }
 
     @Path("question_answers.json")
@@ -310,5 +312,26 @@ public class AnswerResource extends KnowledgeResource {
         }
 
         return answerList;
+    }
+
+    private List<ApiAnswer> addQuestionSubject(List<ApiAnswer> apiAnswerList) {
+        Map<Long, Question> questionMap = Maps.newHashMap();
+        List<ApiAnswer> newApiAnswerList = Lists.newArrayList();
+        for (ApiAnswer apiAnswer : apiAnswerList) {
+            if (!questionMap.containsKey(apiAnswer.getQuestionId())) {
+                Question question = knowledgeService.getQuestion(apiAnswer.getQuestionId());
+                if (question == null) {
+                    VirgoLogger.error("question : " + apiAnswer.getQuestionId() + " not existed!!");
+                }
+                questionMap.put(apiAnswer.getQuestionId(), question);
+            }
+            Question question = questionMap.get(apiAnswer.getQuestionId());
+            if (question != null) {
+                apiAnswer.setQuestionSubject(question.getSubject());
+                newApiAnswerList.add(apiAnswer);
+            }
+        }
+
+        return newApiAnswerList;
     }
 }

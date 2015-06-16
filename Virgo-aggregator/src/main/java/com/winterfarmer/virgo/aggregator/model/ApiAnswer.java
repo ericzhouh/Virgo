@@ -46,6 +46,10 @@ public class ApiAnswer {
     @ApiField(desc = "回答者")
     private ApiUser user;
 
+    @JSONField(name = "question_subject")
+    @ApiField(desc = "问题题目")
+    private String questionSubject;
+
     public static ApiAnswer forSimpleDisplay(Answer answer) {
         ApiAnswer apiAnswer = new ApiAnswer(answer);
         apiAnswer.setContent(null);
@@ -61,6 +65,14 @@ public class ApiAnswer {
         this.state = answer.getCommonState().getIndex();
         this.createAtMs = answer.getCreateAtMs();
         this.updateAtMs = answer.getUpdateAtMs();
+    }
+
+    public String getQuestionSubject() {
+        return questionSubject;
+    }
+
+    public void setQuestionSubject(String questionSubject) {
+        this.questionSubject = questionSubject;
     }
 
     public long getAnswerId() {

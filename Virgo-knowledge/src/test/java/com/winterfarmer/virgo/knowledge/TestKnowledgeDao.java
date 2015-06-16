@@ -39,9 +39,9 @@ public class TestKnowledgeDao {
     @Test
     public void initDao() {
 //        knowledgeCounterMysqlDao.initTable(true);
-        questionMysqlDao.initTable(true);
-//        answerMysqlDao.initTable(false);
-//        answerCommentMysqlDao.initTable(false);
+//        questionMysqlDao.initTable(true);
+        answerMysqlDao.initTable(true);
+//        answerCom、mentMysqlDao.initTable(false);
     }
 //
 //    @Test

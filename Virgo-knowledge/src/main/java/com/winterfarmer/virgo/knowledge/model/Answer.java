@@ -10,6 +10,7 @@ public class Answer extends BaseIdModel {
     private static final long serialVersionUID = -9177417427886797005L;
 
     private long questionId;
+    private long questionUserId;
     private long userId;
 
     private String imageIds;
@@ -20,6 +21,13 @@ public class Answer extends BaseIdModel {
     private long createAtMs;
     private long updateAtMs;
 
+    public long getQuestionUserId() {
+        return questionUserId;
+    }
+
+    public void setQuestionUserId(long questionUserId) {
+        this.questionUserId = questionUserId;
+    }
 
     public long getUserId() {
         return userId;

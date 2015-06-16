@@ -32,6 +32,7 @@ public class AnswerMysqlDaoImpl extends IdModelMysqlDao<Answer> {
     private static final BigintColumn answerId = Columns.newIdColumn("answer_id", true, false);
 
     private static final BigintColumn questionId = Columns.newLongColumn("question_id", false);
+    private static final BigintColumn questionUserId = Columns.newLongColumn("question_user_id", false);
     private static final BigintColumn userId = Columns.newUserIdColumn();
     private static final VarcharColumn imageIds = (VarcharColumn) new VarcharColumn("image_ids", 256).
             setAllowNull(false).setComment("逗号分隔的image id").setUnique(false);
@@ -54,6 +55,7 @@ public class AnswerMysqlDaoImpl extends IdModelMysqlDao<Answer> {
             Answer answer = new Answer();
             answer.setId(answerId.getValue(rs));
             answer.setQuestionId(questionId.getValue(rs));
+            answer.setQuestionUserId(questionUserId.getValue(rs));
             answer.setUserId(userId.getValue(rs));
             answer.setImageIds(imageIds.getValue(rs));
             answer.setDigest(digest.getValue(rs));
@@ -67,10 +69,10 @@ public class AnswerMysqlDaoImpl extends IdModelMysqlDao<Answer> {
     };
 
     public static final String CREATE_DDL = new MysqlDDLBuilder(ANSWER_TABLE_NAME).
-            addColumn(answerId).addColumn(questionId).addColumn(userId).
-            addColumn(imageIds).addColumn(digest).addColumn(content).
-            addColumn(state).addColumn(createAtMs).addColumn(updateAtMs).
-            addColumn(extInfo).
+            addColumn(answerId).addColumn(questionId).addColumn(questionUserId).
+            addColumn(userId).addColumn(imageIds).addColumn(digest).
+            addColumn(content).addColumn(state).addColumn(createAtMs).
+            addColumn(updateAtMs).addColumn(extInfo).
             setPrimaryKey(IndexType.btree, answerId).addIndex(questionId).addIndex(userId).
             addIndex(IndexType.btree, createAtMs).setAutoIncrement(6800).buildCreateDDL();
 
@@ -79,7 +81,10 @@ public class AnswerMysqlDaoImpl extends IdModelMysqlDao<Answer> {
     }
 
     private static final String INSERT_ANSWER_SQL = insertIntoSQL(ANSWER_TABLE_NAME,
-            questionId, userId, imageIds, digest, content, state, createAtMs, updateAtMs, extInfo);
+            questionId, questionUserId, userId,
+            imageIds, digest, content,
+            state, createAtMs, updateAtMs,
+            extInfo);
 
     @Override
     protected PreparedStatement createInsertPreparedStatement(Connection connection, Answer answer) throws SQLException {
@@ -89,6 +94,7 @@ public class AnswerMysqlDaoImpl extends IdModelMysqlDao<Answer> {
 
         int i = 1;
         ps.setLong(i++, answer.getQuestionId());
+        ps.setLong(i++, answer.getQuestionUserId());
         ps.setLong(i++, answer.getUserId());
         ps.setString(i++, answer.getImageIds());
         ps.setString(i++, answer.getDigest());
@@ -103,16 +109,18 @@ public class AnswerMysqlDaoImpl extends IdModelMysqlDao<Answer> {
 
     private static final String UPDATE_ANSWER_SQL =
             updateSql(ANSWER_TABLE_NAME,
-                    questionId, userId, imageIds, digest,
-                    content, state, createAtMs, updateAtMs,
+                    questionId, userId, imageIds,
+                    questionUserId, digest, content,
+                    state, createAtMs, updateAtMs,
                     extInfo) +
                     new WhereClauseBuilder(answerId.eqWhich()).build();
 
     @Override
     protected int doUpdate(Answer answer) {
         return update(UPDATE_ANSWER_SQL,
-                answer.getQuestionId(), answer.getUserId(), answer.getImageIds(), answer.getDigest(),
-                answer.getContent(), answer.getCommonState().getIndex(), answer.getCreateAtMs(), answer.getUpdateAtMs(),
+                answer.getQuestionId(), answer.getUserId(), answer.getImageIds(),
+                answer.getQuestionUserId(), answer.getDigest(), answer.getContent(),
+                answer.getCommonState().getIndex(), answer.getCreateAtMs(), answer.getUpdateAtMs(),
                 ExtInfoColumn.toBytes(answer.getProperties()),
                 answer.getId());
     }
