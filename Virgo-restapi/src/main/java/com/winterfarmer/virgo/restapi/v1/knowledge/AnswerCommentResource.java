@@ -112,6 +112,7 @@ public class AnswerCommentResource extends KnowledgeResource {
                 return ApiAnswerComment.forSimpleDisplay(answerComment);
             }
         });
+
         return addUserInfo(apiAnswerCommentList);
     }
 
@@ -121,17 +122,28 @@ public class AnswerCommentResource extends KnowledgeResource {
 
         for (ApiAnswerComment apiComment : apiCommentList) {
             long userId = apiComment.getUserId();
+            long toUserId = apiComment.getToUserId();
+
             if (!userMap.containsKey(userId)) {
                 UserInfo userInfo = accountService.getUserInfo(userId);
                 ApiUser apiUser = ApiUser.simpleUser(userInfo);
                 userMap.put(userId, apiUser);
             }
 
+            if (toUserId != 0 && !userMap.containsKey(toUserId)) {
+                UserInfo userInfo = accountService.getUserInfo(userId);
+                ApiUser apiUser = ApiUser.simpleUser(userInfo);
+                userMap.put(userId, apiUser);
+            }
+
             apiComment.setUser(userMap.get(userId));
+            if (toUserId != 0) {
+                apiComment.setToUser(userMap.get(toUserId));
+            }
+
             commentList.add(apiComment);
         }
 
         return commentList;
     }
-
 }

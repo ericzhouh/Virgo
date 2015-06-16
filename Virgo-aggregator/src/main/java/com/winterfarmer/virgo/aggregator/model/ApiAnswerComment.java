@@ -49,6 +49,10 @@ public class ApiAnswerComment {
     @ApiField(desc = "评论者")
     private ApiUser user;
 
+    @JSONField(name = "to_user")
+    @ApiField(desc = "被评论者")
+    private ApiUser toUser;
+
     public static ApiAnswerComment forSimpleDisplay(AnswerComment answerComment) {
         ApiAnswerComment apiAnswerComment = new ApiAnswerComment(answerComment);
         apiAnswerComment.setContent(null);
@@ -128,5 +132,21 @@ public class ApiAnswerComment {
 
     public void setUser(ApiUser user) {
         this.user = user;
+    }
+
+    public String getDigest() {
+        return digest;
+    }
+
+    public void setDigest(String digest) {
+        this.digest = digest;
+    }
+
+    public ApiUser getToUser() {
+        return toUser;
+    }
+
+    public void setToUser(ApiUser toUser) {
+        this.toUser = toUser;
     }
 }
