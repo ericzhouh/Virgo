@@ -517,7 +517,7 @@ public class AccountResource extends BaseResource {
     @RestApiInfo(
             desc = "获取用户相关的计数",
             authPolicy = RestApiInfo.AuthPolicy.PUBLIC,
-            resultDemo = ApiUser.class,
+            resultDemo = ApiUserCounter.class,
             errors = {RestExceptionFactor.USER_ID_NOT_EXISTED}
     )
     public ApiUserCounter getUserCounter(

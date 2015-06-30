@@ -37,7 +37,7 @@ public class AnswerCommentResource extends KnowledgeResource {
     @RestApiInfo(
             desc = "新的评论",
             authPolicy = RestApiInfo.AuthPolicy.OAUTH,
-            resultDemo = ApiAnswer.class,
+            resultDemo = ApiAnswerComment.class,
             errors = {RestExceptionFactor.ANSWER_NOT_EXISTED}
     )
     @Produces(MediaType.APPLICATION_JSON)
@@ -64,7 +64,7 @@ public class AnswerCommentResource extends KnowledgeResource {
     @RestApiInfo(
             desc = "删除评论",
             authPolicy = RestApiInfo.AuthPolicy.OAUTH,
-            resultDemo = ApiAnswer.class,
+            resultDemo = CommonResult.class,
             errors = {RestExceptionFactor.ANSWER_COMMENT_NOT_EXISTED}
     )
     @Produces(MediaType.APPLICATION_JSON)
@@ -88,7 +88,7 @@ public class AnswerCommentResource extends KnowledgeResource {
     @RestApiInfo(
             desc = "列出回答下的评论",
             authPolicy = RestApiInfo.AuthPolicy.OAUTH,
-            resultDemo = ApiQuestion.class,
+            resultDemo = ApiAnswerComment.class,
             errors = {RestExceptionFactor.ANSWER_NOT_EXISTED}
     )
     @Produces(MediaType.APPLICATION_JSON)

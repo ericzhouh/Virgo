@@ -131,7 +131,7 @@ public class QuestionResource extends KnowledgeResource {
     @RestApiInfo(
             desc = "删除问题",
             authPolicy = RestApiInfo.AuthPolicy.OAUTH,
-            resultDemo = ApiQuestion.class,
+            resultDemo = CommonResult.class,
             errors = {RestExceptionFactor.QUESTION_NOT_EXISTED,
                     RestExceptionFactor.NO_RIGHTS}
     )
@@ -157,7 +157,7 @@ public class QuestionResource extends KnowledgeResource {
     @RestApiInfo(
             desc = "认为问题有价值",
             authPolicy = RestApiInfo.AuthPolicy.OAUTH,
-            resultDemo = ApiQuestion.class,
+            resultDemo = CommonResult.class,
             errors = {RestExceptionFactor.QUESTION_NOT_EXISTED,
                     RestExceptionFactor.CANNOT_DO_THIS_TO_QUESTION}
     )
@@ -188,7 +188,7 @@ public class QuestionResource extends KnowledgeResource {
     @RestApiInfo(
             desc = "关注问题",
             authPolicy = RestApiInfo.AuthPolicy.OAUTH,
-            resultDemo = ApiQuestion.class,
+            resultDemo = CommonResult.class,
             errors = {RestExceptionFactor.QUESTION_NOT_EXISTED}
     )
     @Produces(MediaType.APPLICATION_JSON)
@@ -298,7 +298,7 @@ public class QuestionResource extends KnowledgeResource {
     @RestApiInfo(
             desc = "列出标签",
             authPolicy = RestApiInfo.AuthPolicy.PUBLIC,
-            resultDemo = ApiQuestion.class,
+            resultDemo = ApiQuestionTag.class,
             errors = {}
     )
     @Produces(MediaType.APPLICATION_JSON)
