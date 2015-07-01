@@ -20,8 +20,19 @@ public class AccessToken extends BaseModel {
     @JSONField(name = "token")
     private String token;
 
+    @JSONField(name = "user_id_str")
+    private String userIdStr;
+
     private int appKey;
     private long createAt;
+
+    public String getUserIdStr() {
+        return userIdStr;
+    }
+
+    public void setUserIdStr(String userIdStr) {
+        this.userIdStr = userIdStr;
+    }
 
     public long getUserId() {
         return userId;
@@ -29,6 +40,7 @@ public class AccessToken extends BaseModel {
 
     public void setUserId(long userId) {
         this.userId = userId;
+        this.userIdStr = Long.toString(userId);
     }
 
     public long getExpireAt() {
