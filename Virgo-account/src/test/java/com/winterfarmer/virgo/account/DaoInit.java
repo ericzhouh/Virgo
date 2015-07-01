@@ -49,10 +49,10 @@ public class DaoInit {
     @Test
     public void init() {
         ((AccountMysqlDaoImpl) accountDao).initTable(true);
-        ((AccessTokenMysqlDaoImpl) accessTokenDao).initTable(true);
-        ((OpenPlatformAccountMysqlDaoImpl) openPlatformAccountDao).initTable(true);
-        ((PrivilegeMysqlDaoImpl) privilegeDao).initTable(true);
-        ((UserInfoMysqlDaoImpl) userInfoDao).initTable(true);
+//        ((AccessTokenMysqlDaoImpl) accessTokenDao).initTable(true);
+//        ((OpenPlatformAccountMysqlDaoImpl) openPlatformAccountDao).initTable(true);
+//        ((PrivilegeMysqlDaoImpl) privilegeDao).initTable(true);
+//        ((UserInfoMysqlDaoImpl) userInfoDao).initTable(true);
     }
 
     @Test

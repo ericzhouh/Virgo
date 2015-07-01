@@ -11,9 +11,15 @@ import com.winterfarmer.virgo.database.helper.column.date.TimeStampColumn;
 import com.winterfarmer.virgo.database.helper.column.numeric.BigintColumn;
 import com.winterfarmer.virgo.database.helper.column.numeric.TinyIntColumn;
 import com.winterfarmer.virgo.database.helper.column.string.VarcharColumn;
+import com.winterfarmer.virgo.log.VirgoLogger;
+import org.springframework.jdbc.core.PreparedStatementCreator;
 import org.springframework.jdbc.core.RowMapper;
+import org.springframework.jdbc.support.GeneratedKeyHolder;
+import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
 
+import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Map;
@@ -25,7 +31,7 @@ import java.util.Map;
 public class AccountMysqlDaoImpl extends BaseMysqlDao implements AccountDao {
     public static final String ACCOUNT_TABLE_NAME = "account";
 
-    private static final BigintColumn userId = Columns.newUserIdColumn();
+    private static final BigintColumn userId = (BigintColumn) Columns.newUserIdColumn().setAutoIncrease(true);
     private static final TimeStampColumn createAt = Columns.newCreateAtColumn();
     private static final VarcharColumn nickName = (VarcharColumn) new VarcharColumn("nick_name", 128).
             setAllowNull(false).setComment("昵称").setUnique(true);
@@ -41,7 +47,7 @@ public class AccountMysqlDaoImpl extends BaseMysqlDao implements AccountDao {
             addColumn(userId).addColumn(createAt).addColumn(nickName).
             addColumn(salt).addColumn(hashedPassword).
             addColumn(version).addColumn(extInfo).
-            setPrimaryKey(userId).addIndex(nickName).buildCreateDDL();
+            setPrimaryKey(userId).addIndex(nickName).setAutoIncrement(19060621).buildCreateDDL();
 
     public static final RowMapper<Account> accountRowMapper = new RowMapper<Account>() {
         @Override
@@ -75,12 +81,49 @@ public class AccountMysqlDaoImpl extends BaseMysqlDao implements AccountDao {
         }
     }
 
-    private static final String insert_account_sql =
-            insertIntoSQL(ACCOUNT_TABLE_NAME, userId, nickName, hashedPassword, salt, version, extInfo);
+    private static final String INSERT_ACCOUNT_SQL =
+            insertIntoSQL(ACCOUNT_TABLE_NAME, nickName, hashedPassword, salt, version, extInfo);
+
+    protected PreparedStatement createAccountPreparedStatement(Connection connection,
+                                                               String nickName,
+                                                               String hashedPassword,
+                                                               String salt,
+                                                               AccountVersion version,
+                                                               Map<String, Object> extInfo) throws SQLException {
+        VirgoLogger.info(INSERT_ACCOUNT_SQL);
+        PreparedStatement ps = connection.prepareStatement(INSERT_ACCOUNT_SQL, new String[]{userId.getName()});
+
+        int i = 1;
+        ps.setString(i++, nickName);
+        ps.setString(i++, hashedPassword);
+        ps.setString(i++, salt);
+        ps.setInt(i++, version.getIndex());
+        setExtForPreparedStatement(ps, i++, extInfo);
+        return ps;
+    }
 
     @Override
-    public boolean createAccount(long userId, String nickName, String hashedPassword, String salt, AccountVersion version, Map<String, Object> extInfo) {
-        return update(insert_account_sql, userId, nickName, hashedPassword, salt, version.getIndex(), ExtInfoColumn.toBytes(extInfo)) > 0;
+    public Long createAccount(final String nickName, final String hashedPassword, final String salt, final AccountVersion version, final Map<String, Object> extInfo) {
+        KeyHolder keyHolder = new GeneratedKeyHolder();
+        int result = getWriteJdbcTemplate().update(
+                new PreparedStatementCreator() {
+                    public PreparedStatement createPreparedStatement(Connection connection) throws SQLException {
+                        return createAccountPreparedStatement(connection,
+                                nickName,
+                                hashedPassword,
+                                salt,
+                                version,
+                                extInfo);
+                    }
+                },
+                keyHolder
+        );
+
+        if (result <= 0) {
+            return null;
+        } else {
+            return keyHolder.getKey().longValue();
+        }
     }
 
     private static final String update_account_sql = "updateApplyingExpert " + ACCOUNT_TABLE_NAME + " set " +

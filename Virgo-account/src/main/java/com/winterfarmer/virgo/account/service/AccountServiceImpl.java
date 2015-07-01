@@ -378,11 +378,12 @@ public class AccountServiceImpl implements AccountService {
     }
 
     private long signUp(String nickName, String password) {
-        long userId = idService.getId();
+//        long userId = idService.getId();
         String salt = generateSalt();
         String hashedPassword = getHashedPassword(password, salt);
 
-        if (accountMysqlDao.createAccount(userId, nickName, hashedPassword, salt, AccountVersion.SALT_SHA256, null)) {
+        Long userId = accountMysqlDao.createAccount(nickName, hashedPassword, salt, AccountVersion.SALT_SHA256, null);
+        if (userId != null) {
             return userId;
         } else {
             VirgoLogger.error("Create new account into db failed!");

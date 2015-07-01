@@ -11,7 +11,7 @@ import java.util.Map;
 public interface AccountDao {
     Account retrieveAccount(long userId, boolean fromWrite);
 
-    boolean createAccount(long userId, String nickName, String hashedPassword, String salt, AccountVersion version, Map<String, Object> extInfo);
+    Long createAccount(String nickName, String hashedPassword, String salt, AccountVersion version, Map<String, Object> extInfo);
 
     boolean updateAccount(Account account);
 

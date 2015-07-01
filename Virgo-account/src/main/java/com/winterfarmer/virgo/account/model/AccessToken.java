@@ -10,7 +10,6 @@ import com.winterfarmer.virgo.storage.base.BaseModel;
 @JSONType(ignores = {"appKey", "createAt"})
 public class AccessToken extends BaseModel {
     private static final long serialVersionUID = -7409395183250576521L;
-
     @JSONField(name = "user_id")
     private long userId;
 
