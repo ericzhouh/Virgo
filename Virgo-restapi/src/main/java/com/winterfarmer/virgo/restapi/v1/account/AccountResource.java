@@ -285,8 +285,8 @@ public class AccountResource extends BaseResource {
             String introduction,
             @HeaderParam(HEADER_USER_ID)
             long userId) {
-        nickName = checkAndPurifyNickName(nickName);
         UserInfo userInfo = checkAndGetUserInfo(userId);
+        nickName = checkAndPurifyNickName(nickName, userInfo.getNickName());
 
         userInfo.setNickName(nickName);
         userInfo.setPortrait(portrait);
@@ -347,11 +347,12 @@ public class AccountResource extends BaseResource {
             String introduction,
             @HeaderParam(HEADER_USER_ID)
             long userId) {
-        nickName = checkAndPurifyNickName(nickName);
         UserInfo userInfo = checkAndGetUserInfo(userId);
         if (userInfo.getUserType() == UserType.EXPERT) {
             throw new VirgoRestException(RestExceptionFactor.ALREADY_EXPERT);
         }
+
+        nickName = checkAndPurifyNickName(nickName, userInfo.getNickName());
 
         long[] tagIds = checkAndGetTagIds(tagsString);
         userInfo.setNickName(nickName);
@@ -651,6 +652,28 @@ public class AccountResource extends BaseResource {
         } else {
             throw new VirgoRestException(RestExceptionFactor.INVALID_NICK_NAME);
         }
+    }
+
+    private String checkAndPurifyNickName(String newNickName, String originalNickName) {
+        newNickName = StringUtils.trim(newNickName);
+        originalNickName = StringUtils.trim(newNickName);
+        if (StringUtils.length(newNickName) < 2) {
+            throw new VirgoRestException(RestExceptionFactor.INVALID_NICK_NAME);
+        }
+
+        Matcher matcher = pattern.matcher(newNickName);
+        Matcher allNumberMatcher = allNumberPattern.matcher(newNickName);
+
+        if (matcher.matches() && !allNumberMatcher.matches()) {
+            if (!StringUtils.equals(newNickName, originalNickName) && accountService.isNickNameExisted(newNickName)) {
+                throw new VirgoRestException(RestExceptionFactor.NICK_NAME_EXISTED);
+            } else {
+                return newNickName;
+            }
+        } else {
+            throw new VirgoRestException(RestExceptionFactor.INVALID_NICK_NAME);
+        }
+
     }
 
     private ApiQuestionTag[] getApiQuestionTags(long[] tagIds) {
