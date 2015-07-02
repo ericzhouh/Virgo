@@ -126,10 +126,8 @@ public class AccountMysqlDaoImpl extends BaseMysqlDao implements AccountDao {
         }
     }
 
-    private static final String update_account_sql = "updateApplyingExpert " + ACCOUNT_TABLE_NAME + " set " +
-            nickName.eqWhich() + ", " +
-            extInfo.eqWhich() +
-            " where " + userId.eqWhich() + ";";
+    private static final String update_account_sql =
+            updateSql(ACCOUNT_TABLE_NAME, nickName, extInfo) + where(userId.eqWhich());
 
     @Override
     public boolean updateAccount(Account account) {
