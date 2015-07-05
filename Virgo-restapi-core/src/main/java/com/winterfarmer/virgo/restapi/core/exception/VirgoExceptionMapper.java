@@ -37,12 +37,15 @@ public class VirgoExceptionMapper implements ExceptionMapper<Throwable> {
                 }
 
                 if (response == null) {
+                    VirgoLogger.error("response == null");
                     response = buildInternalError();
                 }
             } else {
+                VirgoLogger.error("throwable is not instanceof WebApplicationException", throwable);
                 response = buildInternalError();
             }
         } catch (Throwable t1) {
+            VirgoLogger.error("Severe error occured while building error response", t1);
             response = buildInternalError();
             // ApiLogger.error(t, "Severe error occured while building error response : %s", t1.getMessage());
         } finally {
