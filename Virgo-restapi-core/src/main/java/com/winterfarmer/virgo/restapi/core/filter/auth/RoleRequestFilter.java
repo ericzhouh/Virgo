@@ -2,6 +2,7 @@ package com.winterfarmer.virgo.restapi.core.filter.auth;
 
 import com.winterfarmer.virgo.account.model.AccessToken;
 import com.winterfarmer.virgo.account.model.Role;
+import com.winterfarmer.virgo.log.VirgoLogger;
 import com.winterfarmer.virgo.restapi.core.exception.RestExceptionFactor;
 import com.winterfarmer.virgo.restapi.core.exception.VirgoRestException;
 import com.winterfarmer.virgo.restapi.core.filter.FilterPriorities;
@@ -26,9 +27,11 @@ public class RoleRequestFilter extends AccountFilter implements ContainerRequest
 
     @Override
     public void filter(ContainerRequestContext requestContext) throws IOException {
+        VirgoLogger.debug("begin RoleRequestFilter");
         AccessToken accessToken = getAccessTokenAndExplainToHeader(requestContext);
         if (!staffService.hasPrivilege(accessToken.getUserId(), roleList)) {
             throw new VirgoRestException(RestExceptionFactor.NO_RIGHTS);
         }
+        VirgoLogger.debug("end RoleRequestFilter");
     }
 }

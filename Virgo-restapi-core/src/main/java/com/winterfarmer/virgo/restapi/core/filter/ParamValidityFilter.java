@@ -36,9 +36,11 @@ public class ParamValidityFilter implements ContainerRequestFilter {
 
     @Override
     public void filter(ContainerRequestContext requestContext) throws IOException {
+        VirgoLogger.debug("being ParamValidityFilter");
         for (ParamValidator validator : this.validators) {
             validator.validate(requestContext);
         }
+        VirgoLogger.debug("end ParamValidityFilter");
     }
 
     private void initValidators(List<Parameter> parameters) {
