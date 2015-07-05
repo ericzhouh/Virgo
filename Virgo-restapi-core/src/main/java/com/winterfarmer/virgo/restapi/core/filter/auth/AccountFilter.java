@@ -56,6 +56,8 @@ public abstract class AccountFilter {
 
             requestContext.getHeaders().add("from_user_id", Long.toString(accessToken.getUserId()));
             requestContext.getHeaders().add("app_key", "" + Integer.toString(accessToken.getAppKey()));
+
+            VirgoLogger.debug("set getHeaders down");
         }
 
         return accessToken;

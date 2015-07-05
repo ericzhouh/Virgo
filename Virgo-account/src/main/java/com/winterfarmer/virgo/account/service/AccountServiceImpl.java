@@ -151,6 +151,21 @@ public class AccountServiceImpl implements AccountService {
         }
     }
 
+
+    public static void main(String[] args) {
+        String tokenString = "0.b8NkwqqqqqqfjqF2qRGP9gFqK76eTq";
+        AccountServiceImpl accountService = new AccountServiceImpl();
+        if (!accountService.isValidTokenPattern(tokenString)) {
+            System.out.println("1");
+        }
+
+        long userId = accountService.getUserIdFromTokenString(tokenString);
+        int appKey = (int) accountService.getUserAppKeyFromTokenString(tokenString);
+        System.out.println(userId);
+        System.out.println(appKey);
+    }
+
+
     @Override
     public AccessToken getAccessToken(long userId, int appKey) {
         AccessToken accessToken = accountRedisDao.getAccessToken(userId, appKey);
@@ -161,6 +176,8 @@ public class AccountServiceImpl implements AccountService {
             } else {
                 accessToken = null;
             }
+        } else {
+            accessToken.setAppKey(appKey);
         }
 
         return accessToken;
