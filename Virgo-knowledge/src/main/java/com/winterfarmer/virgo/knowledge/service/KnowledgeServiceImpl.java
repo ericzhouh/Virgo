@@ -564,7 +564,7 @@ public class KnowledgeServiceImpl implements KnowledgeService {
         if (StringUtils.isEmpty(content)) {
             return "";
         }
-        
+
         Document doc = Jsoup.parse(content);
         String digest = doc.body().text();
         digest = StringUtils.substring(digest, 0, MAX_DIGEST_LENGTH);

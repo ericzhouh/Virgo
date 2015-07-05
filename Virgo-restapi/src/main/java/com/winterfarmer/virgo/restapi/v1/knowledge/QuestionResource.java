@@ -40,11 +40,15 @@ public class QuestionResource extends KnowledgeResource {
     protected static final String QUESTION_CONTENT_SPEC = "UnicodeString:1~65536";
 
     public static final int MAX_TAG_NUMBER = 3;
-    private static final Function<Question, ApiQuestion> apiQuestionListConverter =
+    private final Function<Question, ApiQuestion> apiQuestionListConverter =
             new Function<Question, ApiQuestion>() {
                 @Override
                 public ApiQuestion apply(Question question) {
-                    return ApiQuestion.forSimpleDisplay(question);
+                    ApiQuestion apiQuestion = ApiQuestion.forSimpleDisplay(question);
+                    List<Long> tagIds = knowledgeService.listQuestionTagIdsByQuestionId(question.getId());
+                    List<QuestionTag> questionTagList = knowledgeService.listQuestionTag(tagIds);
+                    apiQuestion.setTags(ApiQuestionTag.from(questionTagList));
+                    return apiQuestion;
                 }
             };
 
