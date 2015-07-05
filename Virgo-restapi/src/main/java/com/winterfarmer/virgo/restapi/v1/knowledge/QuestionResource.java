@@ -66,6 +66,7 @@ public class QuestionResource extends KnowledgeResource {
             String subject,
             @FormParam("content")
             @ParamSpec(isRequired = true, spec = QUESTION_CONTENT_SPEC, desc = "内容")
+            @DefaultValue("")
             String content,
             @FormParam("question_tags")
             @ParamSpec(isRequired = true, spec = "string:1~1000", desc = "tag id, 用逗号分开")
