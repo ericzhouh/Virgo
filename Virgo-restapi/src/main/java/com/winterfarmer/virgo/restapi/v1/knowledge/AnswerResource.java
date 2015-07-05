@@ -241,7 +241,30 @@ public class AnswerResource extends KnowledgeResource {
             @ParamSpec(isRequired = false, spec = NORMAL_COUNT_SPEC, desc = NORMAL_COUNT_DESC)
             @DefaultValue(NORMAL_DEFAULT_PAGE_COUNT)
             int count) {
-        List<Answer> answerList = knowledgeService.listAnswers(questionId, page, count);
+        List<Answer> answerList = knowledgeService.listQuestionAnswers(questionId, page, count);
+        List<ApiAnswer> apiAnswerList = Lists.transform(answerList, apiAnswerListConverter);
+        return addCountInfo(addUserInfo(addQuestionSubject(apiAnswerList)));
+    }
+
+    @Path("answers.json")
+    @GET
+    @RestApiInfo(
+            desc = "list所有答案",
+            authPolicy = RestApiInfo.AuthPolicy.PUBLIC,
+            resultDemo = ApiQuestion.class,
+            errors = {}
+    )
+    @Produces(MediaType.APPLICATION_JSON)
+    public List<ApiAnswer> listAnswers(
+            @QueryParam(PAGE_PARAM_NAME)
+            @ParamSpec(isRequired = false, spec = NORMAL_PAGE_SPEC, desc = NORMAL_PAGE_DESC)
+            @DefaultValue(NORMAL_DEFAULT_PAGE_NUM)
+            int page,
+            @QueryParam(COUNT_PARAM_NAME)
+            @ParamSpec(isRequired = false, spec = NORMAL_COUNT_SPEC, desc = NORMAL_COUNT_DESC)
+            @DefaultValue(NORMAL_DEFAULT_PAGE_COUNT)
+            int count) {
+        List<Answer> answerList = knowledgeService.listAnswers(page, count);
         List<ApiAnswer> apiAnswerList = Lists.transform(answerList, apiAnswerListConverter);
         return addCountInfo(addUserInfo(addQuestionSubject(apiAnswerList)));
     }

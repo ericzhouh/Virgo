@@ -345,7 +345,12 @@ public class KnowledgeServiceImpl implements KnowledgeService {
     }
 
     @Override
-    public List<Answer> listAnswers(long questionId, int page, int count) {
+    public List<Answer> listAnswers(int page, int count) {
+        return answerMysqlDao.list(count, page * count);
+    }
+
+    @Override
+    public List<Answer> listQuestionAnswers(long questionId, int page, int count) {
         return answerMysqlDao.listByQuestionId(questionId, count, page * count);
     }
 

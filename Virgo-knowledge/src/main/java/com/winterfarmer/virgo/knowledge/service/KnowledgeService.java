@@ -108,6 +108,15 @@ public interface KnowledgeService {
     boolean discollectAnswer(long userId, long answerId);
 
     /**
+     * List (count number) answers from page
+     *
+     * @param page
+     * @param count
+     * @return
+     */
+    List<Answer> listAnswers(int page, int count);
+
+    /**
      * List (count number) answers of questionId from page
      *
      * @param questionId
@@ -115,7 +124,7 @@ public interface KnowledgeService {
      * @param count
      * @return
      */
-    List<Answer> listAnswers(long questionId, int page, int count);
+    List<Answer> listQuestionAnswers(long questionId, int page, int count);
 
     /**
      * List (count number) answers of user answerd from page
