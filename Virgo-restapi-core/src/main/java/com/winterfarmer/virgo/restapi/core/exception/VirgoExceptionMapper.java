@@ -1,6 +1,7 @@
 package com.winterfarmer.virgo.restapi.core.exception;
 
 import com.alibaba.fastjson.JSON;
+import com.winterfarmer.virgo.log.VirgoLogger;
 import org.apache.commons.lang3.StringUtils;
 import org.glassfish.jersey.server.ParamException;
 
@@ -65,6 +66,7 @@ public class VirgoExceptionMapper implements ExceptionMapper<Throwable> {
 
 
     private Response buildInternalError() {
+        VirgoLogger.error("buildInternalError");
         return buildResponseFromExceptionFactor(RestExceptionFactor.INTERNAL_SERVER_ERROR);
     }
 

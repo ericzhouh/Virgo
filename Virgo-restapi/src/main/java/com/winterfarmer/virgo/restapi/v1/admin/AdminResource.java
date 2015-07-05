@@ -13,12 +13,14 @@ import com.winterfarmer.virgo.aggregator.model.ApiPrivilege;
 import com.winterfarmer.virgo.aggregator.model.ApiStaff;
 import com.winterfarmer.virgo.aggregator.model.ApiUser;
 import com.winterfarmer.virgo.common.util.CollectionsUtil;
+import com.winterfarmer.virgo.log.VirgoLogger;
 import com.winterfarmer.virgo.restapi.BaseResource;
 import com.winterfarmer.virgo.restapi.core.annotation.ParamSpec;
 import com.winterfarmer.virgo.restapi.core.annotation.ResourceOverview;
 import com.winterfarmer.virgo.restapi.core.annotation.RestApiInfo;
 import com.winterfarmer.virgo.restapi.core.exception.RestExceptionFactor;
 import com.winterfarmer.virgo.restapi.core.exception.VirgoRestException;
+import com.winterfarmer.virgo.restapi.core.filter.VirgoLogFilter;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
@@ -129,6 +131,7 @@ public class AdminResource extends BaseResource {
         }
 
         if (!staffService.insertOrUpdatePrivilege(userId, groupType, privilege)) {
+            VirgoLogger.error("staffService.insertOrUpdatePrivilege " + userId);
             throw new VirgoRestException(RestExceptionFactor.INTERNAL_SERVER_ERROR);
         }
         List<Privilege> userPrivileges = staffService.getPrivileges(userId);
