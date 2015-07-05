@@ -87,7 +87,7 @@ public class AnswerCommentResource extends KnowledgeResource {
     @GET
     @RestApiInfo(
             desc = "列出回答下的评论",
-            authPolicy = RestApiInfo.AuthPolicy.OAUTH,
+            authPolicy = RestApiInfo.AuthPolicy.PUBLIC,
             resultDemo = ApiAnswerComment.class,
             errors = {RestExceptionFactor.ANSWER_NOT_EXISTED}
     )
