@@ -233,7 +233,7 @@ public class QuestionResource extends KnowledgeResource {
     @GET
     @RestApiInfo(
             desc = "用户提问, 回答或者关注的问题",
-            authPolicy = RestApiInfo.AuthPolicy.OAUTH,
+            authPolicy = RestApiInfo.AuthPolicy.PUBLIC,
             resultDemo = ApiQuestion.class,
             errors = {}
     )
@@ -475,6 +475,16 @@ public class QuestionResource extends KnowledgeResource {
         return newApiQuestionList;
     }
 
+    private ApiQuestion addCountInfo(ApiQuestion apiQuestion) {
+        long questionId = apiQuestion.getQuestionId();
+
+        apiQuestion.setAgreeCount(knowledgeService.getQuestionAgreeCount(questionId));
+        apiQuestion.setAnswerCount(knowledgeService.getQuestionAnswerCount(questionId));
+        apiQuestion.setFollowCount(knowledgeService.getQuestionFollowCount(questionId));
+
+        return apiQuestion;
+    }
+
     private List<ApiQuestion> addUserOperations(long userId, List<ApiQuestion> apiQuestions) {
         List<ApiQuestion> newApiQuestionList = Lists.newArrayList();
 
@@ -489,16 +499,6 @@ public class QuestionResource extends KnowledgeResource {
         long questionId = apiQuestion.getQuestionId();
         apiQuestion.setIsAgreed(knowledgeService.isUserAgreeQuestion(userId, questionId));
         apiQuestion.setIsFollowed(knowledgeService.isUserFollowQuestion(userId, questionId));
-        return apiQuestion;
-    }
-
-    private ApiQuestion addCountInfo(ApiQuestion apiQuestion) {
-        long questionId = apiQuestion.getQuestionId();
-
-        apiQuestion.setAgreeCount(knowledgeService.getQuestionAgreeCount(questionId));
-        apiQuestion.setAnswerCount(knowledgeService.getQuestionAnswerCount(questionId));
-        apiQuestion.setFollowCount(knowledgeService.getQuestionFollowCount(questionId));
-
         return apiQuestion;
     }
 }

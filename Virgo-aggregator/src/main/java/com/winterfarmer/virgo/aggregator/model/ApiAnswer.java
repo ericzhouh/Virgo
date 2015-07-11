@@ -66,6 +66,14 @@ public class ApiAnswer {
     @ApiField(desc = "点赞数量")
     private int agreeCount;
 
+    @JSONField(name = "is_collected")
+    @ApiField(desc = "是否收藏")
+    private Boolean isCollected;
+
+    @JSONField(name = "is_agreed")
+    @ApiField(desc = "是否点赞")
+    private Boolean isAgreed;
+
     @JSONField(name = "comment_count")
     @ApiField(desc = "评论数量")
     private int commentCount;
@@ -87,6 +95,22 @@ public class ApiAnswer {
         this.updateAtMs = answer.getUpdateAtMs();
         setCreateAtMsStr();
         setUpdateAtMsStr();
+    }
+
+    public Boolean isCollected() {
+        return isCollected;
+    }
+
+    public void setIsCollected(Boolean isCollected) {
+        this.isCollected = isCollected;
+    }
+
+    public Boolean isAgreed() {
+        return isAgreed;
+    }
+
+    public void setIsAgreed(Boolean isAgreed) {
+        this.isAgreed = isAgreed;
     }
 
     public String getUpdateAtMsStr() {

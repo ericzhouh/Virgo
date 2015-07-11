@@ -73,7 +73,10 @@ public class AnswerResource extends KnowledgeResource {
         Pair<String, List<String>> refinedContentAndImageIds = checkAndGetContentAndImageIds(content);
         String imageIds = StringUtils.join(refinedContentAndImageIds.getRight(), ",");
         Answer answer = knowledgeService.newAnswer(userId, questionId, content, imageIds);
-        return addCount(new ApiAnswer(answer));
+        ApiAnswer apiAnswer = addCount(new ApiAnswer(answer));
+        apiAnswer.setIsAgreed(false);
+        apiAnswer.setIsCollected(false);
+        return apiAnswer;
     }
 
     @Path("update_answer.json")
@@ -106,7 +109,7 @@ public class AnswerResource extends KnowledgeResource {
         answer.setImageIds(imageIds);
         answer.setUpdateAtMs(System.currentTimeMillis());
         answer = knowledgeService.updateAnswer(answer);
-        return addCount(new ApiAnswer(answer));
+        return addUserOperations(userId, addCount(new ApiAnswer(answer)));
     }
 
     @Path("delete_answer.json")
@@ -196,7 +199,7 @@ public class AnswerResource extends KnowledgeResource {
     @GET
     @RestApiInfo(
             desc = "用户回答或者收藏的问题",
-            authPolicy = RestApiInfo.AuthPolicy.OAUTH,
+            authPolicy = RestApiInfo.AuthPolicy.PUBLIC,
             resultDemo = ApiQuestion.class,
             errors = {}
     )
@@ -217,7 +220,7 @@ public class AnswerResource extends KnowledgeResource {
             long userId) {
         List<Answer> answerList = queryAnswers(type, userId, page, count);
         List<ApiAnswer> apiAnswerList = Lists.transform(answerList, apiAnswerListConverter);
-        return addCountInfo(addUserInfo(addQuestionSubject(apiAnswerList)));
+        return addUserOperations(userId, addCountInfo(addUserInfo(addQuestionSubject(apiAnswerList))));
     }
 
     @Path("question_answers.json")
@@ -240,9 +243,14 @@ public class AnswerResource extends KnowledgeResource {
             @QueryParam(COUNT_PARAM_NAME)
             @ParamSpec(isRequired = false, spec = NORMAL_COUNT_SPEC, desc = NORMAL_COUNT_DESC)
             @DefaultValue(NORMAL_DEFAULT_PAGE_COUNT)
-            int count) {
+            int count,
+            @HeaderParam(HEADER_USER_ID)
+            Long userId) {
         List<Answer> answerList = knowledgeService.listQuestionAnswers(questionId, page, count);
         List<ApiAnswer> apiAnswerList = Lists.transform(answerList, apiAnswerListConverter);
+        if (userId != null) {
+            apiAnswerList = addUserOperations(userId, apiAnswerList);
+        }
         return addCountInfo(addUserInfo(addQuestionSubject(apiAnswerList)));
     }
 
@@ -263,9 +271,14 @@ public class AnswerResource extends KnowledgeResource {
             @QueryParam(COUNT_PARAM_NAME)
             @ParamSpec(isRequired = false, spec = NORMAL_COUNT_SPEC, desc = NORMAL_COUNT_DESC)
             @DefaultValue(NORMAL_DEFAULT_PAGE_COUNT)
-            int count) {
+            int count,
+            @HeaderParam(HEADER_USER_ID)
+            Long userId) {
         List<Answer> answerList = knowledgeService.listAnswers(page, count);
         List<ApiAnswer> apiAnswerList = Lists.transform(answerList, apiAnswerListConverter);
+        if (userId != null) {
+            apiAnswerList = addUserOperations(userId, apiAnswerList);
+        }
         return addCountInfo(addUserInfo(addQuestionSubject(apiAnswerList)));
     }
 
@@ -281,14 +294,20 @@ public class AnswerResource extends KnowledgeResource {
     public ApiAnswer getAnswer(
             @QueryParam(ANSWER_ID_PARAM_NAME)
             @ParamSpec(isRequired = true, spec = POSITIVE_LONG_ID_SPEC, desc = ANSWER_ID_DESC)
-            long answerId) {
+            long answerId,
+            @HeaderParam(HEADER_USER_ID)
+            Long userId) {
         Answer answer = checkAndGetAnswer(answerId);
         Question question = knowledgeService.getQuestion(answerId);
 
         ApiAnswer apiAnswer = new ApiAnswer(answer);
         apiAnswer.setQuestionSubject(question.getSubject());
 
-        return addCount(new ApiAnswer(answer));
+        if (userId != null) {
+            apiAnswer = addUserOperations(userId, apiAnswer);
+        }
+
+        return addCount(apiAnswer);
     }
 
     /**
@@ -400,6 +419,23 @@ public class AnswerResource extends KnowledgeResource {
         apiAnswer.setCommentCount(knowledgeService.getAnswerCommentCount(answerId));
         apiAnswer.setAgreeCount(knowledgeService.getAnswerAgreeCount(answerId));
 
+        return apiAnswer;
+    }
+
+    private List<ApiAnswer> addUserOperations(long userId, List<ApiAnswer> apiAnswers) {
+        List<ApiAnswer> newApiAnswerList = Lists.newArrayList();
+
+        for (ApiAnswer apiAnswer : apiAnswers) {
+            newApiAnswerList.add(addUserOperations(userId, apiAnswer));
+        }
+
+        return newApiAnswerList;
+    }
+
+    private ApiAnswer addUserOperations(long userId, ApiAnswer apiAnswer) {
+        long answerId = apiAnswer.getAnswerId();
+        apiAnswer.setIsAgreed(knowledgeService.isUserAgreeAnswer(userId, answerId));
+        apiAnswer.setIsCollected(knowledgeService.isUserCollectAnswer(userId, answerId));
         return apiAnswer;
     }
 }
