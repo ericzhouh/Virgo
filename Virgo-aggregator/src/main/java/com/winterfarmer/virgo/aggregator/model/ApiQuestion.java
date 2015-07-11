@@ -45,6 +45,14 @@ public class ApiQuestion {
     @ApiField(desc = "更新时间")
     private long updateAtMs;
 
+    @JSONField(name = "create_at_ms_str")
+    @ApiField(desc = "创建时间")
+    private String createAtMsStr;
+
+    @JSONField(name = "update_at_ms_str")
+    @ApiField(desc = "更新时间")
+    private String updateAtMsStr;
+
     @JSONField(name = "tags")
     @ApiField(desc = "标签列表")
     private List<ApiQuestionTag> tags;
@@ -143,6 +151,7 @@ public class ApiQuestion {
 
     public void setCreateAtMs(long createAtMs) {
         this.createAtMs = createAtMs;
+        setCreateAtMsStr();
     }
 
     public long getUpdateAtMs() {
@@ -151,6 +160,7 @@ public class ApiQuestion {
 
     public void setUpdateAtMs(long updateAtMs) {
         this.updateAtMs = updateAtMs;
+        setUpdateAtMsStr();
     }
 
     public List<ApiQuestionTag> getTags() {
@@ -168,6 +178,23 @@ public class ApiQuestion {
     public void setDigest(String digest) {
         this.digest = digest;
     }
+
+    public String getUpdateAtMsStr() {
+        return updateAtMsStr;
+    }
+
+    public void setUpdateAtMsStr() {
+        this.updateAtMsStr = AggregatorUtils.timeConverter(this.updateAtMs);
+    }
+
+    public String getCreateAtMsStr() {
+        return createAtMsStr;
+    }
+
+    public void setCreateAtMsStr() {
+        this.createAtMsStr = AggregatorUtils.timeConverter(this.createAtMs);
+    }
+
 
     /**
      * 对于list出的问题给简单的展现形式
@@ -200,5 +227,7 @@ public class ApiQuestion {
         this.state = question.getCommonState().getIndex();
         this.createAtMs = question.getCreateAtMs();
         this.updateAtMs = question.getUpdateAtMs();
+        setCreateAtMsStr();
+        setUpdateAtMsStr();
     }
 }
