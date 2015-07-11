@@ -239,6 +239,9 @@ public class QuestionResource extends KnowledgeResource {
     )
     @Produces(MediaType.APPLICATION_JSON)
     public List<ApiQuestion> listUserQuestions(
+            @QueryParam("user_id")
+            @ParamSpec(isRequired = true, spec = USER_ID_SPEC, desc = USER_ID_DESC)
+            long userId,
             @QueryParam("type")
             @ParamSpec(isRequired = true, spec = "int:[0,2]", desc = "筛选类型: 0-我提问的, 1-我回答的, 2-我关注的")
             int type,
@@ -251,11 +254,10 @@ public class QuestionResource extends KnowledgeResource {
             @DefaultValue(NORMAL_DEFAULT_PAGE_COUNT)
             int count,
             @HeaderParam(HEADER_USER_ID)
-            long userId) {
+            Long fromUserId) {
         List<Question> questionList = queryQuestions(type, userId, page, count);
         List<ApiQuestion> apiQuestionList = Lists.transform(questionList, apiQuestionListConverter);
-        apiQuestionList = addUserOperations(userId, apiQuestionList);
-        return addUserOperations(userId, addCountInfo(apiQuestionList));
+        return addUserOperations(fromUserId, addCountInfo(apiQuestionList));
     }
 
     @Path("list_questions.json")
@@ -485,7 +487,11 @@ public class QuestionResource extends KnowledgeResource {
         return apiQuestion;
     }
 
-    private List<ApiQuestion> addUserOperations(long userId, List<ApiQuestion> apiQuestions) {
+    private List<ApiQuestion> addUserOperations(Long userId, List<ApiQuestion> apiQuestions) {
+        if (userId == null || userId < 1) {
+            return apiQuestions;
+        }
+
         List<ApiQuestion> newApiQuestionList = Lists.newArrayList();
 
         for (ApiQuestion apiQuestion : apiQuestions) {
@@ -495,7 +501,11 @@ public class QuestionResource extends KnowledgeResource {
         return newApiQuestionList;
     }
 
-    private ApiQuestion addUserOperations(long userId, ApiQuestion apiQuestion) {
+    private ApiQuestion addUserOperations(Long userId, ApiQuestion apiQuestion) {
+        if (userId == null || userId < 1) {
+            return apiQuestion;
+        }
+
         long questionId = apiQuestion.getQuestionId();
         apiQuestion.setIsAgreed(knowledgeService.isUserAgreeQuestion(userId, questionId));
         apiQuestion.setIsFollowed(knowledgeService.isUserFollowQuestion(userId, questionId));

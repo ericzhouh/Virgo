@@ -217,6 +217,9 @@ public class AnswerResource extends KnowledgeResource {
     )
     @Produces(MediaType.APPLICATION_JSON)
     public List<ApiAnswer> listUserAnswers(
+            @QueryParam("user_id")
+            @ParamSpec(isRequired = true, spec = USER_ID_SPEC, desc = USER_ID_DESC)
+            long userId,
             @QueryParam("type")
             @ParamSpec(isRequired = true, spec = "int:[0,2]", desc = "筛选类型: 0-我回答的, 1-我收藏的, 2-最新的回答我的")
             int type,
@@ -229,7 +232,7 @@ public class AnswerResource extends KnowledgeResource {
             @DefaultValue(NORMAL_DEFAULT_PAGE_COUNT)
             int count,
             @HeaderParam(HEADER_USER_ID)
-            long userId) {
+            Long fromUserId) {
         List<Answer> answerList = queryAnswers(type, userId, page, count);
         List<ApiAnswer> apiAnswerList = Lists.transform(answerList, apiAnswerListConverter);
         return addUserOperations(userId, addCountInfo(addUserInfo(addQuestionSubject(apiAnswerList))));
@@ -434,7 +437,11 @@ public class AnswerResource extends KnowledgeResource {
         return apiAnswer;
     }
 
-    private List<ApiAnswer> addUserOperations(long userId, List<ApiAnswer> apiAnswers) {
+    private List<ApiAnswer> addUserOperations(Long userId, List<ApiAnswer> apiAnswers) {
+        if (userId == null || userId < 1) {
+            return apiAnswers;
+        }
+
         List<ApiAnswer> newApiAnswerList = Lists.newArrayList();
 
         for (ApiAnswer apiAnswer : apiAnswers) {
@@ -444,7 +451,11 @@ public class AnswerResource extends KnowledgeResource {
         return newApiAnswerList;
     }
 
-    private ApiAnswer addUserOperations(long userId, ApiAnswer apiAnswer) {
+    private ApiAnswer addUserOperations(Long userId, ApiAnswer apiAnswer) {
+        if (userId == null || userId < 1) {
+            return apiAnswer;
+        }
+
         long answerId = apiAnswer.getAnswerId();
         apiAnswer.setIsAgreed(knowledgeService.isUserAgreeAnswer(userId, answerId));
         apiAnswer.setIsCollected(knowledgeService.isUserCollectAnswer(userId, answerId));
