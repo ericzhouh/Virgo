@@ -240,6 +240,18 @@ public class KnowledgeServiceImpl implements KnowledgeService {
     }
 
     @Override
+    public boolean isUserFollowQuestion(long userId, long questionId) {
+        Edge edge = userFollowQuestionGraphDao.queryEdge(userId, questionId);
+        return Edge.isEdgeExisted(edge);
+    }
+
+    @Override
+    public boolean isUserAgreeQuestion(long userId, long questionId) {
+        Edge edge = userAgreeQuestionGraphDao.queryEdge(userId, questionId);
+        return Edge.isEdgeExisted(edge);
+    }
+
+    @Override
     public Pair<String, List<String>> refineQuestionContent(String questionContent) {
         List<String> images = Lists.newArrayList();
         return Pair.of(questionContent, images);
@@ -377,6 +389,18 @@ public class KnowledgeServiceImpl implements KnowledgeService {
     }
 
     @Override
+    public boolean isUserCollectAnswer(long userId, long answerId) {
+        Edge edge = userCollectAnswerGraphDao.queryEdge(userId, answerId);
+        return Edge.isEdgeExisted(edge);
+    }
+
+    @Override
+    public boolean isUserAgreeAnswer(long userId, long answerId) {
+        Edge edge = userAgreeAnswerGraphDao.queryEdge(userId, answerId);
+        return Edge.isEdgeExisted(edge);
+    }
+
+    @Override
     public int getAnswerAgreeCount(long answerId) {
         TailVertex vertex = userAgreeAnswerGraphDao.queryTailVertex(answerId);
         return vertex == null ? 0 : vertex.getDegree();
@@ -475,7 +499,7 @@ public class KnowledgeServiceImpl implements KnowledgeService {
         answerComment.setState(CommonState.NORMAL);
 
         AnswerComment comment = answerCommentDao.insert(answerComment);
-        setAnwerCommentCount(comment.getAnswerId(), true);
+        setAnswerCommentCount(comment.getAnswerId(), true);
         return comment;
     }
 
@@ -490,7 +514,7 @@ public class KnowledgeServiceImpl implements KnowledgeService {
         answerComment.setUpdateAtMs(System.currentTimeMillis());
 
         AnswerComment comment = answerCommentDao.update(answerComment);
-        setAnwerCommentCount(comment.getAnswerId(), true);
+        setAnswerCommentCount(comment.getAnswerId(), true);
         return comment;
     }
 
@@ -576,7 +600,7 @@ public class KnowledgeServiceImpl implements KnowledgeService {
         return StringUtils.trim(digest);
     }
 
-    private void setAnwerCommentCount(long answerId, boolean fromWrite) {
+    private void setAnswerCommentCount(long answerId, boolean fromWrite) {
         Integer count = answerCommentMysqlDao.getAnswerCommentCount(answerId, fromWrite);
         knowledgeCounterHybridDao.setCount(answerId, KnowledgeCounterType.ANSWER_COMMENT_COUNT.getIndex(), count);
     }

@@ -73,6 +73,30 @@ public class ApiQuestion {
     @ApiField(desc = "对问题点赞的数量")
     private int agreeCount;
 
+    @JSONField(name = "is_followed")
+    @ApiField(desc = "是否关注")
+    private Boolean isFollowed;
+
+    @JSONField(name = "is_agreed")
+    @ApiField(desc = "是否点赞")
+    private Boolean isAgreed;
+
+    public Boolean isFollowed() {
+        return isFollowed;
+    }
+
+    public void setIsFollowed(Boolean isFollowed) {
+        this.isFollowed = isFollowed;
+    }
+
+    public Boolean isAgreed() {
+        return isAgreed;
+    }
+
+    public void setIsAgreed(Boolean isAgreed) {
+        this.isAgreed = isAgreed;
+    }
+
     public int getAgreeCount() {
         return agreeCount;
     }

@@ -25,6 +25,14 @@ public class Edge {
     private long accessoryId; // 附带信息id
     private byte[] extInfo; // 扩展信息, 最好是json的格式
 
+    public static boolean isEdgeExisted(Edge edge) {
+        if (edge != null && edge.getState() == 1) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
     public static List<Long> listTails(List<Edge> edgeList) {
         return Lists.transform(edgeList, new Function<Edge, Long>() {
             @Override

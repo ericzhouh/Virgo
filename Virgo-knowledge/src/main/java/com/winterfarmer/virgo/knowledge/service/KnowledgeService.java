@@ -68,6 +68,10 @@ public interface KnowledgeService {
 
     int getQuestionAnswerCount(long questionId);
 
+    boolean isUserFollowQuestion(long userId, long questionId);
+
+    boolean isUserAgreeQuestion(long userId, long questionId);
+
     /**
      * @param questionContent
      * @return result[0] - refined content,
@@ -153,6 +157,10 @@ public interface KnowledgeService {
     int getAnswerAgreeCount(long answerId);
 
     int getAnswerCommentCount(long answerId);
+
+    boolean isUserCollectAnswer(long userId, long answerId);
+
+    boolean isUserAgreeAnswer(long userId, long answerId);
 
     // ========================================================================
     boolean isValidTags(long... questionTagId);

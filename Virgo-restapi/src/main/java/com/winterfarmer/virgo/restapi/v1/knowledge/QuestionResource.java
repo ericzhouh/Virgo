@@ -82,7 +82,10 @@ public class QuestionResource extends KnowledgeResource {
         String imageIds = StringUtils.join(refinedContentAndImageIds.getRight(), ",");
         Question question = knowledgeService.newQuestion(userId, subject, refinedContentAndImageIds.getLeft(), imageIds, tagIds);
         ApiQuestionTag[] apiQuestionTags = getApiQuestionTags(tagIds);
-        return addCountInfo(new ApiQuestion(question, apiQuestionTags));
+        ApiQuestion apiQuestion = addCountInfo(new ApiQuestion(question, apiQuestionTags));
+        apiQuestion.setIsAgreed(false);
+        apiQuestion.setIsFollowed(false);
+        return apiQuestion;
     }
 
     @Path("update_question.json")
@@ -128,7 +131,7 @@ public class QuestionResource extends KnowledgeResource {
 
         question = knowledgeService.updateQuestion(question, tagIds);
         ApiQuestionTag[] apiQuestionTags = getApiQuestionTags(tagIds);
-        return addCountInfo(new ApiQuestion(question, apiQuestionTags));
+        return addUserOperations(userId, addCountInfo(new ApiQuestion(question, apiQuestionTags)));
     }
 
     @Path("delete_question.json")
@@ -178,14 +181,18 @@ public class QuestionResource extends KnowledgeResource {
             long userId
     ) {
         Question question = checkAndGetQuestion(questionId);
-        if (question.getUserId() == userId) {
-            throw new VirgoRestException(RestExceptionFactor.CANNOT_DO_THIS_TO_QUESTION);
+        if (state == CommonState.NORMAL) {
+            knowledgeService.agreeQuestion(userId, question.getId());
+        } else {
+            knowledgeService.disagreeQuestion(userId, question.getId());
         }
-        boolean result =
-                state == CommonState.NORMAL ?
-                        knowledgeService.agreeQuestion(userId, question.getId()) :
-                        knowledgeService.disagreeQuestion(userId, question.getId());
-        return CommonResult.isSuccessfulCommonResult(result);
+
+        int count = knowledgeService.getQuestionAgreeCount(questionId);
+        boolean isAgreed = knowledgeService.isUserAgreeQuestion(userId, questionId);
+
+        return CommonResult.newCommonResult(
+                "agree_count", count,
+                "is_agreed", isAgreed);
     }
 
     @Path("follow_question.json")
@@ -208,11 +215,18 @@ public class QuestionResource extends KnowledgeResource {
             long userId
     ) {
         Question question = checkAndGetQuestion(questionId);
-        boolean result =
-                state == CommonState.NORMAL ?
-                        knowledgeService.followQuestion(userId, question.getId()) :
-                        knowledgeService.disfollowQuestion(userId, question.getId());
-        return CommonResult.isSuccessfulCommonResult(result);
+        if (state == CommonState.NORMAL) {
+            knowledgeService.followQuestion(userId, question.getId());
+        } else {
+            knowledgeService.disfollowQuestion(userId, question.getId());
+        }
+        int count = knowledgeService.getQuestionFollowCount(questionId);
+        boolean isFollowed = knowledgeService.isUserFollowQuestion(userId, questionId);
+
+        return CommonResult.newCommonResult(
+                "follow_count", count,
+                "is_followed", isFollowed
+        );
     }
 
     @Path("user_questions.json")
@@ -240,7 +254,8 @@ public class QuestionResource extends KnowledgeResource {
             long userId) {
         List<Question> questionList = queryQuestions(type, userId, page, count);
         List<ApiQuestion> apiQuestionList = Lists.transform(questionList, apiQuestionListConverter);
-        return addCountInfo(apiQuestionList);
+        apiQuestionList = addUserOperations(userId, apiQuestionList);
+        return addUserOperations(userId, addCountInfo(apiQuestionList));
     }
 
     @Path("list_questions.json")
@@ -264,11 +279,16 @@ public class QuestionResource extends KnowledgeResource {
             @QueryParam(COUNT_PARAM_NAME)
             @ParamSpec(isRequired = false, spec = NORMAL_COUNT_SPEC, desc = NORMAL_COUNT_DESC)
             @DefaultValue(NORMAL_DEFAULT_PAGE_COUNT)
-            int count) {
+            int count,
+            @HeaderParam(HEADER_USER_ID)
+            Long userId) {
         List<Question> questionList = tagId == 0 ?
                 knowledgeService.listQuestions(page, count) :
                 knowledgeService.listQuestions(tagId, page, count);
         List<ApiQuestion> apiQuestionList = Lists.transform(questionList, apiQuestionListConverter);
+        if (userId != null) {
+            apiQuestionList = addUserOperations(userId, apiQuestionList);
+        }
         return addCountInfo(addUserInfo(apiQuestionList));
     }
 
@@ -284,7 +304,9 @@ public class QuestionResource extends KnowledgeResource {
     public ApiQuestion getQuestion(
             @QueryParam(QUESTION_ID_PARAM_NAME)
             @ParamSpec(isRequired = true, spec = POSITIVE_LONG_ID_SPEC, desc = QUESTION_ID_DESC)
-            long questionId) {
+            long questionId,
+            @HeaderParam(HEADER_USER_ID)
+            Long userId) {
         Question question = checkAndGetQuestion(questionId);
         List<Long> tagIdList = knowledgeService.listQuestionTagIdsByQuestionId(questionId);
         List<ApiQuestionTag> tagList = getApiQuestionTags(tagIdList);
@@ -293,6 +315,10 @@ public class QuestionResource extends KnowledgeResource {
         UserInfo userInfo = accountService.getUserInfo(question.getUserId());
         ApiUser apiUser = ApiUser.simpleUser(userInfo);
         apiQuestion.setUser(apiUser);
+        if (userId != null) {
+            apiQuestion = addUserOperations(userId, apiQuestion);
+        }
+
         return addCountInfo(apiQuestion);
     }
 
@@ -447,6 +473,23 @@ public class QuestionResource extends KnowledgeResource {
         }
 
         return newApiQuestionList;
+    }
+
+    private List<ApiQuestion> addUserOperations(long userId, List<ApiQuestion> apiQuestions) {
+        List<ApiQuestion> newApiQuestionList = Lists.newArrayList();
+
+        for (ApiQuestion apiQuestion : apiQuestions) {
+            newApiQuestionList.add(addUserOperations(userId, apiQuestion));
+        }
+
+        return newApiQuestionList;
+    }
+
+    private ApiQuestion addUserOperations(long userId, ApiQuestion apiQuestion) {
+        long questionId = apiQuestion.getQuestionId();
+        apiQuestion.setIsAgreed(knowledgeService.isUserAgreeQuestion(userId, questionId));
+        apiQuestion.setIsFollowed(knowledgeService.isUserFollowQuestion(userId, questionId));
+        return apiQuestion;
     }
 
     private ApiQuestion addCountInfo(ApiQuestion apiQuestion) {
