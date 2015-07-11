@@ -158,14 +158,18 @@ public class AnswerResource extends KnowledgeResource {
             long userId
     ) {
         Answer answer = checkAndGetAnswer(answerId);
-        if (answer.getUserId() == userId) {
-            throw new VirgoRestException(RestExceptionFactor.CANNOT_DO_THIS_TO_ANSWER);
+        if (state == CommonState.NORMAL) {
+            knowledgeService.agreeAnswer(userId, answer.getId());
+        } else {
+            knowledgeService.disagreeAnswer(userId, answer.getId());
         }
-        boolean result =
-                state == CommonState.NORMAL ?
-                        knowledgeService.agreeAnswer(userId, answer.getId()) :
-                        knowledgeService.disagreeAnswer(userId, answer.getId());
-        return CommonResult.isSuccessfulCommonResult(result);
+
+        int count = knowledgeService.getAnswerAgreeCount(answerId);
+        boolean isAgreed = knowledgeService.isUserAgreeAnswer(userId, answerId);
+
+        return CommonResult.newCommonResult(
+                "agree_count", count,
+                "is_agreed", isAgreed);
     }
 
     @Path("collect_answer.json")
@@ -177,7 +181,7 @@ public class AnswerResource extends KnowledgeResource {
             errors = {RestExceptionFactor.QUESTION_NOT_EXISTED}
     )
     @Produces(MediaType.APPLICATION_JSON)
-    public CommonResult followAnswer(
+    public CommonResult collectAnswer(
             @FormParam(ANSWER_ID_PARAM_NAME)
             @ParamSpec(isRequired = true, spec = POSITIVE_LONG_ID_SPEC, desc = ANSWER_ID_DESC)
             long answerId,
@@ -188,11 +192,19 @@ public class AnswerResource extends KnowledgeResource {
             long userId
     ) {
         Answer answer = checkAndGetAnswer(answerId);
-        boolean result =
-                state == CommonState.NORMAL ?
-                        knowledgeService.collectAnswer(userId, answer.getId()) :
-                        knowledgeService.discollectAnswer(userId, answer.getId());
-        return CommonResult.isSuccessfulCommonResult(result);
+        if (state == CommonState.NORMAL) {
+            knowledgeService.collectAnswer(userId, answer.getId());
+        } else {
+            knowledgeService.discollectAnswer(userId, answer.getId());
+        }
+
+        int count = knowledgeService.getAnswerCollectCount(answerId);
+        boolean isCollected = knowledgeService.isUserCollectAnswer(userId, answerId);
+
+        return CommonResult.newCommonResult(
+                "collect_count", count,
+                "is_collected", isCollected
+        );
     }
 
     @Path("user_answers.json")
