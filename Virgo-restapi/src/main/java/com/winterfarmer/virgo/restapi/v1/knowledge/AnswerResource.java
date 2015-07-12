@@ -213,7 +213,7 @@ public class AnswerResource extends KnowledgeResource {
             desc = "用户回答或者收藏的问题",
             authPolicy = RestApiInfo.AuthPolicy.PUBLIC,
             resultDemo = ApiQuestion.class,
-            errors = {}s
+            errors = {}
     )
     @Produces(MediaType.APPLICATION_JSON)
     public List<ApiAnswer> listUserAnswers(
