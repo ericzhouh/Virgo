@@ -37,7 +37,7 @@ public class StringUtil {
             int i = 0;
             for (String splitString : splitStrings) {
                 try {
-                    intNums[++i] = Integer.parseInt(splitString);
+                    intNums[i++] = Integer.parseInt(StringUtils.trim(splitString));
                 } catch (NumberFormatException e) {
                     return null;
                 }
