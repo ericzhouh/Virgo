@@ -45,6 +45,14 @@ public class ApiAnswerComment {
     @ApiField(desc = "更新时间")
     private long updateAtMs;
 
+    @JSONField(name = "create_at_ms_str")
+    @ApiField(desc = "创建时间 string")
+    private String createAtMsStr;
+
+    @JSONField(name = "create_at_ms_str")
+    @ApiField(desc = "更新时间 string")
+    private String updateAtMsStr;
+
     @JSONField(name = "user")
     @ApiField(desc = "评论者")
     private ApiUser user;
@@ -68,6 +76,24 @@ public class ApiAnswerComment {
         this.digest = StringUtils.substring(this.content, 0, MAX_DIGEST_LENGTH);
         this.createAtMs = answerComment.getCreateAtMs();
         this.updateAtMs = answerComment.getUpdateAtMs();
+        setCreateAtMsStr();
+        setUpdateAtMsStr();
+    }
+
+    public String getCreateAtMsStr() {
+        return createAtMsStr;
+    }
+
+    public void setCreateAtMsStr() {
+        this.createAtMsStr = AggregatorUtils.timeConverter(this.createAtMs);
+    }
+
+    public String getUpdateAtMsStr() {
+        return updateAtMsStr = AggregatorUtils.timeConverter(this.updateAtMs);
+    }
+
+    public void setUpdateAtMsStr() {
+        this.updateAtMsStr = updateAtMsStr;
     }
 
     public long getAnswerId() {
@@ -116,6 +142,7 @@ public class ApiAnswerComment {
 
     public void setCreateAtMs(long createAtMs) {
         this.createAtMs = createAtMs;
+        setCreateAtMsStr();
     }
 
     public long getUpdateAtMs() {
@@ -124,6 +151,7 @@ public class ApiAnswerComment {
 
     public void setUpdateAtMs(long updateAtMs) {
         this.updateAtMs = updateAtMs;
+        setUpdateAtMsStr();
     }
 
     public ApiUser getUser() {
