@@ -357,6 +357,7 @@ public class AccountResource extends BaseResource {
 
         long[] tagIds = checkAndGetTagIds(tagsString);
         userInfo.setNickName(nickName);
+        userInfo.setGender(Integer.parseInt(gender));
         userInfo.setPortrait(portrait);
         if (birthday != null) {
             try {
