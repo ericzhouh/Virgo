@@ -56,7 +56,21 @@ public class AnswerCommentResource extends KnowledgeResource {
             long userId) {
         checkAndGetAnswer(answerId);
         AnswerComment answerComment = knowledgeService.newAnswerComment(userId, toUserId, answerId, content);
-        return new ApiAnswerComment(answerComment);
+        ApiAnswerComment apiAnswerComment = new ApiAnswerComment(answerComment);
+
+        {
+            UserInfo userInfo = accountService.getUserInfo(userId);
+            ApiUser apiUser = ApiUser.simpleUser(userInfo);
+            apiAnswerComment.setUser(apiUser);
+        }
+
+        if (toUserId != 0) {
+            UserInfo toUserInfo = accountService.getUserInfo(toUserId);
+            ApiUser toApiUser = ApiUser.simpleUser(toUserInfo);
+            apiAnswerComment.setToUser(toApiUser);
+        }
+
+        return apiAnswerComment;
     }
 
     @Path("delete_comment.json")
