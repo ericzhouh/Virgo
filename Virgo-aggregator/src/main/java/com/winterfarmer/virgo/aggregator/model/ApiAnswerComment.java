@@ -49,7 +49,7 @@ public class ApiAnswerComment {
     @ApiField(desc = "创建时间 string")
     private String createAtMsStr;
 
-    @JSONField(name = "create_at_ms_str")
+    @JSONField(name = "update_at_ms_str")
     @ApiField(desc = "更新时间 string")
     private String updateAtMsStr;
 
