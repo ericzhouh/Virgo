@@ -315,6 +315,8 @@ public class QuestionResource extends KnowledgeResource {
 
         ApiQuestion apiQuestion = new ApiQuestion(question, tagList);
         UserInfo userInfo = accountService.getUserInfo(question.getUserId());
+
+        VirgoLogger.debug("test " + userInfo.getGender());
         ApiUser apiUser = ApiUser.simpleUser(userInfo);
         apiQuestion.setUser(apiUser);
         if (userId != null) {
