@@ -338,7 +338,7 @@ public class QuestionResource extends KnowledgeResource {
             @DefaultValue("0")
             long tagId
     ) {
-        List<Question> questionList = knowledgeService.listQuestions(0, 5);
+        List<Question> questionList = knowledgeService.listQuestions((int) tagId % 6, 6);
         return Lists.transform(questionList, apiQuestionListConverter);
     }
 
