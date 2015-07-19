@@ -294,6 +294,35 @@ public class QuestionResource extends KnowledgeResource {
         return addCountInfo(addUserInfo(apiQuestionList));
     }
 
+    @Path("selected_questions.json")
+    @GET
+    @RestApiInfo(
+            desc = "精选问题",
+            authPolicy = RestApiInfo.AuthPolicy.PUBLIC,
+            resultDemo = CommonResult.class,
+            errors = {RestExceptionFactor.INVALID_TAG_ID}
+    )
+    @Produces(MediaType.APPLICATION_JSON)
+    public List<CommonResult> selectedQuestions() {
+        List<Question> questionList = knowledgeService.listQuestions(0, 25);
+        List<ApiQuestion> apiQuestionList = Lists.transform(questionList, apiQuestionListConverter);
+        List<QuestionTag> tags = knowledgeService.listQuestionTag();
+        List<ApiQuestionTag> apiQuestionTags = ApiQuestionTag.from(tags);
+        int i = 0;
+        List<CommonResult> lists = Lists.newArrayList();
+        for (ApiQuestionTag apiQuestionTag : apiQuestionTags) {
+            List<ApiQuestion> qlist = Lists.newArrayList();
+            for (int j = 0; j < 5; ++j) {
+                int k = ((i++) + j) % apiQuestionList.size();
+                qlist.add(apiQuestionList.get(k));
+                CommonResult c = CommonResult.newCommonResult("tag", apiQuestionTag, "q", qlist);
+                lists.add(c);
+            }
+        }
+
+        return lists;
+    }
+
     @Path("question_detail.json")
     @GET
     @RestApiInfo(
