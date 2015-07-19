@@ -315,8 +315,8 @@ public class QuestionResource extends KnowledgeResource {
             for (int j = 0; j < 5; ++j) {
                 int k = ((i++) + j) % apiQuestionList.size();
                 qlist.add(apiQuestionList.get(k));
-                CommonResult c = CommonResult.newCommonResult("tag", apiQuestionTag, "q", qlist);
             }
+            CommonResult c = CommonResult.newCommonResult("tag", apiQuestionTag, "q", qlist);
             lists.add(c);
         }
 
