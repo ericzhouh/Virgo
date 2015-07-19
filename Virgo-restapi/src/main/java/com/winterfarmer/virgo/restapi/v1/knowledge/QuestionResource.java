@@ -323,6 +323,25 @@ public class QuestionResource extends KnowledgeResource {
         return lists;
     }
 
+    @Path("selected_questions_by_tag.json")
+    @GET
+    @RestApiInfo(
+            desc = "精选问题",
+            authPolicy = RestApiInfo.AuthPolicy.PUBLIC,
+            resultDemo = ApiQuestion.class,
+            errors = {RestExceptionFactor.INVALID_TAG_ID}
+    )
+    @Produces(MediaType.APPLICATION_JSON)
+    public List<ApiQuestion> selectedQuestionByTag(
+            @QueryParam("tag_id")
+            @ParamSpec(isRequired = false, spec = NATURAL_LONG_ID_SPEC, desc = "标签id: 0-所有(无视此参数), 其他-tag id")
+            @DefaultValue("0")
+            long tagId
+    ) {
+        List<Question> questionList = knowledgeService.listQuestions(0, 5);
+        return Lists.transform(questionList, apiQuestionListConverter);
+    }
+
     @Path("question_detail.json")
     @GET
     @RestApiInfo(
