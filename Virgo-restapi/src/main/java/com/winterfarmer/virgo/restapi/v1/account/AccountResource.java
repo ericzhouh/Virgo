@@ -11,6 +11,7 @@ import com.winterfarmer.virgo.base.Exception.UnexpectedVirgoException;
 import com.winterfarmer.virgo.base.model.CommonResult;
 import com.winterfarmer.virgo.base.model.CommonState;
 import com.winterfarmer.virgo.base.service.SmsService;
+import com.winterfarmer.virgo.base.util.StaticFileUtil;
 import com.winterfarmer.virgo.common.util.AccountUtil;
 import com.winterfarmer.virgo.common.util.ArrayUtil;
 import com.winterfarmer.virgo.common.util.StringUtil;
@@ -513,6 +514,34 @@ public class AccountResource extends BaseResource {
         if (fromUserId == null || userId != fromUserId) {
             apiUser.setRealName(null);
         }
+
+        return apiUser;
+    }
+
+    @Path("user_base_info.json")
+    @GET
+    @Produces(MediaType.APPLICATION_JSON)
+    @RestApiInfo(
+            desc = "只有用户名、头像、性别信息",
+            authPolicy = RestApiInfo.AuthPolicy.PUBLIC,
+            resultDemo = ApiUser.class,
+            errors = {RestExceptionFactor.USER_ID_NOT_EXISTED}
+    )
+    public ApiUser getUserBaseInfo(
+            @QueryParam("user_id")
+            @ParamSpec(isRequired = true, spec = USER_ID_SPEC, desc = USER_ID_DESC)
+            long userId
+    ) {
+        UserInfo userInfo = checkAndGetUserInfo(userId);
+        ApiUser apiUser = new ApiUser();
+
+        apiUser.setNickName(userInfo.getNickName());
+
+        if (StringUtils.isNotBlank(apiUser.getPortrait())) {
+            apiUser.setPortrait(StaticFileUtil.getPortraitUrl(userInfo.getPortrait()));
+        }
+
+        apiUser.setGender(userInfo.getGender());
 
         return apiUser;
     }

@@ -83,7 +83,7 @@ public class ApiUser {
         return apiUser;
     }
 
-    private ApiUser() {
+    public ApiUser() {
 
     }
 
