@@ -174,10 +174,8 @@ public class AccountResource extends BaseResource {
         }
 
         try {
-            AccessToken accessToken = accountService.signUpByMobile(mobileNumber, password, nickName,
+            return accountService.signUpByMobile(mobileNumber, password, nickName,
                     openToken, appKey);
-            accessToken.setNickName(nickName);
-            return accessToken;
         } catch (MobileNumberException e) {
             throw new VirgoRestException(RestExceptionFactor.INVALID_MOBILE_NUMBER);
         }
@@ -215,8 +213,7 @@ public class AccountResource extends BaseResource {
                 accountService.deleteAccessToken(account.getUserId(), appKey);
                 accessToken = accountService.createAccessToken(account.getUserId(), appKey);
             }
-            UserInfo userInfo = accountService.getUserInfo(accessToken.getUserId());
-            accessToken.setNickName(userInfo.getNickName());
+
             return accessToken;
         } else {
             throw new VirgoRestException(RestExceptionFactor.INVALID_ID_OR_PASSWORD);
@@ -533,7 +530,7 @@ public class AccountResource extends BaseResource {
             long userId
     ) {
         UserInfo userInfo = checkAndGetUserInfo(userId);
-        ApiUser apiUser = new ApiUser();
+        ApiUser apiUser = new ApiUser(userInfo.getUserId(), userInfo.getUserType().getIndex());
 
         apiUser.setNickName(userInfo.getNickName());
 

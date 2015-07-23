@@ -22,9 +22,6 @@ public class AccessToken extends BaseModel {
     @JSONField(name = "user_id_str")
     private String userIdStr;
 
-    @JSONField(name = "nick_name")
-    private String nickName;
-
     private int appKey;
     private long createAt;
 
@@ -79,13 +76,5 @@ public class AccessToken extends BaseModel {
 
     public boolean isExpire() {
         return System.currentTimeMillis() > expireAt;
-    }
-
-    public String getNickName() {
-        return nickName;
-    }
-
-    public void setNickName(String nickName) {
-        this.nickName = nickName;
     }
 }

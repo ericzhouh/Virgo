@@ -37,7 +37,7 @@ import java.util.Map;
 @Component("questionResource")
 public class QuestionResource extends KnowledgeResource {
     protected static final String SUBJECT_SPEC = "UnicodeString:4~64";
-    protected static final String QUESTION_CONTENT_SPEC = "UnicodeString:1~65536";
+    protected static final String QUESTION_CONTENT_SPEC = "UnicodeString:0~65536";
 
     public static final int MAX_TAG_NUMBER = 3;
     private final Function<Question, ApiQuestion> apiQuestionListConverter =

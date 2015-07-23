@@ -83,8 +83,12 @@ public class ApiUser {
         return apiUser;
     }
 
-    public ApiUser() {
+    private ApiUser() {
+    }
 
+    public ApiUser(long userId, int userType) {
+        this.userId = userId;
+        this.userType = userType;
     }
 
     public ApiUser(UserInfo userInfo) {
