@@ -235,7 +235,7 @@ public class AnswerResource extends KnowledgeResource {
             Long fromUserId) {
         List<Answer> answerList = queryAnswers(type, userId, page, count);
         List<ApiAnswer> apiAnswerList = Lists.transform(answerList, apiAnswerListConverter);
-        return addUserOperations(userId, addCountInfo(addUserInfo(addQuestionSubject(apiAnswerList))));
+        return addUserOperations(fromUserId, addCountInfo(addUserInfo(addQuestionSubject(apiAnswerList))));
     }
 
     @Path("question_answers.json")
