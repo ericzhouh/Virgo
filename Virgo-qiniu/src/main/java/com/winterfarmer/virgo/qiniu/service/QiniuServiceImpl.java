@@ -5,6 +5,7 @@ import com.qiniu.http.Response;
 import com.qiniu.storage.UploadManager;
 import com.qiniu.util.Auth;
 import com.qiniu.util.StringMap;
+import com.winterfarmer.virgo.log.VirgoLogger;
 import com.winterfarmer.virgo.qiniu.BucketType;
 import org.springframework.stereotype.Service;
 
@@ -29,6 +30,7 @@ public class QiniuServiceImpl implements QiniuService {
     public String getOneImageUpToken(BucketType bucketType, long id) {
         StringMap policy = new StringMap();
         String key = Long.toString(id);
+        VirgoLogger.info("image key:" + key);
         policy.put("saveKey", key);
         return auth.uploadToken(bucketType.getBizName(), null, bucketType.getExpireS(), policy, true);
     }

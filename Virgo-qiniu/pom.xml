@@ -16,6 +16,10 @@
             <artifactId>qiniu-java-sdk</artifactId>
             <version>[7.0.0, 7.0.99]</version>
         </dependency>
+        <dependency>
+            <groupId>com.winterfarmer</groupId>
+            <artifactId>Virgo-logger</artifactId>
+        </dependency>
     </dependencies>
 
 </project>
