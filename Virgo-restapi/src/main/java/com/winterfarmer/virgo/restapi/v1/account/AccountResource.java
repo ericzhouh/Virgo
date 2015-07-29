@@ -512,7 +512,35 @@ public class AccountResource extends BaseResource {
             apiUser.setRealName(null);
         }
 
+        if (StringUtils.isNotBlank(apiUser.getPortrait())) {
+            apiUser.setPortrait(StaticFileUtil.getPortraitUrl(userInfo.getPortrait()));
+        }
+
         return apiUser;
+    }
+
+    @Path("selected.json")
+    @GET
+    @Produces(MediaType.APPLICATION_JSON)
+    @RestApiInfo(
+            desc = "首页列表内容",
+            authPolicy = RestApiInfo.AuthPolicy.PUBLIC,
+            resultDemo = ApiUser.class,
+            errors = {RestExceptionFactor.USER_ID_NOT_EXISTED}
+    )
+    public List<CommonResult> getSelected(
+            @QueryParam(PAGE_PARAM_NAME)
+            @ParamSpec(isRequired = false, spec = NORMAL_PAGE_SPEC, desc = NORMAL_PAGE_DESC)
+            @DefaultValue(NORMAL_DEFAULT_PAGE_NUM)
+            int page,
+            @QueryParam(COUNT_PARAM_NAME)
+            @ParamSpec(isRequired = false, spec = NORMAL_COUNT_SPEC, desc = NORMAL_COUNT_DESC)
+            @DefaultValue(NORMAL_DEFAULT_PAGE_COUNT)
+            int count,
+            @HeaderParam(HEADER_USER_ID)
+            Long fromUserId
+    ) {
+        return null;
     }
 
     @Path("user_base_info.json")
