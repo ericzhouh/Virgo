@@ -30,7 +30,7 @@ public class QiniuServiceImpl implements QiniuService {
         StringMap policy = new StringMap();
         String key = Long.toString(id);
         policy.put("saveKey", key);
-        return auth.uploadToken(bucketType.getBizName(), Long.toString(id), bucketType.getExpireS(), policy);
+        return auth.uploadToken(bucketType.getBizName(), null, bucketType.getExpireS(), policy, true);
     }
 
     public static void main(String[] args) {
