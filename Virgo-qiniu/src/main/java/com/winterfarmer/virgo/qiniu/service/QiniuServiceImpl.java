@@ -4,6 +4,7 @@ import com.qiniu.common.QiniuException;
 import com.qiniu.http.Response;
 import com.qiniu.storage.UploadManager;
 import com.qiniu.util.Auth;
+import com.qiniu.util.StringMap;
 import com.winterfarmer.virgo.qiniu.BucketType;
 import org.springframework.stereotype.Service;
 
@@ -26,7 +27,9 @@ public class QiniuServiceImpl implements QiniuService {
 
     @Override
     public String getOneImageUpToken(BucketType bucketType, long id) {
-        return auth.uploadToken(bucketType.getBizName(), Long.toString(id), bucketType.getExpireS(), null);
+        StringMap policy = new StringMap();
+        policy.put("saveKey", "true");
+        return auth.uploadToken(bucketType.getBizName(), Long.toString(id), bucketType.getExpireS(), policy);
     }
 
     public static void main(String[] args) {
