@@ -28,7 +28,8 @@ public class QiniuServiceImpl implements QiniuService {
     @Override
     public String getOneImageUpToken(BucketType bucketType, long id) {
         StringMap policy = new StringMap();
-        policy.put("saveKey", "true");
+        String key = Long.toString(id);
+        policy.put("saveKey", key);
         return auth.uploadToken(bucketType.getBizName(), Long.toString(id), bucketType.getExpireS(), policy);
     }
 
@@ -37,7 +38,7 @@ public class QiniuServiceImpl implements QiniuService {
         String token = qiniuService.getOneImageUpToken(BucketType.test, 1000);
         System.out.println(token);
         File file = new File("/Users/yangtianhang/Documents/1.pic.jpg");
-        MyRet ret = qiniuService.testUpload(token, 1000+"", file);
+        MyRet ret = qiniuService.testUpload(token, 1000 + "", file);
         System.out.println("fsize=" + ret.fsize);
         System.out.println("key=" + ret.key);
         System.out.println("hash=" + ret.hash);
