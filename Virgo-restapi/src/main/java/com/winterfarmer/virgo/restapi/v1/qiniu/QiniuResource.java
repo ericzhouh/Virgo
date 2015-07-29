@@ -3,6 +3,7 @@ package com.winterfarmer.virgo.restapi.v1.qiniu;
 import com.google.common.collect.ImmutableList;
 import com.winterfarmer.virgo.base.model.CommonResult;
 import com.winterfarmer.virgo.base.service.IdService;
+import com.winterfarmer.virgo.log.VirgoLogger;
 import com.winterfarmer.virgo.qiniu.BucketType;
 import com.winterfarmer.virgo.qiniu.service.QiniuService;
 import com.winterfarmer.virgo.restapi.BaseResource;
@@ -46,6 +47,7 @@ public class QiniuResource extends BaseResource {
             @HeaderParam(HEADER_USER_ID)
             long userId) {
         long id = idService.getId();
+        VirgoLogger.info("image id key:" + id);
         String token = qiniuService.getOneImageUpToken(BucketType.app_user, id);
         return CommonResult.newCommonResult("token", token, "key", Long.toString(id));
     }
