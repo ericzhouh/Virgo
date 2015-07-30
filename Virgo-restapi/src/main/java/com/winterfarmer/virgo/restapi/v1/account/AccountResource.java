@@ -533,10 +533,7 @@ public class AccountResource extends BaseResource {
             apiUser.setRealName(null);
         }
 
-        if (StringUtils.isNotBlank(apiUser.getPortrait())) {
-            apiUser.setPortrait(StaticFileUtil.getPortraitUrl(userInfo.getPortrait()));
-        }
-
+        apiUser.setPortrait(StaticFileUtil.getPortraitUrl(userInfo.getPortrait(), userInfo.getGender()));
         return apiUser;
     }
 
@@ -583,10 +580,7 @@ public class AccountResource extends BaseResource {
 
         apiUser.setNickName(userInfo.getNickName());
 
-        if (StringUtils.isNotBlank(apiUser.getPortrait())) {
-            apiUser.setPortrait(StaticFileUtil.getPortraitUrl(userInfo.getPortrait()));
-        }
-
+        apiUser.setPortrait(StaticFileUtil.getPortraitUrl(userInfo.getPortrait(), userInfo.getGender()));
         apiUser.setGender(userInfo.getGender());
 
         return apiUser;

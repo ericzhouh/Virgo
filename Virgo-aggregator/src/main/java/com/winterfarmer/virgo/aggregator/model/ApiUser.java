@@ -76,7 +76,7 @@ public class ApiUser {
     public static ApiUser simpleUser(UserInfo userInfo) {
         ApiUser apiUser = new ApiUser();
         apiUser.setNickName(userInfo.getNickName());
-        apiUser.setPortrait(StaticFileUtil.getPortraitUrl(userInfo.getPortrait()));
+        apiUser.setPortrait(StaticFileUtil.getPortraitUrl(userInfo.getPortrait(), userInfo.getGender()));
         apiUser.setUserId(userInfo.getUserId());
         apiUser.setUserType(userInfo.getUserType().getIndex());
 
@@ -94,7 +94,7 @@ public class ApiUser {
     public ApiUser(UserInfo userInfo) {
         this.userId = userInfo.getUserId();
         this.nickName = userInfo.getNickName();
-        this.portrait = StaticFileUtil.getPortraitUrl(userInfo.getPortrait());
+        this.portrait = StaticFileUtil.getPortraitUrl(userInfo.getPortrait(), userInfo.getGender());
         this.gender = userInfo.getGender();
         this.birthday = userInfo.getBirthday().toString();
         this.realName = userInfo.getRealName();
