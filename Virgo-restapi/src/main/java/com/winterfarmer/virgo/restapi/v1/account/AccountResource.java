@@ -267,20 +267,10 @@ public class AccountResource extends BaseResource {
             @FormParam("nick_name")
             @ParamSpec(isRequired = true, spec = NICK_NAME_SPEC, desc = NICK_NAME_DESC)
             String nickName,
-            @FormParam("portrait")
-            @ParamSpec(isRequired = false, spec = IMAGE_SPEC, desc = IMAGE_DESC)
-            @DefaultValue("0")
-            String portrait,
             @FormParam("gender")
             @ParamSpec(isRequired = false, spec = "int:[0,1]", desc = "性别{0,1}->{M,F}")
             @DefaultValue("0")
             String gender,
-            @FormParam("birthday")
-            @ParamSpec(isRequired = false, spec = "string:10~10", desc = "生日:1970-01-01的形式")
-            String birthday,
-            @FormParam("email")
-            @ParamSpec(isRequired = false, spec = "string:0~200", desc = "email")
-            String email,
             @FormParam("introduction")
             @ParamSpec(isRequired = false, spec = "string:0~500", desc = "自我介绍")
             String introduction,
@@ -291,18 +281,17 @@ public class AccountResource extends BaseResource {
 
         userInfo.setNickName(nickName);
         userInfo.setGender(Integer.parseInt(gender));
-        userInfo.setPortrait(portrait);
-        if (birthday != null) {
-            try {
-                Date birthdayDate = Date.valueOf(birthday);
-                userInfo.setBirthday(birthdayDate);
-            } catch (IllegalArgumentException e) {
-                throw new VirgoRestException(RestExceptionFactor.INVALID_PARAM, "invalid birthday");
-            }
-        }
-        if (email != null) {
-            userInfo.setEmail(email);
-        }
+//        if (birthday != null) {
+//            try {
+//                Date birthdayDate = Date.valueOf(birthday);
+//                userInfo.setBirthday(birthdayDate);
+//            } catch (IllegalArgumentException e) {
+//                throw new VirgoRestException(RestExceptionFactor.INVALID_PARAM, "invalid birthday");
+//            }
+//        }
+//        if (email != null) {
+//            userInfo.setEmail(email);
+//        }
         if (introduction != null) {
             userInfo.setIntroduction(introduction);
         }
