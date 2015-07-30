@@ -310,6 +310,27 @@ public class AccountResource extends BaseResource {
         return new ApiUser(userInfo);
     }
 
+    @Path("update_user_portrait.json")
+    @POST
+    @RestApiInfo(
+            desc = "修改用户头像",
+            authPolicy = RestApiInfo.AuthPolicy.OAUTH,
+            resultDemo = ApiUser.class,
+            errors = {RestExceptionFactor.USER_ID_NOT_EXISTED}
+    )
+    @Produces(MediaType.APPLICATION_JSON)
+    public ApiUser updateUserPortrait(
+            @FormParam("portrait")
+            @ParamSpec(isRequired = true, spec = IMAGE_SPEC, desc = IMAGE_DESC)
+            String portrait,
+            @HeaderParam(HEADER_USER_ID)
+            long userId) {
+        UserInfo userInfo = checkAndGetUserInfo(userId);
+        userInfo.setPortrait(portrait);
+        userInfo = accountService.updateUserInfo(userInfo);
+        return new ApiUser(userInfo);
+    }
+
     @Path("apply_expert.json")
     @POST
     @RestApiInfo(
