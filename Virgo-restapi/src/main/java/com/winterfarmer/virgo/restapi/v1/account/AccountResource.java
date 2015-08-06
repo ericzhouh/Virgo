@@ -81,7 +81,7 @@ public class AccountResource extends BaseResource {
     @Path("mobile_existed.json")
     @GET
     @RestApiInfo(
-            desc = "昵称是否存在",
+            desc = "手机号是否存在",
             authPolicy = RestApiInfo.AuthPolicy.PUBLIC,
             resultDemo = CommonResult.class,
             errors = {RestExceptionFactor.INVALID_MOBILE_NUMBER}

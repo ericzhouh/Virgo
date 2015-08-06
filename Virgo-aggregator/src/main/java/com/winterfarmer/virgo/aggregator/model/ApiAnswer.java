@@ -89,7 +89,7 @@ public class ApiAnswer {
         this.questionId = answer.getQuestionId();
         this.userId = answer.getUserId();
         this.content = answer.getContent();
-        this.digest = answer.getDigest();
+        this.digest = answer.getContent();
         this.state = answer.getCommonState().getIndex();
         this.createAtMs = answer.getCreateAtMs();
         this.updateAtMs = answer.getUpdateAtMs();
