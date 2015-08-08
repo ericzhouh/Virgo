@@ -20,6 +20,7 @@ import com.winterfarmer.virgo.restapi.core.annotation.ResourceOverview;
 import com.winterfarmer.virgo.restapi.core.annotation.RestApiInfo;
 import com.winterfarmer.virgo.restapi.core.exception.RestExceptionFactor;
 import com.winterfarmer.virgo.restapi.core.exception.VirgoRestException;
+import com.winterfarmer.virgo.restapi.core.filter.VirgoLogFilter;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.tuple.Pair;
 import org.springframework.stereotype.Component;
@@ -438,6 +439,7 @@ public class AnswerResource extends KnowledgeResource {
     }
 
     private List<ApiAnswer> addUserOperations(Long userId, List<ApiAnswer> apiAnswers) {
+        VirgoLogger.debug("addUserOperations " + userId);
         if (userId == null || userId < 1) {
             return apiAnswers;
         }
@@ -452,6 +454,7 @@ public class AnswerResource extends KnowledgeResource {
     }
 
     private ApiAnswer addUserOperations(Long userId, ApiAnswer apiAnswer) {
+        VirgoLogger.debug("addUserOperations == " + userId);
         if (userId == null || userId < 1) {
             return apiAnswer;
         }
