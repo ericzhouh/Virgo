@@ -544,6 +544,8 @@ public class KnowledgeServiceImpl implements KnowledgeService {
                 return getUserObtainAgreeCounter(userId);
             case USER_COLLECT_COUNT:
                 return getUserCollectCounter(userId);
+            case USER_FOLLOW_COUNT:
+                return getUserFollowCounter(userId);
             default:
                 return 0;
         }
@@ -563,6 +565,15 @@ public class KnowledgeServiceImpl implements KnowledgeService {
 
     private Integer getUserCollectCounter(long userId) {
         HeadVertex headVertex = userCollectAnswerGraphDao.queryHeadVertex(userId);
+        if (headVertex == null) {
+            return 0;
+        } else {
+            return headVertex.getDegree();
+        }
+    }
+
+    private Integer getUserFollowCounter(long userId) {
+        HeadVertex headVertex = userFollowQuestionGraphDao.queryHeadVertex(userId);
         if (headVertex == null) {
             return 0;
         } else {

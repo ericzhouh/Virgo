@@ -30,6 +30,10 @@ public class ApiUserCounter {
     @ApiField(desc = "用户收藏的答案个数")
     private Integer userCollectCount;
 
+    @JSONField(name = "user_follow_count")
+    @ApiField(desc = "用户关注的问题个数")
+    private Integer userFollowCount;
+
     public ApiUserCounter() {
     }
 
@@ -48,8 +52,19 @@ public class ApiUserCounter {
                 case USER_COLLECT_COUNT:
                     setUserCollectCount(entry.getValue());
                     break;
+                case USER_FOLLOW_COUNT:
+                    setUserFollowCount(entry.getValue());
+                    break;
             }
         }
+    }
+
+    public Integer getUserFollowCount() {
+        return userFollowCount;
+    }
+
+    public void setUserFollowCount(Integer userFollowCount) {
+        this.userFollowCount = userFollowCount;
     }
 
     public Integer getUserQuestionCount() {
