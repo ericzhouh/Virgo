@@ -439,7 +439,6 @@ public class AnswerResource extends KnowledgeResource {
     }
 
     private List<ApiAnswer> addUserOperations(Long userId, List<ApiAnswer> apiAnswers) {
-        VirgoLogger.debug("addUserOperations " + userId);
         if (userId == null || userId < 1) {
             return apiAnswers;
         }
@@ -454,7 +453,6 @@ public class AnswerResource extends KnowledgeResource {
     }
 
     private ApiAnswer addUserOperations(Long userId, ApiAnswer apiAnswer) {
-        VirgoLogger.debug("addUserOperations == " + userId);
         if (userId == null || userId < 1) {
             return apiAnswer;
         }
