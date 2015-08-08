@@ -4,6 +4,7 @@ import com.alibaba.fastjson.annotation.JSONField;
 import com.winterfarmer.virgo.base.annotation.ApiField;
 import com.winterfarmer.virgo.base.annotation.ApiMode;
 import com.winterfarmer.virgo.knowledge.model.Answer;
+import com.winterfarmer.virgo.log.VirgoLogger;
 
 /**
  * Created by yangtianhang on 15/5/17.
@@ -102,6 +103,7 @@ public class ApiAnswer {
     }
 
     public void setIsCollected(Boolean isCollected) {
+        VirgoLogger.debug("setIsCollected " + this.answerId + " " + isCollected);
         this.isCollected = isCollected;
     }
 
@@ -110,6 +112,7 @@ public class ApiAnswer {
     }
 
     public void setIsAgreed(Boolean isAgreed) {
+        VirgoLogger.debug("setIsAgreed " + this.answerId + " " + isAgreed);
         this.isAgreed = isAgreed;
     }
 
