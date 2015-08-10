@@ -149,7 +149,7 @@ public class AccountResource extends BaseResource {
             @ParamSpec(isRequired = true, spec = PASSWORD_SPEC, desc = "密码6~24位")
             String password,
             @FormParam("nick_name")
-            @ParamSpec(isRequired = false, spec = NICK_NAME_SPEC, desc = NICK_NAME_DESC)
+            @ParamSpec(isRequired = false, spec = "UnicodeString:0~15", desc = NICK_NAME_DESC)
             String nickName,
             @FormParam("open_token")
             @ParamSpec(isRequired = true, spec = "UnicodeString:2~10", desc = "第三方token")
