@@ -246,7 +246,7 @@ public class AccountServiceImpl implements AccountService {
      */
     @Override
     public String getRandomNickName() {
-        return "车主" + Base36Util.encode(System.currentTimeMillis());
+        return "车主" + Base62Util.encode(System.currentTimeMillis());
     }
 
     @Override
